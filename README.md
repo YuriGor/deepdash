@@ -97,5 +97,5 @@ a:object
 nl:null
 ```
 
-### Other traversal method
+### Other traversal methods
 Feel free to request other methods implementation like `filterDeep`, `mapDeep` and soon.
