@@ -1,0 +1,39 @@
+{
+  "name": "deepdash",
+  "version": "1.0.0",
+  "description": "Object tree traversal for lodash",
+  "main": "deepdash.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "prepublish": "npm run test",
+    "test": "./node_modules/.bin/mocha  --reporter spec",
+    "dev": "nodemon ./node_modules/.bin/mocha --reporter min --no-deprecation"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YuriGor/deepdash.git"
+  },
+  "keywords": [
+    "lodash",
+    "object",
+    "traversal",
+    "lodash",
+    "tree",
+    "traversal",
+    "eachDeep"
+  ],
+  "author": "Yuri Gor",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YuriGor/deepdash/issues"
+  },
+  "homepage": "https://github.com/YuriGor/deepdash#readme",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.8.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.5"
+  }
+}
