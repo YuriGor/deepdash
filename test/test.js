@@ -52,4 +52,14 @@ describe('Main', function() {
     );
     expect(c).equal(25);
   });
+  it('Chaining',()=>{
+    let c = 0;
+    _(obj).eachDeep(
+      (value, key, path, depth, parent, parentKey, parentPath) => {
+        if (key == 'skip') return false;
+        c++;
+      }
+    ).value();
+    expect(c).equal(25);
+  });
 });

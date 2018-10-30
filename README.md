@@ -96,6 +96,12 @@ a:object
   u:undefined  @a
 nl:null
 ```
+Chaining works too:
+```js
+_.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
+  //do
+}).value();
+```
 
 ### Other traversal methods
 Feel free to request other methods implementation like `filterDeep`, `mapDeep` and soon.
