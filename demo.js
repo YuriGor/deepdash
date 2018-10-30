@@ -51,3 +51,6 @@ _.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
     return false;//return false explicitly to skip iteration over current value's children
   }
 });
+
+// Chaining works too
+// _(obj).eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {/* do */}).value();

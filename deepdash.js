@@ -2,9 +2,10 @@
   function apply(_)
   {
     if(!_.eachDeep){
-      _.eachDeep = function(obj,callback){
+      function eachDeep(obj,callback){
         iterate(obj,"",0,null,"","",callback);
       };
+      _.mixin({ 'eachDeep': eachDeep });
     }
     function iterate(obj,path,depth,parent,parentKey,parentPath,callback)
     {
