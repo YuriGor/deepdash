@@ -1,4 +1,4 @@
-<img src="deepdash.svg" width="64px"/>
+<img src="deepdash.svg?sanitize=true" width="64px"/>
 
 ## deepdash
 tree traversal for lodash
