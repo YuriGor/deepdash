@@ -1,3 +1,5 @@
+<img src="deepdash.svg" width="64px"/>
+
 ## deepdash
 tree traversal for lodash
 ### Installation
