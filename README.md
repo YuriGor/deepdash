@@ -100,9 +100,7 @@ nl:null
 ```
 Chaining works too:
 ```js
-_.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
-  //do
-}).value();
+  _(obj).eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {/* do */}).value();
 ```
 
 ### Other traversal methods
