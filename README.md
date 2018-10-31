@@ -111,11 +111,11 @@ Invokes given callback for each field and element of given object or array, nest
 
 **Arguments:**
 - object: (Object) The object to iterate over.
-- [iteratee]: (Function) The function (_.identity by default) invoked per iteration.
+- \[iteratee\]: (Function) The function (_.identity by default) invoked per iteration.
   `iteratee` will be called with:
-  - value, key, path, depth, parent, parentKey, parentPath, [parents]
-- [options]: (Object)
-    - [track]: (Boolean) option (false by default) to track parents from current back to the root, useful for circular reference detecting. If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
+  - value, key, path, depth, parent, parentKey, parentPath, \[parents\]
+- \[options\]: (Object)
+    - \[track\]: (Boolean) option (false by default) to track parents from current back to the root, useful for circular reference detecting. If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
 
 **Example:**
 ```js
