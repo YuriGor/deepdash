@@ -14,7 +14,7 @@ npm i --save deepdash
 ```
 In Node.js:
 ```js
-//inject new method into lodash object
+//mixin new method into lodash object
 const _ = require('deepdash')(require('lodash'));
 ```
 ### Usage
