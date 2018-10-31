@@ -103,5 +103,42 @@ Chaining works too:
   _(obj).eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {/* do */}).value();
 ```
 
+## Methods
+
+### eachDeep (forEachDeep)
+`_.eachDeep(object, [iteratee=_.identity])`
+Invokes given callback for each field and element of given object or array, nested too.
+
+**Arguments:**
+- object (Object): The object to iterate over.
+- [iteratee=_.identity] (Function): The function invoked per iteration.
+  `iteratee` will be called with:
+  - value, key, path, depth, parent, parentKey, parentPath, [parents]
+- options (Object):
+    - track - option (false by default) to track parents from current back to the root, useful for circular reference detecting.
+              If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
+
+**Example:**
+```js
+  let circular = { a: { b: { c: {} } } };
+  circular.a.b.c = circular;
+  _.eachDeep(
+    circular,
+    (value, key, path, depth, parent, parentKey, parentPath, parents) => {
+      if (_.indexOf(parents.values, value) !== -1) {
+        console.log(
+          "Circular reference skipped for '" + key + "' at " + parentPath
+        );
+        return false;
+      }
+      //do you things
+    }
+  ,{track:true});
+```
+Console:
+```
+  Circular reference skipped for 'c' at a.b
+```
+
 ### Other traversal methods
-Feel free to request other methods implementation like `filterDeep`, `mapDeep` and soon.
+Feel free [to request](https://github.com/YuriGor/deepdash/issues/new) other methods implementation.

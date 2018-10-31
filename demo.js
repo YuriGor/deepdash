@@ -1,3 +1,5 @@
+"use strict";
+
 //inject new method into lodash object
 const _ = require('./deepdash')(require('lodash'));
 //in browser just load script after lodash
