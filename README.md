@@ -3,7 +3,7 @@
 ## deepdash
 tree traversal for lodash
 ### Installation
-In a browser load script after lodash:
+In a browser load [script](https://raw.githubusercontent.com/YuriGor/deepdash/master/deepdash.js) after lodash:
 ```html
 <script src="lodash.js"></script>
 <script src="deepdash.js"></script>
@@ -15,7 +15,7 @@ npm i --save deepdash
 In Node.js:
 ```js
 //inject new method into lodash object
-const _ = require('./deepdash')(require('lodash'));
+const _ = require('deepdash')(require('lodash'));
 ```
 ### Usage
 
