@@ -111,7 +111,7 @@ Invokes given callback for each field and element of given object or array, nest
 
 **Arguments:**
 - object: (Object) The object to iterate over.
-- [iteratee=_.identity]: (Function) The function invoked per iteration.
+- [iteratee]: (Function) The function (_.identity by default) invoked per iteration.
   `iteratee` will be called with:
   - value, key, path, depth, parent, parentKey, parentPath, [parents]
 - [options]: (Object)
