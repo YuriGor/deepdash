@@ -131,7 +131,7 @@ Invokes given callback for each field and element of given object or array, nest
         );
         return false;
       }
-      //do you things
+      //do your things
     }
   ,{track:true});
 ```
