@@ -50,7 +50,7 @@ describe('stackoverflow', () => {
     _.eachDeep(
       obj,
       (value, key, path, depth, parent, parentKey, parentPath) => {
-          sum += key == 'prop'&&value == 'foo'&&parent.val || 0;
+        sum += (key == 'prop' && value == 'foo' && parent.val) || 0;
       }
     );
     expect(sum).equal(40);
