@@ -19,6 +19,8 @@
         options.parents.keys.push(parentKey);
         options.parents.paths.push(parentPath);
       }
+      if(!_.isObject(obj))
+        return;
       _.forOwn(obj, function(value, key) {
         var okey = key;
         if (_.isArray(obj)) key = '[' + key + ']';
@@ -58,15 +60,14 @@
       }
     }
 
-    if (!_.eachDeep) {
+    if (!_.eachDeep||!_.forEachDeep) {
       function eachDeep(obj, callback, options) {
         if (callback === undefined) callback = _.identity;
-        if (options === undefined) options = {};
         options = _.merge(
           {
             track: false,
           },
-          options
+          options || {}
         );
         if (options.track) {
           options.parents = { keys: [], paths: [], values: [] };
@@ -74,9 +75,59 @@
         iterate(obj, '', 0, null, '', '', callback, options);
         return obj;
       }
-      _.mixin({ eachDeep: eachDeep });
+      if(!_.eachDeep){
+        _.mixin({ eachDeep: eachDeep });
+      }
       if (!_.forEachDeep) {
         _.mixin({ forEachDeep: eachDeep });
+      }
+    }
+
+    if (!_.keysDeep||!_.paths) {
+      function keysDeep(obj, options) {
+        options = _.merge(
+          {
+            checkCircular: false,
+            includeCircularPath: true,
+          },
+          options || {}
+        );
+        var eachDeepOptions = {
+          track: options.checkCircular,
+        };
+        var res = [];
+        _.eachDeep(
+          obj,
+          function(
+            value,
+            key,
+            path,
+            depth,
+            parent,
+            parentKey,
+            parentPath,
+            parents
+          ) {
+            var circular = false;
+            if (options.checkCircular) {
+              circular =_.indexOf(parents.values, value) !== -1;
+            }
+            if(!circular||options.includeCircularPath){
+              res.push(path);
+            }
+            if(circular){
+              return false;
+            }
+          },
+          eachDeepOptions
+        );
+        return res;
+      }
+      if(!_.keysDeep){
+        _.mixin({ keysDeep: keysDeep });
+      }
+      if (!_.paths) {
+        _.mixin({ paths: keysDeep });
       }
     }
 

@@ -106,7 +106,7 @@ Chaining works too:
 ## Methods
 
 ### eachDeep (forEachDeep)
-`_.eachDeep(object, [iteratee=_.identity])`
+`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])`
 Invokes given callback for each field and element of given object or array, nested too.
 
 **Arguments:**
@@ -137,6 +137,39 @@ Invokes given callback for each field and element of given object or array, nest
 Console:
 ```
   Circular reference skipped for 'c' at a.b
+```
+
+### keysDeep (paths)
+`_.keysDeep(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true }])`
+Creates an array of the paths of object or array.
+
+**Arguments:**
+- object: (Object) The object to iterate over.
+- \[options\]: (Object)
+    - \[checkCircular\]: (Boolean) option (false by default) to avoid circular references.
+    - \[includeCircularPath\]: (Boolean) option (true by default) return path to circular reference, if found some, or not.
+
+**Example:**
+```js
+  let keys = _.keysDeep({
+    a: {
+      b: {
+        c: [1, 2, 3],
+        "hello world":{}
+      },
+    },
+  });
+  console.log(keys);
+```
+Console:
+```
+  [ 'a',
+    'a.b',
+    'a.b.c',
+    'a.b.c[0]',
+    'a.b.c[1]',
+    'a.b.c[2]',
+    'a.b["hello world"]' ]
 ```
 
 ### Other traversal methods
