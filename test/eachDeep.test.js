@@ -72,4 +72,28 @@ describe('eachDeep', () => {
       .and.to.have.property('length')
       .and.equal(3);
   });
+
+  it('Array',()=>{
+    let c = 0;
+    _.eachDeep(
+      [demo,demo],
+      (value, key, path, depth, parent, parentKey, parentPath) => {
+        if (key == 'skip') return false;
+        c++;
+      }
+    );
+    expect(c).equal(52);
+  });
+
+  it('String',()=>{
+    let c = 0;
+    _.eachDeep(
+      'Hello?',
+      (value, key, path, depth, parent, parentKey, parentPath) => {
+        if (key == 'skip') return false;
+        c++;
+      }
+    );
+    expect(c).equal(0);
+  });
 });
