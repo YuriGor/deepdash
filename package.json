@@ -1,6 +1,6 @@
 {
   "name": "deepdash",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Object tree traversal for lodash",
   "main": "deepdash.js",
   "directories": {
