@@ -22,7 +22,10 @@
     "lodash",
     "tree",
     "traversal",
-    "eachDeep"
+    "eachDeep",
+    "forEachDeep",
+    "keysDeep",
+    "paths"
   ],
   "author": "Yuri Gor",
   "license": "MIT",
