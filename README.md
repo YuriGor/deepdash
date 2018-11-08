@@ -106,16 +106,16 @@ Chaining works too:
 ## Methods
 
 ### eachDeep (forEachDeep)
-`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])`
+`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])`<br>
 Invokes given callback for each field and element of given object or array, nested too.
 
 **Arguments:**
 - object: (Object) The object to iterate over.
-- \[iteratee\]: (Function) The function (_.identity by default) invoked per iteration.
+- \[iteratee\]: (Function) The function invoked per iteration.
   `iteratee` will be called with:
   - value, key, path, depth, parent, parentKey, parentPath, \[parents\]
 - \[options\]: (Object)
-    - \[track\]: (Boolean) option (false by default) to track parents from current back to the root, useful for circular reference detecting. If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
+    - \[track\]: (Boolean) track parents from current back to the root, useful for circular reference detecting. If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
 
 **Example:**
 ```js
@@ -140,15 +140,15 @@ Console:
 ```
 
 ### keysDeep (paths)
-`_.keysDeep(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true }])`
+`_.keysDeep(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
 Creates an array of the paths of object or array.
 
 **Arguments:**
 - object: (Object) The object to iterate over.
 - \[options\]: (Object)
-    - \[checkCircular\]: (Boolean) option (false by default) to avoid circular references.
-    - \[includeCircularPath\]: (Boolean) option (true by default) return path to circular reference, if found some, or skip it.
-    - \[leafsOnly\]: (Boolean) option (false by default) return paths to childless values only.
+    - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
+    - \[includeCircularPath\]: (Boolean) include path to circular reference, if found some, or skip it. Option ignored if `checkCircular:false`.
+    - \[leafsOnly\]: (Boolean) return paths to childless values only. By default all the paths will be returned, including parents.
 
 **Example:**
 ```js
@@ -161,12 +161,27 @@ Creates an array of the paths of object or array.
     },
   });
   console.log(keys);
+  keys = _.keysDeep({
+    a: {
+      b: {
+        c: [1, 2, 3],
+        "hello world":{}
+      },
+    },
+  },{ leafsOnly: true });
+  console.log(keys);
 ```
 Console:
 ```
   [ 'a',
     'a.b',
     'a.b.c',
+    'a.b.c[0]',
+    'a.b.c[1]',
+    'a.b.c[2]',
+    'a.b["hello world"]' ]
+
+  [
     'a.b.c[0]',
     'a.b.c[1]',
     'a.b.c[2]',
