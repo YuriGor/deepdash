@@ -147,7 +147,8 @@ Creates an array of the paths of object or array.
 - object: (Object) The object to iterate over.
 - \[options\]: (Object)
     - \[checkCircular\]: (Boolean) option (false by default) to avoid circular references.
-    - \[includeCircularPath\]: (Boolean) option (true by default) return path to circular reference, if found some, or not.
+    - \[includeCircularPath\]: (Boolean) option (true by default) return path to circular reference, if found some, or skip it.
+    - \[leafsOnly\]: (Boolean) option (false by default) return paths to childless values only.
 
 **Example:**
 ```js
