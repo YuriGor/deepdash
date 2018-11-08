@@ -1,7 +1,7 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
 
 ## deepdash
-tree traversal for lodash
+Looking for eachDeep, keysDeep etc? Tree traversal extension for lodash.
 ### Installation
 In a browser load [script](https://raw.githubusercontent.com/YuriGor/deepdash/master/deepdash.js) after lodash:
 ```html
@@ -138,21 +138,54 @@ Console:
 ```
   Circular reference skipped for 'c' at a.b
 ```
+### indexate
+`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
+Creates an 'index' flat object with paths as keys and corresponding values.
 
-### keysDeep (paths)
-`_.keysDeep(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
+**Arguments:**
+- object: (Object) The object to iterate over.
+- \[options\]: (Object)
+    - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
+    - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
+    - \[leafsOnly\]: (Boolean) return paths to childless values only. By default all the paths will be returned, including parents.
+
+**Example:**
+```js
+  let index = _.indexate(
+    {
+      a: {
+        b: {
+          c: [1, 2, 3],
+          'hello world': {},
+        },
+      },
+    },
+    { leafsOnly: true }
+  );
+  console.log(index);
+```
+Console:
+```
+  { 'a.b.c[0]': 1,
+    'a.b.c[1]': 2,
+    'a.b.c[2]': 3,
+    'a.b["hello world"]': {} }
+```
+
+### paths (keysDeep)
+`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
 Creates an array of the paths of object or array.
 
 **Arguments:**
 - object: (Object) The object to iterate over.
 - \[options\]: (Object)
     - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
-    - \[includeCircularPath\]: (Boolean) include path to circular reference, if found some, or skip it. Option ignored if `checkCircular:false`.
+    - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
     - \[leafsOnly\]: (Boolean) return paths to childless values only. By default all the paths will be returned, including parents.
 
 **Example:**
 ```js
-  let keys = _.keysDeep({
+  let paths = _.paths({
     a: {
       b: {
         c: [1, 2, 3],
@@ -160,8 +193,8 @@ Creates an array of the paths of object or array.
       },
     },
   });
-  console.log(keys);
-  keys = _.keysDeep({
+  console.log(paths);
+  paths = _.paths({
     a: {
       b: {
         c: [1, 2, 3],
@@ -169,7 +202,7 @@ Creates an array of the paths of object or array.
       },
     },
   },{ leafsOnly: true });
-  console.log(keys);
+  console.log(paths);
 ```
 Console:
 ```
