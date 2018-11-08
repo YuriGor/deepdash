@@ -17,14 +17,17 @@ describe('keysDeep', () => {
     expect(keys.length).equal(30);
   });
   it('Array', () => {
-    let keys = _.keysDeep([demo,demo]);
+    let keys = _.keysDeep([demo, demo]);
     expect(keys.length).equal(62);
   });
   it('Count paths circular', () => {
-    let keys = _.keysDeep(circular,{checkCircular:true});
+    let keys = _.keysDeep(circular, { checkCircular: true });
     // console.log(keys);
     expect(keys.length).equal(23);
-    keys = _.keysDeep(circular,{checkCircular:true,includeCircularPath:false});
+    keys = _.keysDeep(circular, {
+      checkCircular: true,
+      includeCircularPath: false,
+    });
     // console.log(keys);
     expect(keys.length).equal(20);
   });
@@ -40,18 +43,56 @@ describe('keysDeep', () => {
   });
   it('returns empty array', () => {
     let keys = _.keysDeep(1);
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
     keys = _.keysDeep('123');
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
     keys = _.keysDeep(null);
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
     keys = _.keysDeep(undefined);
-    expect(keys).to.be.array().and.has.property('length').equal(0);
-    keys = _.keysDeep(()=>{});
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
+    keys = _.keysDeep(() => {});
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
     keys = _.keysDeep(new Date());
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
     keys = _.keysDeep(/.*/);
-    expect(keys).to.be.array().and.has.property('length').equal(0);
+    expect(keys)
+      .to.be.array()
+      .and.has.property('length')
+      .equal(0);
   });
+
+  it('Leafs only', () => {
+    let keys = _.keysDeep(demo, { leafsOnly: true });
+    expect(keys.length).equal(14);
+  });
+
+  it('Leafs only circular', () => {
+    let keys = _.keysDeep(circular, { checkCircular: true, leafsOnly: true });
+    expect(keys.length).equal(10);
+    keys = _.keysDeep(circular, {
+      checkCircular: true,
+      includeCircularPath: false,
+      leafsOnly: true
+    });
+    expect(keys.length).equal(9);
+  });
+
 });

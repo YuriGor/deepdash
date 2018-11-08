@@ -89,6 +89,7 @@
           {
             checkCircular: false,
             includeCircularPath: true,
+            leafsOnly:false
           },
           options || {}
         );
@@ -113,6 +114,9 @@
               circular =_.indexOf(parents.values, value) !== -1;
             }
             if(!circular||options.includeCircularPath){
+              if(options.leafsOnly && _.last(res)===parentPath){
+                res.pop();
+              }
               res.push(path);
             }
             if(circular){
