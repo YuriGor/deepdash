@@ -82,9 +82,56 @@
         _.mixin({ forEachDeep: eachDeep });
       }
     }
-
+    if(!_.indexate){
+      function indexate(obj, options) {
+        options = _.merge(
+          {
+            checkCircular: false,
+            includeCircularPath: true,
+            leafsOnly:false
+          },
+          options || {}
+        );
+        var eachDeepOptions = {
+          track: options.checkCircular,
+        };
+        var res = {};
+        _.eachDeep(
+          obj,
+          function(
+            value,
+            key,
+            path,
+            depth,
+            parent,
+            parentKey,
+            parentPath,
+            parents
+          ) {
+            var circular = false;
+            if (options.checkCircular) {
+              circular =_.indexOf(parents.values, value) !== -1;
+            }
+            if(!circular||options.includeCircularPath){
+              if(options.leafsOnly && res[parentPath]){
+                delete res[parentPath];
+              }
+              res[path]=value;
+            }
+            if(circular){
+              return false;
+            }
+          },
+          eachDeepOptions
+        );
+        return res;
+      }
+      if(!_.indexate){
+        _.mixin({ indexate: indexate });
+      }
+    }
     if (!_.keysDeep||!_.paths) {
-      function keysDeep(obj, options) {
+      function paths(obj, options) {
         options = _.merge(
           {
             checkCircular: false,
@@ -128,10 +175,10 @@
         return res;
       }
       if(!_.keysDeep){
-        _.mixin({ keysDeep: keysDeep });
+        _.mixin({ keysDeep: paths });
       }
       if (!_.paths) {
-        _.mixin({ paths: keysDeep });
+        _.mixin({ paths: paths });
       }
     }
 

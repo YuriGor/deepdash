@@ -9,7 +9,7 @@ const chai = require('chai'),
 describe('eachDeep', () => {
   it('default', () => {
     let circular = { a: { b: { c: {} } } };
-    let log=[];
+    let log = [];
     circular.a.b.c = circular;
     _.eachDeep(
       circular,
@@ -25,6 +25,28 @@ describe('eachDeep', () => {
       { track: true }
     );
     expect(log).to.deep.equal(["Circular reference skipped for 'c' at a.b"]);
+  });
+});
+
+describe('indexate', () => {
+  it('leafsOnly', () => {
+    let index = _.indexate(
+      {
+        a: {
+          b: {
+            c: [1, 2, 3],
+            'hello world': {},
+          },
+        },
+      },
+      { leafsOnly: true }
+    );
+    expect(index).to.deep.equal({
+      'a.b.c[0]': 1,
+      'a.b.c[1]': 2,
+      'a.b.c[2]': 3,
+      'a.b["hello world"]': {},
+    });
   });
 });
 

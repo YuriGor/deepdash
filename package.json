@@ -17,6 +17,8 @@
   },
   "keywords": [
     "lodash",
+    "each deep",
+    "keys deep",
     "object",
     "tree",
     "traversal",
