@@ -106,7 +106,7 @@ Chaining works too:
 ## Methods
 
 ### eachDeep (forEachDeep)
-`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])`<br>
+`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])` <br>
 Invokes given callback for each field and element of given object or array, nested too.
 
 **Arguments:**
@@ -139,7 +139,7 @@ Console:
   Circular reference skipped for 'c' at a.b
 ```
 ### indexate
-`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
+`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])` <br>
 Creates an 'index' flat object with paths as keys and corresponding values.
 
 **Arguments:**
@@ -173,7 +173,7 @@ Console:
 ```
 
 ### paths (keysDeep)
-`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])`<br>
+`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])` <br>
 Creates an array of the paths of object or array.
 
 **Arguments:**
