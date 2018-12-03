@@ -16,9 +16,9 @@ Using npm:
 ```
 npm i --save deepdash
 ```
-In Node.js:
+In Node.js (same for the Angular component):
 ```js
-//mixin new method into lodash object
+//mixin new methods into lodash object
 const _ = require('deepdash')(require('lodash'));
 ```
 ### Usage
