@@ -40,9 +40,11 @@
     "chai-asserttype": "^1.0.5",
     "coveralls": "^3.0.2",
     "eslint": "^5.8.0",
-    "lodash": "^4.17.11",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.5",
     "nyc": "^13.1.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.11"
   }
 }
