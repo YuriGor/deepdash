@@ -344,7 +344,8 @@ Make all the arrays in the object non-sparsed.
 _.condenseDeep(
   obj,                  // The object to iterate over.
   options = {
-  checkCircular: false, // Check each value to not be one of the parents, to avoid circular references.
+    checkCircular: false, // Check each value to not be one of the parents, to avoid circular references.
+  }
 );
 ```
 **Example:**
