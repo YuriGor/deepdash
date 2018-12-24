@@ -177,7 +177,7 @@ Console:
 ```
 
 ### paths (keysDeep)
-`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
+`_.paths(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
 Creates an array of the paths of object or array.
 
 **Arguments:**
@@ -224,6 +224,8 @@ Console:
     'a.b.c[2]',
     'a.b["hello world"]' ]
 ```
+### filterDeep
+
 
 ### Other traversal methods
 Feel free [to request](https://github.com/YuriGor/deepdash/issues/new) other methods implementation.

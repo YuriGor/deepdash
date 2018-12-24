@@ -94,6 +94,17 @@ describe('keysDeep', () => {
   });
 });
 
+describe('filterDeep'()=>{
+  it('Count paths', () => {
+    let filtrate = _(demo)
+      .filterDeep(isNS, { leafsOnly: true })
+      .indexate({ leafsOnly: true })
+      .value();
+    console.log(filtrate);
+    // filtrate.should.to.deep.equal(['a', 'c', 'e']);
+  });
+});
+
 describe('condenseDeep', () => {
   it('condense', () => {
     let arr = ['a', 'b', 'c', 'd', 'e'];
