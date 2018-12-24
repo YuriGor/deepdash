@@ -143,7 +143,7 @@ Console:
   Circular reference skipped for 'c' at a.b
 ```
 ### indexate
-`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])` <br>
+`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
 Creates an 'index' flat object with paths as keys and corresponding values.
 
 **Arguments:**
@@ -151,7 +151,7 @@ Creates an 'index' flat object with paths as keys and corresponding values.
 - \[options\]: (Object)
     - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
     - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
-    - \[leafsOnly\]: (Boolean) return paths to childless values only. By default all the paths will be returned, including parents.
+    - \[leafsOnly\]: (Boolean) return paths to childless values only by default. Or all the paths will be returned, including parents, if set to false.
 
 **Example:**
 ```js
@@ -177,7 +177,7 @@ Console:
 ```
 
 ### paths (keysDeep)
-`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: false }])` <br>
+`_.paths(object, [iteratee=_.identity], [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
 Creates an array of the paths of object or array.
 
 **Arguments:**
@@ -185,7 +185,7 @@ Creates an array of the paths of object or array.
 - \[options\]: (Object)
     - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
     - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
-    - \[leafsOnly\]: (Boolean) return paths to childless values only. By default all the paths will be returned, including parents.
+    - \[leafsOnly\]: (Boolean) return paths to childless values only by default. Or all the paths will be returned, including parents, if set to false.
 
 **Example:**
 ```js
@@ -205,7 +205,7 @@ Creates an array of the paths of object or array.
         "hello world":{}
       },
     },
-  },{ leafsOnly: true });
+  },{ leafsOnly: false });
   console.log(paths);
 ```
 Console:

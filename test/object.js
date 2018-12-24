@@ -5,19 +5,19 @@ var circular = {
     b: {
       c: {
         // e: circular.a.b,
+        hi: 'planet',
       },
     },
   },
-  i: [
-    1,
-    2,
-    3,
-    4,
-    { hello: 'world' }
-  ],
+  i: [1, 2, 3, 4, { hello: 'world' }],
 };
 circular.a.b.c.e = circular.a.b;
-circular.i.push([circular, [circular.a], { j: circular.i[4] }, { k: circular.i[5] }]);
+circular.i.push([
+  circular,
+  [circular.a],
+  { j: circular.i[4] },
+  { k: circular.i[5] },
+]);
 
 module.exports = {
   demo: {

@@ -52,14 +52,17 @@ describe('indexate', () => {
 
 describe('keysDeep', () => {
   it('default', () => {
-    let keys = _.keysDeep({
-      a: {
-        b: {
-          c: [1, 2, 3],
-          'hello world': {},
+    let keys = _.keysDeep(
+      {
+        a: {
+          b: {
+            c: [1, 2, 3],
+            'hello world': {},
+          },
         },
       },
-    });
+      { leafsOnly: false }
+    );
     expect(keys).to.deep.equal([
       'a',
       'a.b',

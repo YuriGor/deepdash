@@ -73,10 +73,10 @@ describe('eachDeep', () => {
       .and.equal(3);
   });
 
-  it('Array',()=>{
+  it('Array', () => {
     let c = 0;
     _.eachDeep(
-      [demo,demo],
+      [demo, demo],
       (value, key, path, depth, parent, parentKey, parentPath) => {
         if (key == 'skip') return false;
         c++;
@@ -85,7 +85,7 @@ describe('eachDeep', () => {
     expect(c).equal(52);
   });
 
-  it('String',()=>{
+  it('String', () => {
     let c = 0;
     _.eachDeep(
       'Hello?',
@@ -95,5 +95,27 @@ describe('eachDeep', () => {
       }
     );
     expect(c).equal(0);
+  });
+  it('empty props', () => {
+    let c = 0;
+    var o = { a: 0, b: 1, c: 2 };
+    delete o.b;
+    _.eachDeep(o, () => {
+      c++;
+    });
+    expect(c).equal(2);
+    c = 0;
+    var a = ['a', 'b', 'c'];
+    delete a[1];
+    _.eachDeep(a, () => {
+      c++;
+    });
+    expect(c).equal(2);
+    c = 0;
+    var slots = ['start', , 'middle', , 'finish'];
+    _.eachDeep(slots, () => {
+      c++;
+    });
+    expect(c).equal(3);
   });
 });
