@@ -1,9 +1,9 @@
 'use strict';
 
 const chai = require('chai'),
-  should = chai.should(),
+  // should = chai.should(),
   expect = chai.expect,
-  assert = require('assert'),
+  // assert = require('assert'),
   _ = require('../deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
@@ -13,35 +13,32 @@ var { demo, circular } = require('./object');
 
 describe('indexate', () => {
   it('Count paths', () => {
-    let index = _.indexate(demo);
+    let index = _.indexate(demo, { leafsOnly: false });
     expect(_.size(index)).equal(30);
   });
   it('Array', () => {
-    let index = _.indexate([demo, demo]);
+    let index = _.indexate([demo, demo], { leafsOnly: false });
     expect(_.size(index)).equal(62);
   });
   it('Count paths circular', () => {
-    let index = _.indexate(circular, { checkCircular: true });
+    let index = _.indexate(circular, { checkCircular: true, leafsOnly: false });
     // console.log(index);
-    expect(_.size(index)).equal(23);
+    expect(_.size(index)).equal(25);
     index = _.indexate(circular, {
       checkCircular: true,
+      leafsOnly: false,
       includeCircularPath: false,
     });
     // console.log(index);
-    expect(_.size(index)).equal(20);
+    expect(_.size(index)).equal(22);
   });
   it('Chaining', () => {
     let index = _(demo)
-      .indexate()
+      .indexate({ leafsOnly: false })
       .value();
     expect(_.size(index)).equal(30);
   });
-  it('alias paths', () => {
-    let index = _.paths(demo);
-    expect(_.size(index)).equal(30);
-  });
-  it('returns empty array', () => {
+  it('returns empty obj', () => {
     let index = _.indexate(1);
     expect(index).to.deep.equal({});
 
@@ -71,13 +68,25 @@ describe('indexate', () => {
 
   it('Leafs only circular', () => {
     let index = _.indexate(circular, { checkCircular: true, leafsOnly: true });
-    expect(_.size(index)).equal(10);
+    expect(_.size(index)).equal(12);
     index = _.indexate(circular, {
       checkCircular: true,
       includeCircularPath: false,
-      leafsOnly: true
+      leafsOnly: true,
     });
     expect(_.size(index)).equal(9);
   });
-
+  it('empty props', () => {
+    var o = { a: 0, b: 1, c: 2 };
+    delete o.b;
+    let index = _.indexate(o);
+    expect(_.size(index)).equal(2);
+    var a = ['a', 'b', 'c'];
+    delete a[1];
+    index = _.indexate(a);
+    expect(_.size(index)).equal(2);
+    var slots = ['start', , 'middle', , 'finish'];
+    index = _.indexate(slots);
+    expect(_.size(index)).equal(3);
+  });
 });
