@@ -94,14 +94,51 @@ describe('keysDeep', () => {
   });
 });
 
-describe('filterDeep'()=>{
+describe('filterDeep', () => {
   it('Count paths', () => {
-    let filtrate = _(demo)
-      .filterDeep(isNS, { leafsOnly: true })
-      .indexate({ leafsOnly: true })
-      .value();
-    console.log(filtrate);
-    // filtrate.should.to.deep.equal(['a', 'c', 'e']);
+    let things = {
+      things: [
+        { name: 'something', good: false },
+        {
+          name: 'another thing',
+          good: true,
+          children: [
+            { name: 'child thing 1', good: false },
+            { name: 'child thing 2', good: true },
+            { name: 'child thing 3', good: false },
+          ],
+        },
+        {
+          name: 'something else',
+          good: true,
+          subItem: { name: 'sub-item', good: false },
+          subItem2: { name: 'sub-item-2', good: true },
+        },
+      ],
+    };
+    let filtrate = _.filterDeep(
+      things,
+      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
+        if (key == 'name' && parent.good) return true;
+        if (key == 'good' && value == true) return true;
+      },
+      { leafsOnly: true }
+    );
+    // console.log(filtrate);
+    filtrate.should.to.deep.equal({
+      things: [
+        {
+          name: 'another thing',
+          good: true,
+          children: [{ name: 'child thing 2', good: true }],
+        },
+        {
+          name: 'something else',
+          good: true,
+          subItem2: { name: 'sub-item-2', good: true },
+        },
+      ],
+    });
   });
 });
 
@@ -109,8 +146,21 @@ describe('condenseDeep', () => {
   it('condense', () => {
     let arr = ['a', 'b', 'c', 'd', 'e'];
     delete arr[1];
+    // console.log(arr);
     delete arr[3];
+    // console.log(arr);
     _.condense(arr);
+    // console.log(arr);
     arr.should.to.deep.equal(['a', 'c', 'e']);
+  });
+  it('condenseDeep', () => {
+    let obj = { arr: ['a', 'b', { c: [1, , 2, , 3] }, 'd', 'e'] };
+    delete obj.arr[1];
+    // console.log(obj);
+    delete obj.arr[3];
+    // console.log(obj);
+    _.condenseDeep(obj);
+    console.log(obj);
+    obj.should.to.deep.equal({ arr: ['a', { c: [1, 2, 3] }, 'e'] });
   });
 });
