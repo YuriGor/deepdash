@@ -261,8 +261,8 @@ _.filterDeep(
     checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
     keepCircular: true,            // result object will contain circular references if they passed the filter.
     // replaceCircularBy: <value>, // Specify the value to replace circular references by.
-    leafsOnly: true,               /* Return paths to childless values only by default.
-                                      Or all the paths will be returned, including parents, if set to false. */
+    leafsOnly: true,               /* Call predicate for childless values only by default.
+                                      Or all the intermediate objects will be passed into predicate, including parents, if set to false. */
     condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
     cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
   }
