@@ -243,6 +243,7 @@
             //replaceCircularBy: <by>,
             leafsOnly: true,
             condense: true,
+            cloneDeep: _.cloneDeep,
           },
           options || {}
         );
@@ -283,25 +284,21 @@
             // console.log('filter each, l:' + isLeaf + ', c:' + circular, path);
             if (!circular) {
               if (isLeaf || !options.leafsOnly) {
-                if (
-                  !predicate(
-                    value,
-                    key,
-                    path,
-                    depth,
-                    parent,
-                    parentKey,
-                    parentPath,
-                    parents
-                  )
-                ) {
-                  return false;
-                }
-                _.set(
-                  res,
+                var condition = predicate(
+                  value,
+                  key,
                   path,
-                  isLeaf ? _.clone(value) : _.isArray(value) ? [] : {}
+                  depth,
+                  parent,
+                  parentKey,
+                  parentPath,
+                  parents
                 );
+                if (condition === true) {
+                  _.set(res, path, options.cloneDeep(value));
+                }
+
+                return condition;
               }
             } else {
               return false;

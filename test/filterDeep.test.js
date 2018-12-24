@@ -77,10 +77,12 @@ describe('filterDeep', () => {
 
   it('Obj only', () => {
     let filtrate = _(demo)
-      .filterDeep(_.isObject, { leafsOnly: false })
+      .filterDeep(_.isObject, {
+        leafsOnly: false,
+        cloneDeep: (o) => (_.isArray(o) ? [] : _.isObject ? {} : o),
+      })
       .paths({ leafsOnly: false })
       .value();
-    // console.log(filtrate);
     expect(_.size(filtrate)).equal(18);
   });
   it('Circular', () => {

@@ -69,7 +69,7 @@ _.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
     parentPath && ' @' + parentPath
   );
   if(key=="skip"){
-    return false;//return false explicitly to skip iteration over current value's children
+    return false; // return false explicitly to skip iteration over current value's children
   }
 });
 ```
@@ -110,17 +110,21 @@ Chaining works too:
 ## Methods
 
 ### eachDeep (forEachDeep)
-`_.eachDeep(object, [iteratee=_.identity], [options={ track: false }])` <br>
+
 Invokes given callback for each field and element of given object or array, nested too.
 
-**Arguments:**
-- object: (Object) The object to iterate over.
-- \[iteratee\]: (Function) The function invoked per iteration.
-  `iteratee` will be called with:
-  - value, key, path, depth, parent, parentKey, parentPath, \[parents\]
-- \[options\]: (Object)
-    - \[track\]: (Boolean) track parents from current back to the root, useful for circular reference detecting. If true, `iteratee` will have additional `parents` object argument with `values`, `keys` and `paths` arrays inside.
-
+```js
+_.eachDeep(
+  obj,                 // The object to iterate over
+  iteratee=_.identity, // The function invoked per iteration
+  options={
+    track: false       /* track parents from current back to the root,
+                          useful for circular reference detecting.
+                          If true, `iteratee` will have additional `parents` object argument
+                          with `values`, `keys` and `paths` arrays inside. */
+  }
+)
+```
 **Example:**
 ```js
   let circular = { a: { b: { c: {} } } };
@@ -142,16 +146,23 @@ Console:
 ```
   Circular reference skipped for 'c' at a.b
 ```
+
 ### indexate
-`_.indexate(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
+
 Creates an 'index' flat object with paths as keys and corresponding values.
 
-**Arguments:**
-- object: (Object) The object to iterate over.
-- \[options\]: (Object)
-    - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
-    - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
-    - \[leafsOnly\]: (Boolean) return paths to childless values only by default. Or all the paths will be returned, including parents, if set to false.
+```js
+_.indexate(
+  obj,                          // The object to iterate over.
+  options={
+    checkCircular: false,       // Check each value to not be one of the parents, to avoid circular references.
+    includeCircularPath: true,  /* If found some circular reference - include path to it into result or skip it.
+                                   Option ignored if `checkCircular:false`. */
+    leafsOnly: true             /* Return paths to childless values only by default.
+                                   Or all the paths will be returned, including parents, if set to false. */
+  }
+)
+```
 
 **Example:**
 ```js
@@ -177,15 +188,21 @@ Console:
 ```
 
 ### paths (keysDeep)
-`_.paths(object, [options={ checkCircular: false, includeCircularPath: true, leafsOnly: true }])` <br>
+
 Creates an array of the paths of object or array.
 
-**Arguments:**
-- object: (Object) The object to iterate over.
-- \[options\]: (Object)
-    - \[checkCircular\]: (Boolean) check each value to not be one of the parents, to avoid circular references.
-    - \[includeCircularPath\]: (Boolean) if found some circular reference - include path to it into result or skip it. Option ignored if `checkCircular:false`.
-    - \[leafsOnly\]: (Boolean) return paths to childless values only by default. Or all the paths will be returned, including parents, if set to false.
+```js
+_.paths(
+  obj,                         // The object to iterate over.
+  options = {
+    checkCircular: false,      // Check each value to not be one of the parents, to avoid circular references.
+    includeCircularPath: true, /* If found some circular reference - include path to it into result or skip it.
+                                  Option ignored if `checkCircular:false`. */
+    leafsOnly: true            /* Return paths to childless values only by default.
+                                  Or all the paths will be returned, including parents, if set to false. */
+  }
+)
+```
 
 **Example:**
 ```js
@@ -224,8 +241,123 @@ Console:
     'a.b.c[2]',
     'a.b["hello world"]' ]
 ```
+
 ### filterDeep
 
+Returns and object with childs of your choice only
 
+```js
+_.filterDeep(
+  obj,                             // The object to iterate over.
+  predicate,                       /* The predicate is invoked with eight arguments:
+                                      (value, key|index, path, depth, parent, parentKey, parentPath, parents)
+                                      - If predicate returns `true` - value will be deeply cloned to result object
+                                      no further iteration over children of this value will be performed.
+                                      - If predicate returns `false` - value will be completely excluded from the result object
+                                      no further iteration over children of this value will be performed.
+                                      - If predicate returns `undefined` - current path will only appear in the result object
+                                      if some child elements will pass the filter during subsequent iterations. */
+  options = {
+    checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
+    keepCircular: true,            // result object will contain circular references if they passed the filter.
+    // replaceCircularBy: <value>, // Specify the value to replace circular references by.
+    leafsOnly: true,               /* Return paths to childless values only by default.
+                                      Or all the paths will be returned, including parents, if set to false. */
+    condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
+    cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
+  }
+)
+```
+**Example:**
+```js
+  let things = {
+    things: [
+      { name: 'something', good: false },
+      {
+        name: 'another thing', good: true,
+        children: [
+          { name: 'child thing 1', good: false },
+          { name: 'child thing 2', good: true },
+          { name: 'child thing 3', good: false },
+        ],
+      },
+      {
+        name: 'something else', good: true,
+        subItem: { name: 'sub-item', good: false },
+        subItem2: { name: 'sub-item-2', good: true },
+      },
+    ],
+  };
+  let filtrate = _.filterDeep(
+    things,
+    (value, key, path, depth, parent, parentKey, parentPath, parents) => {
+      if (key == 'name' && parent.good) return true;
+      if (key == 'good' && value == true) return true;
+    },
+    { leafsOnly: true }
+  );
+  console.log(filtrate);
+```
+Console:
+```
+  { things:
+   [ { name: 'another thing',
+       good: true,
+       children: [ { name: 'child thing 2', good: true } ] },
+     { name: 'something else',
+       good: true,
+       subItem2: { name: 'sub-item-2', good: true } } ] }
+```
+
+### condense
+
+Makes sparsed aray non-sparsed. This method mutates object.
+
+```js
+_.condense(
+  arr // array to condense
+);
+```
+
+**Example:**
+```js
+  let arr = ['a', 'b', 'c', 'd', 'e'];
+  delete arr[1];
+  console.log(arr);
+  delete arr[3];
+  console.log(arr);
+  _.condense(arr);
+  console.log(arr);
+```
+Console:
+```
+  [ 'a', <1 empty item>, 'c', 'd', 'e' ]
+  [ 'a', <1 empty item>, 'c', <1 empty item>, 'e' ]
+  [ 'a', 'c', 'e' ]
+```
+
+### condenseDeep
+
+Make all the arrays in the object non-sparsed.
+
+```js
+_.condenseDeep(
+  obj,                  // The object to iterate over.
+  options = {
+  checkCircular: false, // Check each value to not be one of the parents, to avoid circular references.
+);
+```
+**Example:**
+```js
+  let obj = { arr: ['a', 'b', { c: [1, , 2, , 3] }, 'd', 'e'] };
+  delete obj.arr[1];
+  delete obj.arr[3];
+  _.condenseDeep(obj);
+  console.log(obj);
+```
+Console:
+```
+  { arr: [ 'a', { c: [ 1, 2, 3 ] }, 'e' ] }
+```
 ### Other traversal methods
 Feel free [to request](https://github.com/YuriGor/deepdash/issues/new) other methods implementation.
