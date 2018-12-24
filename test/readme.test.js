@@ -160,7 +160,7 @@ describe('condenseDeep', () => {
     delete obj.arr[3];
     // console.log(obj);
     _.condenseDeep(obj);
-    console.log(obj);
+    // console.log(obj);
     obj.should.to.deep.equal({ arr: ['a', { c: [1, 2, 3] }, 'e'] });
   });
 });
