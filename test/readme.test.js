@@ -100,6 +100,6 @@ describe('condenseDeep', () => {
     delete arr[1];
     delete arr[3];
     _.condense(arr);
-    arr.should.to.deep.equal("['a','c','e']");
+    arr.should.to.deep.equal(['a', 'c', 'e']);
   });
 });
