@@ -213,7 +213,7 @@ _.paths(
         "hello world":{}
       },
     },
-  });
+  },{ leafsOnly: false });
   console.log(paths);
   paths = _.paths({
     a: {
@@ -222,7 +222,7 @@ _.paths(
         "hello world":{}
       },
     },
-  },{ leafsOnly: false });
+  });
   console.log(paths);
 ```
 Console:
