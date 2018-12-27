@@ -311,7 +311,7 @@ Console:
 
 ### condense
 
-Makes sparsed aray non-sparsed. This method mutates object.
+Makes sparse aray non-sparse. This method mutates object.
 
 ```js
 _.condense(
@@ -338,7 +338,7 @@ Console:
 
 ### condenseDeep
 
-Make all the arrays in the object non-sparsed.
+Make all the arrays in the object non-sparse.
 
 ```js
 _.condenseDeep(
