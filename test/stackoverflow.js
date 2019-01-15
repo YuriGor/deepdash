@@ -55,4 +55,94 @@ describe('stackoverflow', () => {
     );
     expect(sum).equal(40);
   });
+  //https://stackoverflow.com/questions/19483706/javascript-how-to-filter-deep-json-objects
+  it('javascript-how-to-filter-deep-json-objects', () => {
+    var obj = [
+      {
+        title: 'category 1',
+        children: [
+          {
+            title: 'subcategory 11',
+            children: [
+              { id: 1, title: 'name 1' },
+              { id: 2, title: 'name 2' },
+              { id: 3, title: 'name 3' },
+            ],
+          },
+          { title: 'subcategory 12', children: [{ id: 1, title: 'name 4' }] },
+        ],
+      },
+      {
+        title: 'category 2',
+        children: [
+          {
+            title: 'subcategory 21',
+            children: [
+              { id: 3, title: 'name cat2sub1id3' },
+              { id: 5, title: 'name cat2sub1id5' },
+            ],
+          },
+          {
+            title: 'subcategory 22',
+            children: [
+              { id: 6, title: 'name cat2sub2id6' },
+              { id: 7, title: 'name cat2sub2id7' },
+            ],
+          },
+        ],
+      },
+    ];
+    var idList = [2, 3];
+    // We will need 2 passes, first - to collect needed 'id' nodes:
+    var foundIds = _.filterDeep(
+      obj,
+      function(value, key) {
+        if (key == 'id' && _.indexOf(idList, value) !== -1) return true;
+      },
+      // we need to disable condensing this time to keep all the paths in result object matching source,
+      // otherwise array indexes may be changed and we will not find correct values in the source object later.
+      { condense: false }
+    );
+    // second pass - to put missed 'title' nodes both for found ids and their parents.
+    var filtrate = _.filterDeep(obj, function(
+      value,
+      key,
+      path,
+      depth,
+      parent,
+      parentKey,
+      parentPath
+    ) {
+      if (
+        _.has(foundIds, path) ||
+        (key == 'title' && _.has(foundIds, parentPath))
+      )
+        return true;
+    });
+    expect(filtrate).to.deep.equal([
+      {
+        title: 'category 1',
+        children: [
+          {
+            title: 'subcategory 11',
+            children: [
+              { title: 'name 1' },
+              { id: 2, title: 'name 2' },
+              { id: 3, title: 'name 3' },
+            ],
+          },
+        ],
+      },
+      {
+        title: 'category 2',
+        children: [
+          {
+            title: 'subcategory 21',
+            children: [{ id: 3, title: 'name cat2sub1id3' }],
+          },
+        ],
+      },
+    ]);
+    // console.log(filtrate);
+  });
 });
