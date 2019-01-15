@@ -147,7 +147,7 @@ describe('stackoverflow', () => {
   });
 
   //https://stackoverflow.com/questions/48270845/deep-filtering-array-of-objects-javascript
-  it('deep-filtering-array-of-objects-javascript', function() {
+  it('deep-filtering-array-of-objects-javascript', () => {
     var types = [
       {
         name: 'Dresses',
@@ -248,5 +248,57 @@ describe('stackoverflow', () => {
         ],
       },
     ]);
+  });
+  // https://stackoverflow.com/questions/53381935/javascript-find-deeply-nested-objects
+  it('javascript-find-deeply-nested-objects', () => {
+    var obj = [
+      {
+        label: 'first',
+        id: 1,
+        children: [],
+      },
+      {
+        label: 'second',
+        id: 2,
+        children: [
+          {
+            label: 'third',
+            id: 3,
+            children: [
+              {
+                label: 'fifth',
+                id: 5,
+                children: [],
+              },
+              {
+                label: 'sixth',
+                id: 6,
+                children: [
+                  {
+                    label: 'seventh',
+                    id: 7,
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            label: 'fourth',
+            id: 4,
+            children: [],
+          },
+        ],
+      },
+    ];
+    var children = _.filterDeep(
+      obj,
+      function(value, key, path, depth, parent) {
+        if (key == 'children' && parent.id == 6 && value.length) return true;
+      },
+      { leafsOnly: false }
+    );
+    expect(children.length).to.not.equal(0);
+    // console.log(children);
   });
 });
