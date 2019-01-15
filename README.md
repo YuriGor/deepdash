@@ -116,7 +116,7 @@ Invokes given callback for each field and element of given object or array, nest
 ```js
 _.eachDeep(
   obj,                 // The object to iterate over
-  iteratee=_.identity, // The function invoked per iteration
+  iteratee=_.identity, // The function invoked per iteration. Return `false` explicitly to skip children of current node.
   options={
     track: false       /* track parents from current back to the root,
                           useful for circular reference detecting.
@@ -136,7 +136,7 @@ _.eachDeep(
         console.log(
           "Circular reference skipped for '" + key + "' at " + parentPath
         );
-        return false;
+        return false; // if `false` returned explicitly, children of current `value` will be skipped.
       }
       //do your things
     }
