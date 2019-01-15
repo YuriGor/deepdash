@@ -114,8 +114,8 @@ describe('stackoverflow', () => {
       parentPath
     ) {
       if (
-        _.has(foundIds, path) ||
-        (key == 'title' && _.has(foundIds, parentPath))
+        _.get(foundIds, path) !== undefined ||
+        (key == 'title' && _.get(foundIds, parentPath) !== undefined)
       )
         return true;
     });
@@ -125,11 +125,7 @@ describe('stackoverflow', () => {
         children: [
           {
             title: 'subcategory 11',
-            children: [
-              { title: 'name 1' },
-              { id: 2, title: 'name 2' },
-              { id: 3, title: 'name 3' },
-            ],
+            children: [{ id: 2, title: 'name 2' }, { id: 3, title: 'name 3' }],
           },
         ],
       },
@@ -300,5 +296,138 @@ describe('stackoverflow', () => {
     );
     expect(children.length).to.not.equal(0);
     // console.log(children);
+  });
+  // https://stackoverflow.com/questions/42167573/filtering-array-based-on-value-in-deeply-nested-object-in-javascript
+  it('filtering-array-based-on-value-in-deeply-nested-object-in-javascript', function() {
+    var obj = [
+      {
+        id: 1,
+        name: 'topic title 1',
+        sub_categories: [
+          {
+            id: 1,
+            name: 'category title 1',
+            indicators: [
+              {
+                id: 1,
+                name: 'indicator 1',
+                sub_category_id: 1,
+              },
+              {
+                id: 7,
+                name: 'indicator 7 - foo',
+                sub_category_id: 1,
+              },
+            ],
+          },
+          {
+            id: 6,
+            name: 'category title 6',
+            indicators: [
+              {
+                id: 8,
+                name: 'indicator 8',
+                sub_category_id: 6,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: 'topic title 2',
+        sub_categories: [
+          {
+            id: 2,
+            name: 'category 2',
+            indicators: [
+              {
+                id: 2,
+                name: 'indicator 2 - foo',
+                sub_category_id: 2,
+              },
+            ],
+          },
+          {
+            id: 4,
+            name: 'category 4',
+            indicators: [
+              {
+                id: 5,
+                name: 'indicator 5',
+                sub_category_id: 4,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    var endsWith = 'foo';
+    // We will need 2 passes, first - to collect needed 'name' nodes ending with 'foo':
+    var foundFoo = _.filterDeep(
+      obj,
+      function(value, key) {
+        if (key == 'name' && _.endsWith(value, endsWith)) return true;
+      },
+      // we need to disable condensing this time to keep all the paths in result object matching source,
+      // otherwise array indexes may be changed and we will not find correct values in the source object later.
+      { condense: false }
+    );
+    // console.log(foundFoo);
+    // second pass - to add missed fields both for found 'foo' nodes and their parents.
+    var filtrate = _.filterDeep(obj, function(
+      value,
+      key,
+      path,
+      depth,
+      parent,
+      parentKey,
+      parentPath
+    ) {
+      if (
+        _.get(foundFoo, path) !== undefined ||
+        (!_.isObject(value) && _.get(foundFoo, parentPath) !== undefined)
+      ) {
+        // if (_.has(foundFoo, path)) console.log(`${key} has ${path}`);
+        // else console.log(`${key} has parent ${parentPath}`);
+        return true;
+      }
+    });
+    expect(filtrate).to.deep.equal([
+      {
+        id: 1,
+        name: 'topic title 1',
+        sub_categories: [
+          {
+            id: 1,
+            name: 'category title 1',
+            indicators: [
+              {
+                id: 7,
+                name: 'indicator 7 - foo',
+                sub_category_id: 1,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: 2,
+        name: 'topic title 2',
+        sub_categories: [
+          {
+            id: 2,
+            name: 'category 2',
+            indicators: [
+              {
+                id: 2,
+                name: 'indicator 2 - foo',
+                sub_category_id: 2,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
   });
 });
