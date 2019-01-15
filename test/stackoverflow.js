@@ -145,4 +145,108 @@ describe('stackoverflow', () => {
     ]);
     // console.log(filtrate);
   });
+
+  //https://stackoverflow.com/questions/48270845/deep-filtering-array-of-objects-javascript
+  it('deep-filtering-array-of-objects-javascript', function() {
+    var types = [
+      {
+        name: 'Dresses',
+        checked: true,
+        collections: [
+          {
+            name: 'My Collection',
+            checked: true,
+            variations: [
+              {
+                size: 'XXS',
+                checked: true,
+              },
+              {
+                size: 'XS',
+                checked: false,
+              },
+            ],
+          },
+          {
+            name: 'False Collection',
+            checked: false,
+            variations: [
+              {
+                size: 'XXS',
+                checked: false,
+              },
+              {
+                size: 'XS',
+                checked: false,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Tops',
+        checked: true,
+        collections: [
+          {
+            name: 'Another Collection',
+            checked: true,
+            variations: [
+              {
+                size: 'XXS',
+                checked: false,
+              },
+              {
+                size: 'XS',
+                checked: true,
+              },
+            ],
+          },
+        ],
+      },
+    ];
+    var filtrate = _.filterDeep(types, function(
+      value,
+      key,
+      path,
+      depth,
+      parent
+    ) {
+      if (parent.checked) return true;
+    });
+
+    expect(filtrate).to.deep.equal([
+      {
+        name: 'Dresses',
+        checked: true,
+        collections: [
+          {
+            name: 'My Collection',
+            checked: true,
+            variations: [
+              {
+                size: 'XXS',
+                checked: true,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: 'Tops',
+        checked: true,
+        collections: [
+          {
+            name: 'Another Collection',
+            checked: true,
+            variations: [
+              {
+                size: 'XS',
+                checked: true,
+              },
+            ],
+          },
+        ],
+      },
+    ]);
+  });
 });
