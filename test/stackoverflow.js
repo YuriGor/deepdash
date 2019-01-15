@@ -430,4 +430,94 @@ describe('stackoverflow', () => {
       },
     ]);
   });
+  // https://stackoverflow.com/questions/38132146/recursively-filter-array-of-objects
+  it('recursively-filter-array-of-objects', () => {
+    const input = [
+      {
+        value: 'Miss1',
+        children: [
+          { value: 'Miss2' },
+          { value: 'Hit1', children: [{ value: 'Miss3' }] },
+        ],
+      },
+      {
+        value: 'Miss4',
+        children: [
+          { value: 'Miss5' },
+          { value: 'Miss6', children: [{ value: 'Hit2' }] },
+        ],
+      },
+      {
+        value: 'Miss7',
+        children: [
+          { value: 'Miss8' },
+          { value: 'Miss9', children: [{ value: 'Miss10' }] },
+        ],
+      },
+      {
+        value: 'Hit3',
+        children: [
+          { value: 'Miss11' },
+          { value: 'Miss12', children: [{ value: 'Miss13' }] },
+        ],
+      },
+      {
+        value: 'Miss14',
+        children: [
+          { value: 'Hit4' },
+          { value: 'Miss15', children: [{ value: 'Miss16' }] },
+        ],
+      },
+    ];
+    var keyword = 'Hit';
+    // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
+    var foundHit = _.filterDeep(
+      input,
+      function(value) {
+        if (value.value && value.value.includes(keyword)) return true;
+      },
+      {
+        condense: false, // keep empty slots in array to preserve correct paths
+        leafsOnly: false,
+      }
+    );
+    // second pass - to add missed fields both for found 'Hit' nodes and their parents.
+    var filtrate = _.filterDeep(input, function(
+      value,
+      key,
+      path,
+      depth,
+      parent,
+      parentKey,
+      parentPath
+    ) {
+      if (
+        _.get(foundHit, path) !== undefined ||
+        _.get(foundHit, parentPath) !== undefined
+      ) {
+        return true;
+      }
+    });
+    expect(filtrate).to.deep.equal([
+      {
+        value: 'Miss1',
+        children: [{ value: 'Hit1', children: [{ value: 'Miss3' }] }],
+      },
+      {
+        value: 'Miss4',
+        children: [{ value: 'Miss6', children: [{ value: 'Hit2' }] }],
+      },
+      {
+        value: 'Hit3',
+        children: [
+          { value: 'Miss11' },
+          { value: 'Miss12', children: [{ value: 'Miss13' }] },
+        ],
+      },
+      {
+        value: 'Miss14',
+        children: [{ value: 'Hit4' }],
+      },
+    ]);
+  });
 });
