@@ -1,6 +1,6 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
 
-## deepdash
+## Deepdash
 Looking for eachDeep, filterDeep, keysDeep etc? Tree traversal extension for lodash.
 
 [![npm](https://img.shields.io/npm/v/deepdash.svg)](https://www.npmjs.com/package/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
