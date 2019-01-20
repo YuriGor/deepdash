@@ -106,7 +106,8 @@ Chaining works too:
 ```js
   _(obj).eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {/* do */}).value();
 ```
-
+## Tutorials
+[filterDeep,indexate and condenseDeep](http://yurigor.com/deep-filter-js-object-or-array-with-lodash/)
 ## Methods
 
 ### eachDeep (forEachDeep)
