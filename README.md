@@ -116,8 +116,8 @@ Chaining works too:
 - [exists](#exists) - like a `_.has` but returns `false` for empty array slots
 - [filterDeep](#filterdeep) - deep filter object
 - [indexate](#indexate) - get an object with all the paths as keys and corresponding values
-- [pathToString](#pathtostring) - convert array to string path (opposite to _.toPath)
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
+- [pathToString](#pathtostring) - convert array to string path (opposite to _.toPath)
 
 ### condense
 
