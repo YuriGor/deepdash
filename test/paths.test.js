@@ -133,4 +133,23 @@ describe('paths', () => {
         expect(_.get(obj, k)).to.equal(v);
       });
   });
+  it('array paths format', () => {
+    var paths = _.paths(demo, { pathFormat: 'array' });
+    expect(paths).to.deep.equal([
+      ['a', 'b', 'c', 'd', '0', 'i'],
+      ['a', 'b', 'c', 'd', '1', 'i'],
+      ['a', 'b', 'c', 'd', '2', 'i'],
+      ['a', 'b', 'c', 'd', '3', 'i'],
+      ['a', 'b', 'c', 'd', '4', 'i'],
+      ['a', 'b', 'c', 'd', '5', 'i'],
+      ['a', 'b', 'c', 'd', '6', 'o', 'd'],
+      ['a', 'b', 'c', 'd', '6', 'o', 'f'],
+      ['a', 'b', 'c', 'd', '6', 'o', 'skip', 'please', 'dont', 'go', 'here'],
+      ['a', 'b', 'c', 's'],
+      ['a', 'b', 'b'],
+      ['a', 'n'],
+      ['a', 'u'],
+      ['nl'],
+    ]);
+  });
 });
