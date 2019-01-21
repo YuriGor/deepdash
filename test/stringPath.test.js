@@ -10,7 +10,7 @@ const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
 describe('string paths', () => {
-  it('[', () => {
+  it('[.]\'"', () => {
     let o = { a: { '[': 'c', '"\'': 'd', '.': 'e' } };
 
     expect(_.get(o, "a['[']")).to.equal('c');

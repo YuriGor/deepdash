@@ -164,3 +164,13 @@ describe('condenseDeep', () => {
     obj.should.to.deep.equal({ arr: ['a', { c: [1, 2, 3] }, 'e'] });
   });
 });
+
+describe('docs for exists', () => {
+  it('exists', () => {
+    var obj = [, { a: [, 'b'] }];
+    expect(_.exists(obj, 0)).to.equal(false);
+    expect(_.exists(obj, 1)).to.equal(true);
+    expect(_.exists(obj, '[1].a[0]')).to.equal(false);
+    expect(_.exists(obj, '[1].a[1]')).to.equal(true);
+  });
+});
