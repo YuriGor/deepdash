@@ -11,7 +11,6 @@ chai.use(asserttype);
 
 describe('exists', () => {
   it('slot 0', () => {
-    return;
     var arr = [, 'b', , 'd', 'e'];
     expect(_.exists(arr, 0)).to.equal(false);
     expect(_.exists(arr, 1)).to.equal(true);
@@ -26,5 +25,16 @@ describe('exists', () => {
     expect(_.exists(arr, 2)).to.equal(false);
     expect(_.exists(arr, 3)).to.equal(true);
     expect(_.exists(arr, 4)).to.equal(true);
+    arr = [arr];
+    expect(_.exists(arr, '[0][0]')).to.equal(false);
+    expect(_.exists(arr, '[0][1]')).to.equal(true);
+    expect(_.exists(arr, '[0][2]')).to.equal(false);
+    expect(_.exists(arr, '[0][3]')).to.equal(true);
+    expect(_.exists(arr, '[0][4]')).to.equal(true);
+    expect(_.exists(arr, [0, 0])).to.equal(false);
+    expect(_.exists(arr, [0, 1])).to.equal(true);
+    expect(_.exists(arr, [0, 2])).to.equal(false);
+    expect(_.exists(arr, [0, 3])).to.equal(true);
+    expect(_.exists(arr, [0, 4])).to.equal(true);
   });
 });

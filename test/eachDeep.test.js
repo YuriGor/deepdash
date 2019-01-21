@@ -157,4 +157,38 @@ describe('eachDeep', () => {
       { pathFormat: 'array' }
     );
   });
+  it('empty slots skipped', () => {
+    var obj = [
+      ,
+      [, { a: 'b' }, , { c: 'd' }, [, 1, , 2, , 3]],
+      ,
+      [, , , 'a'],
+      {},
+    ];
+    _.eachDeep(obj, (v) => {
+      expect(v).not.to.equal(undefined);
+    });
+  });
+  it('undefined are valid values, no skip', () => {
+    var obj = [
+      ,
+      [
+        ,
+        { a: undefined },
+        ,
+        { c: undefined },
+        [, undefined, , undefined, , undefined],
+      ],
+      ,
+      [, , , undefined],
+      {},
+    ];
+    let u = 0;
+    _.eachDeep(obj, (v) => {
+      if (v === undefined) {
+        u++;
+      }
+    });
+    expect(u).to.equal(6);
+  });
 });

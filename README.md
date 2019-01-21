@@ -110,6 +110,67 @@ Chaining works too:
 [filterDeep,indexate and condenseDeep](http://yurigor.com/deep-filter-js-object-or-array-with-lodash/)
 ## Methods
 
+- [condense](#condense) - condense sparse array
+- [condenseDeep](#condensedeep) - condense all the nested arrays
+- [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and subchildren
+- [exists](#exists) - like a `_.has` but returns `false` for empty array slots
+- [filterDeep](#filterdeep) - deep filter object
+- [indexate](#indexate) - get an object with all the paths as keys and corresponding values
+- [pathToString](#pathtostring) - convert array to string path (opposite to _.toPath)
+- [paths](#paths-keysdeep) - (keysDeep) get an array of paths
+
+### condense
+
+Makes sparse aray non-sparse. This method mutates object.
+
+```js
+_.condense(
+  arr // array to condense
+);
+```
+
+**Example:**
+```js
+  let arr = ['a', 'b', 'c', 'd', 'e'];
+  delete arr[1];
+  console.log(arr);
+  delete arr[3];
+  console.log(arr);
+  _.condense(arr);
+  console.log(arr);
+```
+Console:
+```
+  [ 'a', <1 empty item>, 'c', 'd', 'e' ]
+  [ 'a', <1 empty item>, 'c', <1 empty item>, 'e' ]
+  [ 'a', 'c', 'e' ]
+```
+
+### condenseDeep
+
+Make all the arrays in the object non-sparse.
+
+```js
+_.condenseDeep(
+  obj,                  // The object to iterate over.
+  options = {
+    checkCircular: false, // Check each value to not be one of the parents, to avoid circular references.
+  }
+);
+```
+**Example:**
+```js
+  let obj = { arr: ['a', 'b', { c: [1, , 2, , 3] }, 'd', 'e'] };
+  delete obj.arr[1];
+  delete obj.arr[3];
+  _.condenseDeep(obj);
+  console.log(obj);
+```
+Console:
+```
+  { arr: [ 'a', { c: [ 1, 2, 3 ] }, 'e' ] }
+```
+
 ### eachDeep (forEachDeep)
 
 Invokes given callback for each field and element of given object or array, nested too.
@@ -148,6 +209,95 @@ _.eachDeep(
 Console:
 ```
   Circular reference skipped for 'c' at a.b
+```
+### exists
+
+Check if path exists in the object considering sparse arrays.
+Alternative for Lodash `has` method, which returns true for empty array slots.
+
+```js
+_.exists(
+  obj,  // object to inspect
+  path, // path(string|array) to check for existense
+)
+```
+
+**Example:**
+```js
+  var obj = [,{a:[,'b']}];
+  _.exists(obj, 0); // false
+  _.exists(obj, 1); // true
+  _.exists(obj, '[1].a[0]'); // false
+  _.exists(obj, '[1].a[1]'); // true
+```
+
+### filterDeep
+
+Returns and object with childs of your choice only
+
+```js
+_.filterDeep(
+  obj,                             // The object to iterate over.
+  predicate,                       /* The predicate is invoked with eight arguments:
+                                      (value, key|index, path, depth, parent, parentKey, parentPath, parents)
+                                      - If predicate returns `true` - value will be deeply cloned to result object
+                                      no further iteration over children of this value will be performed.
+                                      - If predicate returns `false` - value will be completely excluded from the result object
+                                      no further iteration over children of this value will be performed.
+                                      - If predicate returns `undefined` - current path will only appear in the result object
+                                      if some child elements will pass the filter during subsequent iterations. */
+  options = {
+    checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
+    keepCircular: true,            // result object will contain circular references if they passed the filter.
+    // replaceCircularBy: <value>, // Specify the value to replace circular references by.
+    leafsOnly: true,               /* Call predicate for childless values only by default.
+                                      Or all the intermediate objects will be passed into predicate, including parents, if set to false. */
+    condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
+    cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
+    pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
+                                      'array' is better for performance.*/
+  }
+)
+```
+**Example:**
+```js
+  let things = {
+    things: [
+      { name: 'something', good: false },
+      {
+        name: 'another thing', good: true,
+        children: [
+          { name: 'child thing 1', good: false },
+          { name: 'child thing 2', good: true },
+          { name: 'child thing 3', good: false },
+        ],
+      },
+      {
+        name: 'something else', good: true,
+        subItem: { name: 'sub-item', good: false },
+        subItem2: { name: 'sub-item-2', good: true },
+      },
+    ],
+  };
+  let filtrate = _.filterDeep(
+    things,
+    (value, key, path, depth, parent, parentKey, parentPath, parents) => {
+      if (key == 'name' && parent.good) return true;
+      if (key == 'good' && value == true) return true;
+    },
+    { leafsOnly: true }
+  );
+  console.log(filtrate);
+```
+Console:
+```
+  { things:
+   [ { name: 'another thing',
+       good: true,
+       children: [ { name: 'child thing 2', good: true } ] },
+     { name: 'something else',
+       good: true,
+       subItem2: { name: 'sub-item-2', good: true } } ] }
 ```
 
 ### indexate
@@ -244,128 +394,6 @@ Console:
     'a.b.c[2]',
     'a.b["hello world"]' ]
 ```
-
-### filterDeep
-
-Returns and object with childs of your choice only
-
-```js
-_.filterDeep(
-  obj,                             // The object to iterate over.
-  predicate,                       /* The predicate is invoked with eight arguments:
-                                      (value, key|index, path, depth, parent, parentKey, parentPath, parents)
-                                      - If predicate returns `true` - value will be deeply cloned to result object
-                                      no further iteration over children of this value will be performed.
-                                      - If predicate returns `false` - value will be completely excluded from the result object
-                                      no further iteration over children of this value will be performed.
-                                      - If predicate returns `undefined` - current path will only appear in the result object
-                                      if some child elements will pass the filter during subsequent iterations. */
-  options = {
-    checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
-    keepCircular: true,            // result object will contain circular references if they passed the filter.
-    // replaceCircularBy: <value>, // Specify the value to replace circular references by.
-    leafsOnly: true,               /* Call predicate for childless values only by default.
-                                      Or all the intermediate objects will be passed into predicate, including parents, if set to false. */
-    condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
-    cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
-    pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
-                                      'array' is better for performance.*/
-  }
-)
-```
-**Example:**
-```js
-  let things = {
-    things: [
-      { name: 'something', good: false },
-      {
-        name: 'another thing', good: true,
-        children: [
-          { name: 'child thing 1', good: false },
-          { name: 'child thing 2', good: true },
-          { name: 'child thing 3', good: false },
-        ],
-      },
-      {
-        name: 'something else', good: true,
-        subItem: { name: 'sub-item', good: false },
-        subItem2: { name: 'sub-item-2', good: true },
-      },
-    ],
-  };
-  let filtrate = _.filterDeep(
-    things,
-    (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-      if (key == 'name' && parent.good) return true;
-      if (key == 'good' && value == true) return true;
-    },
-    { leafsOnly: true }
-  );
-  console.log(filtrate);
-```
-Console:
-```
-  { things:
-   [ { name: 'another thing',
-       good: true,
-       children: [ { name: 'child thing 2', good: true } ] },
-     { name: 'something else',
-       good: true,
-       subItem2: { name: 'sub-item-2', good: true } } ] }
-```
-
-### condense
-
-Makes sparse aray non-sparse. This method mutates object.
-
-```js
-_.condense(
-  arr // array to condense
-);
-```
-
-**Example:**
-```js
-  let arr = ['a', 'b', 'c', 'd', 'e'];
-  delete arr[1];
-  console.log(arr);
-  delete arr[3];
-  console.log(arr);
-  _.condense(arr);
-  console.log(arr);
-```
-Console:
-```
-  [ 'a', <1 empty item>, 'c', 'd', 'e' ]
-  [ 'a', <1 empty item>, 'c', <1 empty item>, 'e' ]
-  [ 'a', 'c', 'e' ]
-```
-
-### condenseDeep
-
-Make all the arrays in the object non-sparse.
-
-```js
-_.condenseDeep(
-  obj,                  // The object to iterate over.
-  options = {
-    checkCircular: false, // Check each value to not be one of the parents, to avoid circular references.
-  }
-);
-```
-**Example:**
-```js
-  let obj = { arr: ['a', 'b', { c: [1, , 2, , 3] }, 'd', 'e'] };
-  delete obj.arr[1];
-  delete obj.arr[3];
-  _.condenseDeep(obj);
-  console.log(obj);
-```
-Console:
-```
-  { arr: [ 'a', { c: [ 1, 2, 3 ] }, 'e' ] }
-```
-
 ### pathToString
 
 Converts given path from array to string format.
