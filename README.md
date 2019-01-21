@@ -1,13 +1,13 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
 
 ## Deepdash
-Looking for eachDeep, filterDeep, keysDeep etc? Tree traversal extension for lodash.
+Looking for eachDeep, filterDeep, keysDeep etc? Tree traversal extension for Lodash.
 
 [![npm](https://img.shields.io/npm/v/deepdash.svg)](https://www.npmjs.com/package/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
 
 ### Installation
-In a browser load [script](https://raw.githubusercontent.com/YuriGor/deepdash/master/deepdash.js) after lodash:
+In a browser load [script](https://raw.githubusercontent.com/YuriGor/deepdash/master/deepdash.js) after Lodash:
 ```html
 <script src="lodash.js"></script>
 <script src="deepdash.js"></script>
@@ -18,7 +18,7 @@ npm i --save deepdash
 ```
 In Node.js (same for the Angular component):
 ```js
-//mixin new methods into lodash object
+//mixin new methods into Lodash object
 const _ = require('deepdash')(require('lodash'));
 ```
 ### Usage
@@ -112,16 +112,16 @@ Chaining works too:
 
 - [condense](#condense) - condense sparse array
 - [condenseDeep](#condensedeep) - condense all the nested arrays
-- [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and subchildren
+- [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and sub-children
 - [exists](#exists) - like a `_.has` but returns `false` for empty array slots
 - [filterDeep](#filterdeep) - deep filter object
 - [indexate](#indexate) - get an object with all the paths as keys and corresponding values
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
-- [pathToString](#pathtostring) - convert array to string path (opposite to _.toPath)
+- [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
 
 ### condense
 
-Makes sparse aray non-sparse. This method mutates object.
+Makes sparse array non-sparse. This method mutates object.
 
 ```js
 _.condense(
@@ -240,20 +240,20 @@ _.filterDeep(
   obj,                             // The object to iterate over.
   predicate,                       /* The predicate is invoked with eight arguments:
                                       (value, key|index, path, depth, parent, parentKey, parentPath, parents)
-                                      - If predicate returns `true` - value will be deeply cloned to result object
+                                      - If predicate returns `true` - value will be deeply cloned to the result object,
                                       no further iteration over children of this value will be performed.
-                                      - If predicate returns `false` - value will be completely excluded from the result object
+                                      - If predicate returns `false` - value will be completely excluded from the result object,
                                       no further iteration over children of this value will be performed.
                                       - If predicate returns `undefined` - current path will only appear in the result object
                                       if some child elements will pass the filter during subsequent iterations. */
   options = {
     checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
-    keepCircular: true,            // result object will contain circular references if they passed the filter.
+    keepCircular: true,            // The result object will contain circular references if they passed the filter.
     // replaceCircularBy: <value>, // Specify the value to replace circular references by.
     leafsOnly: true,               /* Call predicate for childless values only by default.
-                                      Or all the intermediate objects will be passed into predicate, including parents, if set to false. */
-    condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
-    cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
+                                      Or, if set to false, all the intermediate objects will be passed into the predicate, including parents. */
+    condense: true,                // Condense the result object, since excluding some paths may produce sparse arrays
+    cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, Lodash cloneDeep by default.
     pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
                                       'array' is better for performance.*/
   }
@@ -309,7 +309,7 @@ _.indexate(
   obj,                          // The object to iterate over.
   options={
     checkCircular: false,       // Check each value to not be one of the parents, to avoid circular references.
-    includeCircularPath: true,  /* If found some circular reference - include path to it into result or skip it.
+    includeCircularPath: true,  /* If found some circular reference - include a path to it into the result or skip it.
                                    Option ignored if `checkCircular:false`. */
     leafsOnly: true             /* Return paths to childless values only by default.
                                    Or all the paths will be returned, including parents, if set to false. */
@@ -349,7 +349,7 @@ _.paths(
   obj,                         // The object to iterate over.
   options = {
     checkCircular: false,      // Check each value to not be one of the parents, to avoid circular references.
-    includeCircularPath: true, /* If found some circular reference - include path to it into result or skip it.
+    includeCircularPath: true, /* If found some circular reference - include a path to it into the result or skip it.
                                   Option ignored if `checkCircular:false`. */
     leafsOnly: true            /* Return paths to childless values only by default.
                                   Or all the paths will be returned, including parents, if set to false. */
