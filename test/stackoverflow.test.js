@@ -559,4 +559,48 @@ describe('stackoverflow', () => {
       zip: '65565',
     });
   });
+  // https://stackoverflow.com/questions/53710404/compare-objects-recursively-and-put-duplicate-key-values-into-array
+  it('compare-objects-recursively-and-put-duplicate-key-values-into-array', () => {
+    let objects = [
+      {
+        first_name: 'Tom',
+        height: {
+          feet: 5,
+          inches: 0,
+        },
+      },
+      {
+        first_name: 'Thomas',
+        last_name: 'Walsh',
+        email: 'tomwalsh@domain.com',
+        height: {
+          feet: 6,
+          inches: 0,
+        },
+      },
+      {
+        email: 'tomwalsh@sample.edu',
+      },
+    ];
+    let merged = _.cloneDeep(objects.shift()); // clone to keep source untouched
+    objects.forEach((obj) => {
+      _.eachDeep(obj, (value, key, path) => {
+        if (_.isObject(value)) return;
+        let exists = _.get(merged, path);
+        if (exists == undefined) {
+          exists = value;
+        } else {
+          exists = _.uniq([].concat(exists, value));
+          if (exists.length == 1) exists = exists[0];
+        }
+        _.set(merged, path, exists);
+      });
+    });
+    expect(merged).to.deep.equal({
+      first_name: ['Tom', 'Thomas'],
+      height: { feet: [5, 6], inches: 0 },
+      last_name: 'Walsh',
+      email: ['tomwalsh@domain.com', 'tomwalsh@sample.edu'],
+    });
+  });
 });
