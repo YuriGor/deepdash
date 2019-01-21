@@ -118,4 +118,18 @@ describe('eachDeep', () => {
     });
     expect(c).equal(3);
   });
+  it('generated string paths are correct', () => {
+    _.eachDeep(demo, function(value, key, path) {
+      assert(_.has(demo, path), 'Incorrect path: ' + path);
+    });
+  });
+  it('generated array paths are correct', () => {
+    _.eachDeep(
+      demo,
+      function(value, key, path) {
+        assert(_.has(demo, path), 'Incorrect path: ' + path);
+      },
+      { pathFormat: 'array' }
+    );
+  });
 });

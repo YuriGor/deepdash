@@ -1,6 +1,29 @@
 'use strict';
 (function() {
   function apply(_) {
+    var rxArrIndex = /^\d+$/;
+    var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
+    function pathToString(path) {
+      if (_.isString(path)) return path;
+      return _.reduce(
+        path,
+        function(accumulator, value) {
+          if (rxArrIndex.test(value)) {
+            return accumulator + '[' + value + ']';
+          }
+          if (rxVarName.test(value)) {
+            return accumulator + (accumulator ? '.' : '') + value;
+          }
+          return (
+            accumulator + '["' + value.toString().replace(/"/g, '\\"') + '"]'
+          );
+        },
+        ''
+      );
+    }
+    if (!_.pathToString) {
+      _.mixin({ pathToString: pathToString });
+    }
     function iterate(
       obj,
       path,
@@ -11,12 +34,12 @@
       callback,
       options
     ) {
-      path = _.trim(path, '.');
-      parentPath = _.trim(parentPath, '.');
       if (options.track) {
         options.parents.values.push(parent);
         options.parents.keys.push(parentKey);
-        options.parents.paths.push(parentPath);
+        options.parents.paths.push(
+          options.pathFormat == 'array' ? parentPath : pathToString(parentPath)
+        );
       }
       if (!_.isObject(obj)) return;
       _.forOwn(obj, function(value, key) {
@@ -26,27 +49,25 @@
             //empty slot
             return;
           }
-          key = '[' + key + ']';
-        } else {
-          if (_.isString(key) && key.match(/^[a-zA-Z_$]+([\w_$]*)$/))
-            key = '.' + key;
-          else key = '["' + key + '"]';
         }
-        var currentPath = _.trim(path + key, '.');
+
+        var currentPath = path.concat([key]);
         var res = callback(
           value,
           okey,
-          currentPath,
+          options.pathFormat == 'array'
+            ? currentPath
+            : pathToString(currentPath),
           depth,
           obj,
           parentKey,
-          _.trim(path, '.'),
+          options.pathFormat == 'array' ? path : pathToString(path),
           options.parents
         );
         if (res !== false && _.isObject(value)) {
           iterate(
             value,
-            path + key,
+            currentPath,
             depth + 1,
             obj,
             okey,
@@ -69,13 +90,14 @@
         options = _.merge(
           {
             track: false,
+            pathFormat: 'string',
           },
           options || {}
         );
         if (options.track) {
           options.parents = { keys: [], paths: [], values: [] };
         }
-        iterate(obj, '', 0, null, '', '', callback, options);
+        iterate(obj, [], 0, null, '', [], callback, options);
         return obj;
       };
       if (!_.eachDeep) {
@@ -182,6 +204,14 @@
         _.mixin({ paths: paths });
       }
     }
+    // if (!_.exists) {
+    //   _.mixin({
+    //     exists: function(obj, path) {
+    //       console.log(this);
+    //       return _.hasIn(obj, path);
+    //     },
+    //   });
+    // }
     if (!_.condense) {
       _.mixin({
         condense: function(arr) {
