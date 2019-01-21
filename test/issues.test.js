@@ -56,16 +56,21 @@ describe('issues', () => {
             width: '77',
           },
         ],
-      }
+      },
     ];
     let images = [];
-    _.eachDeep(
-      imgCollection,
-      (value, key, path, depth, parent) => {
-        if(key=="key1" && value=="take this")
-          images.push(parent);
-      }
-    );
+    _.eachDeep(imgCollection, (value, key, path, depth, parent) => {
+      if (key == 'key1' && value == 'take this') images.push(parent);
+    });
     expect(images.length).equal(2);
+  });
+  it('omitDeep #3', () => {
+    var obj = {
+      a: { b: { c: [{ x: 1, y: 2, z: 3, __typename: 'nobodyCares' }] } },
+    };
+    var clean = _.filterDeep(obj, function(value, key) {
+      return key != '__typename';
+    });
+    expect(clean).to.deep.equal({ a: { b: { c: [{ x: 1, y: 2, z: 3 }] } } });
   });
 });
