@@ -520,4 +520,43 @@ describe('stackoverflow', () => {
       },
     ]);
   });
+  // https://stackoverflow.com/questions/28682244/deep-filter-of-object-properties
+  it('deep-filter-of-object-properties', () => {
+    var data = {
+      name: {
+        first: 'Sam',
+        last: 'Wise',
+        invalid: 'Not A Valid Property',
+      },
+      address: '210 Test St.',
+      city: 'Springfield',
+      state: 'CA',
+      zip: '65565',
+      invalid_key1: 'Something invalid',
+      invalid_key2: 'Another invalid one',
+    };
+    var controlObject = {
+      name: {
+        first: true,
+        last: true,
+      },
+      address: true,
+      city: true,
+      state: true,
+      zip: true,
+    };
+    var filtrate = _.filterDeep(data, function(value, key, path) {
+      return _.has(controlObject, path);
+    });
+    expect(filtrate).to.deep.equal({
+      name: {
+        first: 'Sam',
+        last: 'Wise',
+      },
+      address: '210 Test St.',
+      city: 'Springfield',
+      state: 'CA',
+      zip: '65565',
+    });
+  });
 });
