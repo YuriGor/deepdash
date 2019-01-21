@@ -269,6 +269,9 @@ _.filterDeep(
                                       Or all the intermediate objects will be passed into predicate, including parents, if set to false. */
     condense: true,                // Condense result object, since exluding some paths may produce sparse arrays
     cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, lodash cloneDeep by default.
+    pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
+                                      'array' is better for performance.
+                                       It also works better with Lodash.get/set/has, if field names contain `."][` characters. */
   }
 )
 ```

@@ -73,6 +73,31 @@ describe('eachDeep', () => {
       .and.equal(3);
   });
 
+  it('circular with array path format', () => {
+    let circluarPath = [];
+    _.eachDeep(
+      circular,
+      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
+        parents.paths.forEach((p) => {
+          expect(p).to.be.an.array();
+        });
+        if (parents.values.indexOf(value) != -1) {
+          circluarPath.push(_.pathToString(path));
+
+          return false;
+        }
+      },
+      { track: true, pathFormat: 'array' }
+    );
+
+    expect(circluarPath)
+      .to.include('a.b.c.e')
+      .and.to.include('i[5][0]')
+      .and.to.include('i[5][1][0].b.c.e')
+      .and.to.have.property('length')
+      .and.equal(3);
+  });
+
   it('Array', () => {
     let c = 0;
     _.eachDeep(

@@ -274,11 +274,13 @@
             leafsOnly: true,
             condense: true,
             cloneDeep: _.cloneDeep,
+            pathFormat: 'string',
           },
           options || {}
         );
         var eachDeepOptions = {
           track: options.checkCircular,
+          pathFormat: options.pathFormat,
         };
         var res = _.isArray(obj) ? [] : {};
         var foundCircular = [];
