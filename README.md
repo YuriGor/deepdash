@@ -116,13 +116,16 @@ Invokes given callback for each field and element of given object or array, nest
 
 ```js
 _.eachDeep(
-  obj,                 // The object to iterate over
-  iteratee=_.identity, // The function invoked per iteration. Return `false` explicitly to skip children of current node.
+  obj,                  // The object to iterate over
+  iteratee=_.identity,  // The function invoked per iteration. Return `false` explicitly to skip children of current node.
   options={
-    track: false       /* track parents from current back to the root,
+    track: false,       /* track parents from current back to the root,
                           useful for circular reference detecting.
                           If true, `iteratee` will have additional `parents` object argument
                           with `values`, `keys` and `paths` arrays inside. */
+    pathFormat: 'string'/* 'string'|'array' - specifies the format of paths passed to the iteratee.
+                          'array' is better for performance.
+                          It also works better with Lodash.get/set/has, if field names contain `."][` characters. */
   }
 )
 ```
@@ -361,5 +364,24 @@ Console:
 ```
   { arr: [ 'a', { c: [ 1, 2, 3 ] }, 'e' ] }
 ```
+
+### pathToString
+
+Converts given path from array to string format.
+
+```js
+_.pathToString(
+  path, // path in array format
+);
+```
+**Example:**
+```js
+  console.log(_.pathToString(['a', 'b', 'c', 'defg', 0, '1', 2.3]));
+```
+Console:
+```
+  a.b.c.defg[0][1]["2.3"]
+```
+
 ### Other traversal methods
 Feel free [to request](https://github.com/YuriGor/deepdash/issues/new) other methods implementation.

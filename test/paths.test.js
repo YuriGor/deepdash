@@ -108,4 +108,20 @@ describe('paths', () => {
     paths = _.paths(slots);
     expect(paths.length).equal(3);
   });
+  it('dangerous field names', () => {
+    let obj = {
+      '': '[""]',
+      "'": '["\'"]',
+      '"': '["\\""]',
+      '[': '["["]',
+      ']': '["]"]',
+      '.': '["."]',
+      '["."]"\'.': '["[\\".\\"]\\"\'."]',
+    };
+    _(obj)
+      .indexate()
+      .each((v, k) => {
+        expect(k).to.equal(v);
+      });
+  });
 });
