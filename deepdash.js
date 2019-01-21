@@ -160,11 +160,13 @@
             checkCircular: false,
             includeCircularPath: true,
             leafsOnly: true,
+            pathFormat: 'string',
           },
           options || {}
         );
         var eachDeepOptions = {
           track: options.checkCircular,
+          pathFormat: options.pathFormat,
         };
         var res = [];
         _.eachDeep(

@@ -185,7 +185,7 @@ _.eachDeep(
                           If true, `iteratee` will have additional `parents` object argument
                           with `values`, `keys` and `paths` arrays inside. */
     pathFormat: 'string'/* 'string'|'array' - specifies the format of paths passed to the iteratee.
-                          'array' is better for performance.*/
+                          'array' is better for performance. 'string' is better for readability. */
   }
 )
 ```
@@ -255,7 +255,7 @@ _.filterDeep(
     condense: true,                // Condense the result object, since excluding some paths may produce sparse arrays
     cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, Lodash cloneDeep by default.
     pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
-                                      'array' is better for performance.*/
+                                      'array' is better for performance. 'string' is better for readability. */
   }
 )
 ```
@@ -351,8 +351,10 @@ _.paths(
     checkCircular: false,      // Check each value to not be one of the parents, to avoid circular references.
     includeCircularPath: true, /* If found some circular reference - include a path to it into the result or skip it.
                                   Option ignored if `checkCircular:false`. */
-    leafsOnly: true            /* Return paths to childless values only by default.
+    leafsOnly: true,           /* Return paths to childless values only by default.
                                   Or all the paths will be returned, including parents, if set to false. */
+    pathFormat: 'string',      /* 'string'|'array' - specifies the format of paths.
+                                  'array' is better for performance. 'string' is better for readability. */
   }
 )
 ```
