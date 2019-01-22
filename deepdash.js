@@ -279,6 +279,7 @@
             condense: true,
             cloneDeep: _.cloneDeep,
             pathFormat: 'string',
+            keepUndefined: false,
           },
           options || {}
         );
@@ -332,6 +333,12 @@
                 );
                 if (condition === true) {
                   _.set(res, path, options.cloneDeep(value));
+                } else if (condition === undefined && options.keepUndefined) {
+                  _.set(
+                    res,
+                    path,
+                    _.isArray(value) ? [] : _.isPlainObject(value) ? {} : value
+                  );
                 }
 
                 return condition;
@@ -361,6 +368,45 @@
       };
 
       _.mixin({ filterDeep: filterDeep });
+    }
+
+    if (!_.omitDeep) {
+      var omitDeep = function(obj, keys, options) {
+        options = _.merge(
+          {
+            checkCircular: false,
+            keepCircular: true,
+            //replaceCircularBy: <by>,
+            condense: true,
+          },
+          options || {}
+        );
+        options.leafsOnly = false;
+        options.pathFormat = 'array';
+        options.keepUndefined = true;
+        options.cloneDeep = _.cloneDeep;
+
+        if (!_.isArray(keys)) keys = [keys];
+        keys = _.groupBy(keys, function(key) {
+          return key instanceof RegExp ? 'regex' : 'const';
+        });
+        var test = function(value, key) {
+          if (_.includes(keys.const, key)) {
+            return false;
+          }
+          if (
+            _.some(keys.regex, function(rx) {
+              return rx.test(key);
+            })
+          ) {
+            return false;
+          }
+          if (_.isObject(value) && _.size(value) !== 0) return undefined;
+          return true;
+        };
+        return _.filterDeep(obj, test, options);
+      };
+      _.mixin({ omitDeep: omitDeep });
     }
 
     return _;

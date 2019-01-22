@@ -6,6 +6,18 @@ Looking for eachDeep, filterDeep, keysDeep etc? Tree traversal extension for Lod
 [![npm](https://img.shields.io/npm/v/deepdash.svg)](https://www.npmjs.com/package/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
 
+## Methods
+
+- [condense](#condense) - condense sparse array
+- [condenseDeep](#condensedeep) - condense all the nested arrays
+- [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and sub-children
+- [exists](#exists) - like a `_.has` but returns `false` for empty array slots
+- [filterDeep](#filterdeep) - deep filter object
+- [indexate](#indexate) - get an object with all the paths as keys and corresponding values
+- [omitDeep](#omitdeep) - get object without keys specified as string name or regex
+- [paths](#paths-keysdeep) - (keysDeep) get an array of paths
+- [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
+
 ### Installation
 In a browser load [script](https://raw.githubusercontent.com/YuriGor/deepdash/master/deepdash.js) after Lodash:
 ```html
@@ -108,16 +120,6 @@ Chaining works too:
 ```
 ## Tutorials
 [filterDeep,indexate and condenseDeep](http://yurigor.com/deep-filter-js-object-or-array-with-lodash/)
-## Methods
-
-- [condense](#condense) - condense sparse array
-- [condenseDeep](#condensedeep) - condense all the nested arrays
-- [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and sub-children
-- [exists](#exists) - like a `_.has` but returns `false` for empty array slots
-- [filterDeep](#filterdeep) - deep filter object
-- [indexate](#indexate) - get an object with all the paths as keys and corresponding values
-- [paths](#paths-keysdeep) - (keysDeep) get an array of paths
-- [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
 
 ### condense
 
@@ -245,7 +247,7 @@ _.filterDeep(
                                       - If predicate returns `false` - value will be completely excluded from the result object,
                                       no further iteration over children of this value will be performed.
                                       - If predicate returns `undefined` - current path will only appear in the result object
-                                      if some child elements will pass the filter during subsequent iterations. */
+                                      if some child elements will pass the filter during subsequent iterations or if keepUndefined=true. */
   options = {
     checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
     keepCircular: true,            // The result object will contain circular references if they passed the filter.
@@ -256,6 +258,7 @@ _.filterDeep(
     cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, Lodash cloneDeep by default.
     pathFormat: 'string',          /* 'string'|'array' - specifies the format of paths passed to the iteratee.
                                       'array' is better for performance. 'string' is better for readability. */
+    keepUndefined: false,          /* keep field in the result object if iteratee returned undefined */
   }
 )
 ```
@@ -338,6 +341,44 @@ Console:
     'a.b.c[1]': 2,
     'a.b.c[2]': 3,
     'a.b["hello world"]': {} }
+```
+### omitDeep
+
+returns an object without keys specified as string name or regex
+
+```js
+_.omitDeep(
+  obj,                             // The object to iterate over.
+  key,                             // key or array of keys to exclude. Can be regex.
+  options = {
+    checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
+    keepCircular: true,            // The result object will contain circular references if they passed the filter.
+    // replaceCircularBy: <value>, // Specify the value to replace circular references by.
+    condense: true,                // Condense the result object, since excluding some paths may produce sparse arrays
+  }
+)
+```
+
+**Example:**
+```js
+  let obj = {
+    good1: true,
+    bad1: false,
+    good2: { good3: true, bad3: false },
+    bad2: { good: true },
+    good4: [{ good5: true, bad5: false }],
+    bad4: [],
+  };
+  var clean = _.omitDeep(obj, ['bad1', 'bad2', 'bad3', 'bad4', 'bad5']);
+  console.log(paths);
+  clean = _.omitDeep(obj, /^bad.*$/);
+  console.log(paths);
+```
+Console:
+```
+{ good1: true,
+  good2: { good3: true },
+  good4: [ { good5: true } ] }
 ```
 
 ### paths (keysDeep)
