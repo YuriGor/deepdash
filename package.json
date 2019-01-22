@@ -1,6 +1,6 @@
 {
   "name": "deepdash",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "description": "Object tree traversal for lodash: condenseDeep, eachDeep, filterDeep, indexate, omitDeep, keysDeep",
   "main": "deepdash.js",
   "directories": {
