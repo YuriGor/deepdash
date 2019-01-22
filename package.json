@@ -39,15 +39,15 @@
   },
   "homepage": "https://github.com/YuriGor/deepdash#readme",
   "devDependencies": {
-    "chai": "^4.2.0",
-    "chai-asserttype": "^1.0.5",
-    "coveralls": "^3.0.2",
+    "chai": "*",
+    "chai-asserttype": "*",
+    "coveralls": "*",
     "eslint": "^5.10.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
-    "mocha": "^5.2.0",
+    "mocha": "*",
     "nodemon": "^1.18.9",
-    "nyc": "^13.1.0",
+    "nyc": "*",
     "prettier": "^1.15.3"
   },
   "dependencies": {
