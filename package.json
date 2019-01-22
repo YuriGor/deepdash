@@ -10,7 +10,7 @@
     "prepublish": "npm run test",
     "test": "nyc mocha  --reporter spec",
     "report": "nyc --reporter=html --reporter=text mocha",
-    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "coverage": "env COVERALLS_REPO_TOKEN=IP5lrwiqOdquotILGARnHMGvPQUrXIFt9 nyc report --reporter=text-lcov | coveralls",
     "dev": "nodemon ./node_modules/.bin/mocha --reporter min --no-deprecation"
   },
   "repository": {

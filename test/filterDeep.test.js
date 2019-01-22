@@ -254,4 +254,45 @@ describe('filterDeep', () => {
       },
     ]);
   });
+  it('keepUndefined', () => {
+    let filtrate = _.filterDeep(
+      demo,
+      (v, k, p) => {
+        if ((k = 'i' && v == 3)) return false;
+        if (_.endsWith(p, 'o.d')) return false;
+        if (_.endsWith(p, 'o.f')) return false;
+      },
+      {
+        leafsOnly: false,
+        keepUndefined: true,
+      }
+    );
+    // console.log(filtrate);
+    expect(filtrate).to.deep.equal({
+      a: {
+        b: {
+          c: {
+            d: [
+              { i: 0 },
+              { i: 1 },
+              { i: 2 },
+              {},
+              { i: 4 },
+              { i: 5 },
+              {
+                o: {
+                  skip: { please: { dont: { go: { here: 'skip it' } } } },
+                },
+              },
+            ],
+            s: 'hello',
+          },
+          b: true,
+        },
+        n: 12345,
+        u: undefined,
+      },
+      nl: null,
+    });
+  });
 });
