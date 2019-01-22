@@ -33,6 +33,14 @@ In Node.js (same for the Angular component):
 //mixin new methods into Lodash object
 const _ = require('deepdash')(require('lodash'));
 ```
+Or as [ECMAScript Module](https://nodejs.org/api/esm.html#esm_ecmascript_modules):
+```js
+import lodash from "lodash";
+import deepdash from "deepdash";
+const _ = deepdash(lodash);
+```
+(thank you [xpare](https://stackoverflow.com/a/53679055/3043073))
+
 ### Usage
 
 ```js
