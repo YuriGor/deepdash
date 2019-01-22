@@ -1,7 +1,7 @@
 {
   "name": "deepdash",
   "version": "1.8.1",
-  "description": "Object tree traversal for lodash",
+  "description": "Object tree traversal for lodash: condenseDeep, eachDeep, filterDeep, indexate, omitDeep, keysDeep",
   "main": "deepdash.js",
   "directories": {
     "test": "test"
@@ -21,15 +21,16 @@
     "lodash",
     "each deep",
     "filter deep",
+    "omit deep",
     "keys deep",
-    "object",
     "tree",
     "traversal",
     "eachDeep",
     "forEachDeep",
     "filterDeep",
+    "omitDeep",
     "keysDeep",
-    "paths"
+    "paths",
   ],
   "author": "Yuri Gor",
   "license": "MIT",
