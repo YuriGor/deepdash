@@ -30,7 +30,7 @@
     "filterDeep",
     "omitDeep",
     "keysDeep",
-    "paths",
+    "paths"
   ],
   "author": "Yuri Gor",
   "license": "MIT",
