@@ -22,7 +22,7 @@
       );
     }
     if (!_.pathToString) {
-      _.mixin({ pathToString: pathToString });
+      _.mixin({ pathToString: pathToString }, { chain: false });
     }
     function iterate(
       obj,
@@ -207,14 +207,17 @@
       }
     }
     if (!_.exists) {
-      _.mixin({
-        exists: function(obj, path) {
-          path = _.isArray(path) ? _.clone(path) : _.toPath(path);
-          var key = path.pop();
-          var parent = path.length ? _.get(obj, path) : obj;
-          return parent !== undefined && key in parent;
+      _.mixin(
+        {
+          exists: function(obj, path) {
+            path = _.isArray(path) ? _.clone(path) : _.toPath(path);
+            var key = path.pop();
+            var parent = path.length ? _.get(obj, path) : obj;
+            return parent !== undefined && key in parent;
+          },
         },
-      });
+        { chain: false }
+      );
     }
     if (!_.condense) {
       _.mixin({
