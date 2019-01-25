@@ -109,11 +109,15 @@
     }
     if (!_.indexate) {
       var indexate = function(obj, options) {
+        if (options && options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
+
         options = _.merge(
           {
             checkCircular: false,
             includeCircularPath: true,
-            leafsOnly: true,
+            leavesOnly: true,
           },
           options || {}
         );
@@ -138,7 +142,7 @@
               circular = _.indexOf(parents.values, value) !== -1;
             }
             if (!circular || options.includeCircularPath) {
-              if (options.leafsOnly && res[parentPath]) {
+              if (options.leavesOnly && res[parentPath]) {
                 delete res[parentPath];
               }
               res[path] = value;
@@ -155,11 +159,14 @@
     }
     if (!_.keysDeep || !_.paths) {
       var paths = function(obj, options) {
+        if (options && options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
         options = _.merge(
           {
             checkCircular: false,
             includeCircularPath: true,
-            leafsOnly: true,
+            leavesOnly: true,
             pathFormat: 'string',
           },
           options || {}
@@ -186,7 +193,7 @@
               circular = _.indexOf(parents.values, value) !== -1;
             }
             if (!circular || options.includeCircularPath) {
-              if (options.leafsOnly && _.last(res) === parentPath) {
+              if (options.leavesOnly && _.last(res) === parentPath) {
                 res.pop();
               }
               res.push(path);
@@ -273,12 +280,15 @@
     }
     if (!_.filterDeep) {
       var filterDeep = function(obj, predicate, options) {
+        if (options && options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
         options = _.merge(
           {
             checkCircular: false,
             keepCircular: true,
             //replaceCircularBy: <by>,
-            leafsOnly: true,
+            leavesOnly: true,
             condense: true,
             cloneDeep: _.cloneDeep,
             pathFormat: 'string',
@@ -323,7 +333,7 @@
             }
             // console.log('filter each, l:' + isLeaf + ', c:' + circular, path);
             if (!circular) {
-              if (isLeaf || !options.leafsOnly) {
+              if (isLeaf || !options.leavesOnly) {
                 var condition = predicate(
                   value,
                   key,
@@ -384,7 +394,7 @@
           },
           options || {}
         );
-        options.leafsOnly = false;
+        options.leavesOnly = false;
         options.pathFormat = 'array';
         options.keepUndefined = true;
         options.cloneDeep = _.cloneDeep;
