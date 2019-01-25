@@ -1,7 +1,7 @@
 {
   "name": "deepdash",
   "version": "1.9.3",
-  "description": "➔ Object tree traversal for Lodash: eachDeep, filterDeep, omitDeep, keysDeep, indexate, condenseDeep. Value, Key, Path, Parent in the callback. Optional full parents track, circular references check, leavesOnly mode.",
+  "description": "➔ 𝐃eep extension for 𝐋odash: ✓ eachDeep ✓ filterDeep ✓ omitDeep ✓ keysDeep ✓ indexate ✓ condenseDeep ⋮ Parent nodes tracking ⋮ Circular references check ⋮ Leaves only mode ⋮ Path as a valid js string or an array ⋮",
   "main": "deepdash.js",
   "directories": {
     "test": "test"
