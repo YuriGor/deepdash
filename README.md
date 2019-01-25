@@ -260,7 +260,7 @@ _.filterDeep(
     checkCircular: false,          // Check each value to not be one of the parents, to avoid circular references.
     keepCircular: true,            // The result object will contain circular references if they passed the filter.
     // replaceCircularBy: <value>, // Specify the value to replace circular references by.
-    leafsOnly: true,               /* Call predicate for childless values only by default.
+    leavesOnly: true,               /* Call predicate for childless values only by default.
                                       Or, if set to false, all the intermediate objects will be passed into the predicate, including parents. */
     condense: true,                // Condense the result object, since excluding some paths may produce sparse arrays
     cloneDeep: _.cloneDeep,        // Method to use for deep cloning values, Lodash cloneDeep by default.
@@ -296,7 +296,7 @@ _.filterDeep(
       if (key == 'name' && parent.good) return true;
       if (key == 'good' && value == true) return true;
     },
-    { leafsOnly: true }
+    { leavesOnly: true }
   );
   console.log(filtrate);
 ```
@@ -322,7 +322,7 @@ _.indexate(
     checkCircular: false,       // Check each value to not be one of the parents, to avoid circular references.
     includeCircularPath: true,  /* If found some circular reference - include a path to it into the result or skip it.
                                    Option ignored if `checkCircular:false`. */
-    leafsOnly: true             /* Return paths to childless values only by default.
+    leavesOnly: true             /* Return paths to childless values only by default.
                                    Or all the paths will be returned, including parents, if set to false. */
   }
 )
@@ -339,7 +339,7 @@ _.indexate(
         },
       },
     },
-    { leafsOnly: true }
+    { leavesOnly: true }
   );
   console.log(index);
 ```
@@ -400,7 +400,7 @@ _.paths(
     checkCircular: false,      // Check each value to not be one of the parents, to avoid circular references.
     includeCircularPath: true, /* If found some circular reference - include a path to it into the result or skip it.
                                   Option ignored if `checkCircular:false`. */
-    leafsOnly: true,           /* Return paths to childless values only by default.
+    leavesOnly: true,           /* Return paths to childless values only by default.
                                   Or all the paths will be returned, including parents, if set to false. */
     pathFormat: 'string',      /* 'string'|'array' - specifies the format of paths.
                                   'array' is better for performance. 'string' is better for readability. */
@@ -417,7 +417,7 @@ _.paths(
         "hello world":{}
       },
     },
-  },{ leafsOnly: false });
+  },{ leavesOnly: false });
   console.log(paths);
   paths = _.paths({
     a: {
