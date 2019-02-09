@@ -37,7 +37,7 @@
   "bugs": {
     "url": "https://github.com/YuriGor/deepdash/issues"
   },
-  "homepage": "https://github.com/YuriGor/deepdash#readme",
+  "homepage": "https://deepdash.io/",
   "devDependencies": {
     "chai": "*",
     "chai-asserttype": "*",

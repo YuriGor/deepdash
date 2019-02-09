@@ -33,3 +33,5 @@ node_modules
 # webstorm info
 .ideagit
 .idea
+
+docs
