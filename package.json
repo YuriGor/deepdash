@@ -17,6 +17,13 @@
     "type": "git",
     "url": "git+https://github.com/YuriGor/deepdash.git"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test",
+      "pre-push": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
   "keywords": [
     "lodash",
     "each deep",
@@ -39,17 +46,19 @@
   },
   "homepage": "https://deepdash.io/",
   "devDependencies": {
+    "@commitlint/cli": "^7.5.2",
+    "@commitlint/config-conventional": "^7.5.0",
     "chai": "*",
     "chai-asserttype": "*",
     "coveralls": "*",
     "eslint": "^5.10.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-prettier": "^3.0.0",
+    "husky": "^1.3.1",
     "mocha": "*",
     "nodemon": "^1.18.9",
     "nyc": "^13.2.0",
-    "prettier": "^1.15.3",
-    "validate-commit": "^3.4.0"
+    "prettier": "^1.15.3"
   },
   "dependencies": {
     "lodash": "^4.17.11"
