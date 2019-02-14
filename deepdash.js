@@ -36,7 +36,6 @@
       options
     ) {
       if (options.track) {
-        if (!parents) parents = [];
         parents.push({
           value: parent,
           key: parentKey,
