@@ -56,7 +56,7 @@ describe('eachDeep', () => {
     _.eachDeep(
       circular,
       (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        if (parents.values.indexOf(value) != -1) {
+        if (_.findIndex(parents, ['value', value]) != -1) {
           circluarPath.push(path);
 
           return false;
@@ -78,10 +78,10 @@ describe('eachDeep', () => {
     _.eachDeep(
       circular,
       (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        parents.paths.forEach((p) => {
-          expect(p).to.be.an.array();
+        parents.forEach((p) => {
+          expect(p.path).to.be.an.array();
         });
-        if (parents.values.indexOf(value) != -1) {
+        if (_.findIndex(parents, ['value', value]) != -1) {
           circluarPath.push(_.pathToString(path));
 
           return false;

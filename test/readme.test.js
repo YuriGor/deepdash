@@ -14,7 +14,7 @@ describe('eachDeep', () => {
     _.eachDeep(
       circular,
       (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        if (_.indexOf(parents.values, value) !== -1) {
+        if (_.findIndex(parents, ['value', value]) !== -1) {
           log.push(
             "Circular reference skipped for '" + key + "' at " + parentPath
           );

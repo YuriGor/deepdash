@@ -31,15 +31,20 @@
       parent,
       parentKey,
       parentPath,
+      parents,
       callback,
       options
     ) {
       if (options.track) {
-        options.parents.values.push(parent);
-        options.parents.keys.push(parentKey);
-        options.parents.paths.push(
-          options.pathFormat == 'array' ? parentPath : pathToString(parentPath)
-        );
+        if (!parents) parents = [];
+        parents.push({
+          value: parent,
+          key: parentKey,
+          path:
+            options.pathFormat == 'array'
+              ? parentPath
+              : pathToString(parentPath),
+        });
       }
       if (!_.isObject(obj)) return;
       _.forOwn(obj, function(value, key) {
@@ -62,7 +67,7 @@
           obj,
           parentKey,
           options.pathFormat == 'array' ? path : pathToString(path),
-          options.parents
+          parents
         );
         if (res !== false && _.isObject(value)) {
           iterate(
@@ -72,15 +77,14 @@
             obj,
             okey,
             path,
+            parents,
             callback,
             options
           );
         }
       });
       if (options.track) {
-        options.parents.values.pop();
-        options.parents.keys.pop();
-        options.parents.paths.pop();
+        parents.pop();
       }
     }
 
@@ -94,10 +98,7 @@
           },
           options || {}
         );
-        if (options.track) {
-          options.parents = { keys: [], paths: [], values: [] };
-        }
-        iterate(obj, [], 0, null, '', [], callback, options);
+        iterate(obj, [], 0, null, '', [], [], callback, options);
         return obj;
       };
       if (!_.eachDeep) {
@@ -139,7 +140,7 @@
           ) {
             var circular = false;
             if (options.checkCircular) {
-              circular = _.indexOf(parents.values, value) !== -1;
+              circular = _.findIndex(parents, ['value', value]) !== -1;
             }
             if (!circular || options.includeCircularPath) {
               if (options.leavesOnly && res[parentPath]) {
@@ -190,7 +191,7 @@
           ) {
             var circular = false;
             if (options.checkCircular) {
-              circular = _.indexOf(parents.values, value) !== -1;
+              circular = _.findIndex(parents, ['value', value]) !== -1;
             }
             if (!circular || options.includeCircularPath) {
               if (options.leavesOnly && _.last(res) === parentPath) {
@@ -262,7 +263,7 @@
           ) {
             if (
               options.checkCircular &&
-              _.indexOf(parents.values, value) !== -1
+              _.findIndex(parents, ['value', value]) !== -1
             ) {
               return false;
             }
@@ -304,10 +305,10 @@
         var foundCircular = [];
         var checkCircular = function(value, path, parents) {
           if (!options.checkCircular) return false;
-          var i = _.indexOf(parents.values, value);
-          if (i !== -1) {
+          var cp = _.find(parents, ['value', value]);
+          if (cp) {
             if (options.keepCircular) {
-              foundCircular.push([path, parents.paths[i]]);
+              foundCircular.push([path, cp.path]);
             }
             return true;
           }
