@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 //inject new method into lodash object
 const _ = require('./deepdash')(require('lodash'));
@@ -41,16 +41,16 @@ let obj = {
   },
   nl: null,
 };
-_.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
+_.eachDeep(obj, (value, key, parent, ctx) => {
   console.log(
-    _.repeat('  ', depth) +
+    _.repeat('  ', ctx.depth) +
       key +
       ':' +
       (value === null ? 'null' : typeof value),
-    parentPath && ' @' + parentPath
+    ctx.parent.path && ' @' + ctx.parent.path
   );
-  if(key=="skip"){
-    return false;//return false explicitly to skip iteration over current value's children
+  if (key == 'skip') {
+    return false; //return false explicitly to skip iteration over current value's children
   }
 });
 

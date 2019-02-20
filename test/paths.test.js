@@ -13,7 +13,7 @@ var { demo, circular } = require('./object');
 
 describe('paths', () => {
   it('Count paths', () => {
-    let paths = _.paths(demo, { leafsOnly: false });
+    let paths = _.paths(demo, { leavesOnly: false });
     expect(paths.length).equal(30);
   });
   it('Array', () => {
@@ -21,25 +21,25 @@ describe('paths', () => {
     expect(paths.length).equal(62);
   });
   it('Count paths circular', () => {
-    let paths = _.paths(circular, { checkCircular: true, leafsOnly: false });
+    let paths = _.paths(circular, { checkCircular: true, leavesOnly: false });
     // console.log(paths);
     expect(paths.length).equal(25);
     paths = _.paths(circular, {
       checkCircular: true,
       includeCircularPath: false,
-      leafsOnly: false,
+      leavesOnly: false,
     });
     // console.log(paths);
     expect(paths.length).equal(22);
   });
   it('Chaining', () => {
     let paths = _(demo)
-      .paths({ leafsOnly: false })
+      .paths({ leavesOnly: false })
       .value();
     expect(paths.length).equal(30);
   });
   it('alias keysDeep', () => {
-    let paths = _.keysDeep(demo, { leafsOnly: false });
+    let paths = _.keysDeep(demo, { leavesOnly: false });
     expect(paths.length).equal(30);
   });
   it('returns empty array', () => {
@@ -81,17 +81,17 @@ describe('paths', () => {
   });
 
   it('Leafs only', () => {
-    let paths = _.paths(demo, { leafsOnly: true });
+    let paths = _.paths(demo, { leavesOnly: true });
     expect(paths.length).equal(14);
   });
 
   it('Leafs only circular', () => {
-    let paths = _.paths(circular, { checkCircular: true, leafsOnly: true });
+    let paths = _.paths(circular, { checkCircular: true, leavesOnly: true });
     expect(paths.length).equal(12);
     paths = _.paths(circular, {
       checkCircular: true,
       includeCircularPath: false,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     expect(paths.length).equal(9);
   });

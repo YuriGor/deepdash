@@ -75,7 +75,7 @@ describe('condenseDeep', () => {
     expect(
       _(obj)
         .condenseDeep({ checkCircular: true })
-        .paths({ checkCircular: true, leafsOnly: false })
+        .paths({ checkCircular: true, leavesOnly: false })
         .value().length
     ).to.equal(23);
   });

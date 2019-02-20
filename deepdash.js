@@ -25,78 +25,67 @@
       _.mixin({ pathToString: pathToString }, { chain: false });
     }
     function iterate(
-      obj,
+      value,
+      callback,
+      options,
+      key,
       path,
       depth,
       parent,
-      parentKey,
-      parentPath,
       parents,
-      callback,
-      options
+      obj
     ) {
-      if (options.track) {
-        parents.push({
-          value: parent,
-          key: parentKey,
-          path:
-            options.pathFormat == 'array'
-              ? parentPath
-              : pathToString(parentPath),
-        });
-      }
-      if (!options.obj) options.obj = obj;
-      if (!_.isObject(obj)) return;
-      _.forOwn(obj, function(value, key) {
-        var okey = key;
-        if (_.isArray(obj)) {
-          if (value === undefined && !(key in obj)) {
-            //empty slot
-            return;
+      if (!_.isObject(value)) return;
+      if (key === undefined) key = '';
+      if (path === undefined) path = [];
+      if (depth === undefined) depth = 0;
+      if (parents === undefined) parents = [];
+      if (obj === undefined) obj = value;
+
+      var currentObj = {
+        value: value,
+        key: key,
+        path: options.pathFormat == 'array' ? path : pathToString(path),
+        parent: parent,
+      };
+      var currentParents = parents.concat(currentObj);
+      _.forOwn(value, function(childValue, childKey) {
+        if (_.isArray(value)) {
+          if (childValue === undefined && !(childKey in value)) {
+            return; //empty slot
           }
         }
 
-        var currentPath = path.concat([key]);
-        var res = callback(value, okey, options.obj, {
+        var childPath = path.concat([childKey]);
+        var res = callback(childValue, childKey, value, {
           path:
-            options.pathFormat == 'array'
-              ? currentPath
-              : pathToString(currentPath),
+            options.pathFormat == 'array' ? childPath : pathToString(childPath),
+          parent: currentObj,
+          parents: currentParents,
+          obj: obj,
           depth: depth,
-          parent: obj,
-          parentKey: parentKey,
-          parentPath: options.pathFormat == 'array' ? path : pathToString(path),
-          parents: parents,
         });
         if (res !== false && _.isObject(value)) {
           iterate(
-            value,
-            currentPath,
-            depth + 1,
-            obj,
-            okey,
-            path,
-            parents,
+            childValue,
             callback,
-            options
+            options,
+            childKey,
+            childPath,
+            depth + 1,
+            currentObj,
+            currentParents,
+            obj
           );
         }
       });
-      if (options.track) {
-        parents.pop();
-      }
     }
 
     if (!_.eachDeep || !_.forEachDeep) {
       var eachDeep = function(obj, callback, options) {
         if (callback === undefined) callback = _.identity;
-        options = _.merge(
-          {
-            track: false,
-          },
-          options || {}
-        );
-        iterate(obj, [], 0, null, '', [], [], callback, options);
+        options = _.merge({}, options || {});
+        iterate(obj, callback, options);
         return obj;
       };
       if (!_.eachDeep) {
@@ -121,20 +110,19 @@
           options || {}
         );
         var eachDeepOptions = {
-          track: options.checkCircular,
           pathFormat: 'string',
         };
         var res = {};
         _.eachDeep(
           obj,
-          function(value, key, obj, context) {
+          function(value, key, parent, context) {
             var circular = false;
             if (options.checkCircular) {
               circular = _.findIndex(context.parents, ['value', value]) !== -1;
             }
             if (!circular || options.includeCircularPath) {
-              if (options.leavesOnly && res[context.parentPath]) {
-                delete res[context.parentPath];
+              if (options.leavesOnly && res[context.parent.path]) {
+                delete res[context.parent.path];
               }
               res[context.path] = value;
             }
@@ -163,19 +151,18 @@
           options || {}
         );
         var eachDeepOptions = {
-          track: options.checkCircular,
           pathFormat: options.pathFormat,
         };
         var res = [];
         _.eachDeep(
           obj,
-          function(value, key, obj, context) {
+          function(value, key, parent, context) {
             var circular = false;
             if (options.checkCircular) {
               circular = _.findIndex(context.parents, ['value', value]) !== -1;
             }
             if (!circular || options.includeCircularPath) {
-              if (options.leavesOnly && _.last(res) === context.parentPath) {
+              if (options.leavesOnly && _.last(res) === context.parent.path) {
                 res.pop();
               }
               res.push(context.path);
@@ -226,13 +213,11 @@
           },
           options || {}
         );
-        var eachDeepOptions = {
-          track: options.checkCircular,
-        };
+        var eachDeepOptions = {};
         var arrays = [];
         _.eachDeep(
           obj,
-          function(value, key, obj, context) {
+          function(value, key, parent, context) {
             if (
               options.checkCircular &&
               _.findIndex(context.parents, ['value', value]) !== -1
@@ -270,7 +255,6 @@
           options || {}
         );
         var eachDeepOptions = {
-          track: options.checkCircular,
           pathFormat: options.pathFormat,
         };
         var res = _.isArray(obj) ? [] : {};
@@ -289,7 +273,7 @@
         // console.log('filterDeep', obj);
         _.eachDeep(
           obj,
-          function(value, key, obj, context) {
+          function(value, key, parent, context) {
             var circular = false;
             var isLeaf = !_.isObject(value) || _.isEmpty(value);
             if (!isLeaf) {
@@ -298,7 +282,7 @@
             // console.log('filter each, l:' + isLeaf + ', c:' + circular, context.path);
             if (!circular) {
               if (isLeaf || !options.leavesOnly) {
-                var condition = predicate(value, key, obj, context);
+                var condition = predicate(value, key, parent, context);
                 if (condition === true) {
                   _.set(res, context.path, options.cloneDeep(value));
                 } else if (condition === undefined && options.keepUndefined) {

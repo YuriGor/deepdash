@@ -47,8 +47,8 @@ describe('stackoverflow', () => {
       },
     ];
     let sum = 0;
-    _.eachDeep(obj, (value, key, obj, ctx) => {
-      sum += (key == 'prop' && value == 'foo' && ctx.parent.val) || 0;
+    _.eachDeep(obj, (value, key, parent) => {
+      sum += (key == 'prop' && value == 'foo' && parent.val) || 0;
     });
     expect(sum).equal(40);
   });
@@ -101,10 +101,10 @@ describe('stackoverflow', () => {
       { condense: false }
     );
     // second pass - to put missed 'title' nodes both for found ids and their parents.
-    var filtrate = _.filterDeep(obj, function(value, key, obj, ctx) {
+    var filtrate = _.filterDeep(obj, function(value, key, parent, ctx) {
       if (
         _.get(foundIds, ctx.path) !== undefined ||
-        (key == 'title' && _.get(foundIds, ctx.parentPath) !== undefined)
+        (key == 'title' && _.get(foundIds, ctx.parent.path) !== undefined)
       )
         return true;
     });
@@ -189,8 +189,8 @@ describe('stackoverflow', () => {
         ],
       },
     ];
-    var filtrate = _.filterDeep(types, function(value, key, obj, ctx) {
-      if (ctx.parent.checked) return true;
+    var filtrate = _.filterDeep(types, function(value, key, parent) {
+      if (parent.checked) return true;
     });
 
     expect(filtrate).to.deep.equal([
@@ -272,11 +272,10 @@ describe('stackoverflow', () => {
     ];
     var children = _.filterDeep(
       obj,
-      function(value, key, obj, ctx) {
-        if (key == 'children' && ctx.parent.id == 6 && value.length)
-          return true;
+      function(value, key, parent) {
+        if (key == 'children' && parent.id == 6 && value.length) return true;
       },
-      { leafsOnly: false }
+      { leavesOnly: false }
     );
     expect(children.length).to.not.equal(0);
     // console.log(children);
@@ -359,10 +358,10 @@ describe('stackoverflow', () => {
     );
     // console.log(foundFoo);
     // second pass - to add missed fields both for found 'foo' nodes and their parents.
-    var filtrate = _.filterDeep(obj, function(value, key, obj, ctx) {
+    var filtrate = _.filterDeep(obj, function(value, key, parent, ctx) {
       if (
         _.get(foundFoo, ctx.path) !== undefined ||
-        (!_.isObject(value) && _.get(foundFoo, ctx.parentPath) !== undefined)
+        (!_.isObject(value) && _.get(foundFoo, ctx.parent.path) !== undefined)
       ) {
         // if (_.has(foundFoo, path)) console.log(`${key} has ${path}`);
         // else console.log(`${key} has parent ${parentPath}`);
@@ -454,14 +453,14 @@ describe('stackoverflow', () => {
       },
       {
         condense: false, // keep empty slots in array to preserve correct paths
-        leafsOnly: false,
+        leavesOnly: false,
       }
     );
     // second pass - to add missed fields both for found 'Hit' nodes and their parents.
-    var filtrate = _.filterDeep(input, function(value, key, obj, ctx) {
+    var filtrate = _.filterDeep(input, function(value, key, parent, ctx) {
       if (
         _.get(foundHit, ctx.path) !== undefined ||
-        _.get(foundHit, ctx.parentPath) !== undefined
+        _.get(foundHit, ctx.parent.path) !== undefined
       ) {
         return true;
       }
@@ -513,7 +512,7 @@ describe('stackoverflow', () => {
       state: true,
       zip: true,
     };
-    var filtrate = _.filterDeep(data, function(value, key, obj, ctx) {
+    var filtrate = _.filterDeep(data, function(value, key, parent, ctx) {
       return _.has(controlObject, ctx.path);
     });
     expect(filtrate).to.deep.equal({
@@ -552,7 +551,7 @@ describe('stackoverflow', () => {
     ];
     let merged = _.cloneDeep(objects.shift()); // clone to keep source untouched
     objects.forEach((obj) => {
-      _.eachDeep(obj, (value, key, obj, ctx) => {
+      _.eachDeep(obj, (value, key, parent, ctx) => {
         if (_.isObject(value)) return;
         let exists = _.get(merged, ctx.path);
         if (exists == undefined) {
