@@ -59,8 +59,8 @@ describe('issues', () => {
       },
     ];
     let images = [];
-    _.eachDeep(imgCollection, (value, key, path, depth, parent) => {
-      if (key == 'key1' && value == 'take this') images.push(parent);
+    _.eachDeep(imgCollection, (value, key, obj, ctx) => {
+      if (key == 'key1' && value == 'take this') images.push(ctx.parent);
     });
     expect(images.length).equal(2);
   });

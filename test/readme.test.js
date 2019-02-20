@@ -13,10 +13,10 @@ describe('eachDeep', () => {
     circular.a.b.c = circular;
     _.eachDeep(
       circular,
-      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        if (_.findIndex(parents, ['value', value]) !== -1) {
+      (value, key, obj, ctx) => {
+        if (_.findIndex(ctx.parents, ['value', value]) !== -1) {
           log.push(
-            "Circular reference skipped for '" + key + "' at " + parentPath
+            "Circular reference skipped for '" + key + "' at " + ctx.parentPath
           );
           return false;
         }
@@ -118,8 +118,8 @@ describe('filterDeep', () => {
     };
     let filtrate = _.filterDeep(
       things,
-      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        if (key == 'name' && parent.good) return true;
+      (value, key, obj, ctx) => {
+        if (key == 'name' && ctx.parent.good) return true;
         if (key == 'good' && value == true) return true;
       },
       { leafsOnly: true }
