@@ -204,9 +204,9 @@ describe('filterDeep', () => {
     // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
     var foundHit = _.filterDeep(
       input,
-      function(value, key, path, depth, parent, parentKey, parentPath) {
-        expect(path).to.be.an.array();
-        expect(parentPath).to.be.an.array();
+      function(value, key, obj, ctx) {
+        expect(ctx.path).to.be.an.array();
+        expect(ctx.parentPath).to.be.an.array();
         if (value.value && value.value.includes(keyword)) return true;
       },
       {
@@ -218,12 +218,12 @@ describe('filterDeep', () => {
     // second pass - to add missed fields both for found 'Hit' nodes and their parents.
     var filtrate = _.filterDeep(
       input,
-      function(value, key, path, depth, parent, parentKey, parentPath) {
-        expect(path).to.be.an.array();
-        expect(parentPath).to.be.an.array();
+      function(value, key, obj, ctx) {
+        expect(ctx.path).to.be.an.array();
+        expect(ctx.parentPath).to.be.an.array();
         if (
-          _.get(foundHit, path) !== undefined ||
-          _.get(foundHit, parentPath) !== undefined
+          _.get(foundHit, ctx.path) !== undefined ||
+          _.get(foundHit, ctx.parentPath) !== undefined
         ) {
           return true;
         }
@@ -257,10 +257,10 @@ describe('filterDeep', () => {
   it('keepUndefined', () => {
     let filtrate = _.filterDeep(
       demo,
-      (v, k, p) => {
-        if ((k = 'i' && v == 3)) return false;
-        if (_.endsWith(p, 'o.d')) return false;
-        if (_.endsWith(p, 'o.f')) return false;
+      (v, k, o, c) => {
+        if (k == 'i' && v == 3) return false;
+        if (_.endsWith(c.path, 'o.d')) return false;
+        if (_.endsWith(c.path, 'o.f')) return false;
       },
       {
         leafsOnly: false,

@@ -10,19 +10,16 @@ var { demo, circular } = require('./object');
 describe('eachDeep', () => {
   it('Count nodes', () => {
     let c = 0;
-    _.eachDeep(
-      demo,
-      (value, key, path, depth, parent, parentKey, parentPath) => {
-        if (key == 'skip') return false;
-        c++;
-      }
-    );
+    _.eachDeep(demo, (value, key) => {
+      if (key == 'skip') return false;
+      c++;
+    });
     expect(c).equal(25);
   });
   it('Chaining', () => {
     let c = 0;
     _(demo)
-      .eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {
+      .eachDeep((value, key) => {
         if (key == 'skip') return false;
         c++;
       })
@@ -31,13 +28,13 @@ describe('eachDeep', () => {
   });
   it('alias forEachDeep', () => {
     let c = 0;
-    _.forEachDeep(demo, (value, key) => {
+    _.forEachDeep(demo, () => {
       c++;
     });
     expect(c).equal(30);
   });
   it('returns collection', () => {
-    let c = _.forEachDeep(demo, (value, key) => {
+    let c = _.forEachDeep(demo, () => {
       /*hello?*/
     });
     expect(c).equal(demo);
@@ -55,9 +52,9 @@ describe('eachDeep', () => {
     let circluarPath = [];
     _.eachDeep(
       circular,
-      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        if (_.findIndex(parents, ['value', value]) != -1) {
-          circluarPath.push(path);
+      (value, key, obj, ctx) => {
+        if (_.findIndex(ctx.parents, ['value', value]) != -1) {
+          circluarPath.push(ctx.path);
 
           return false;
         }
@@ -77,12 +74,12 @@ describe('eachDeep', () => {
     let circluarPath = [];
     _.eachDeep(
       circular,
-      (value, key, path, depth, parent, parentKey, parentPath, parents) => {
-        parents.forEach((p) => {
+      (value, key, obj, ctx) => {
+        ctx.parents.forEach((p) => {
           expect(p.path).to.be.an.array();
         });
-        if (_.findIndex(parents, ['value', value]) != -1) {
-          circluarPath.push(_.pathToString(path));
+        if (_.findIndex(ctx.parents, ['value', value]) != -1) {
+          circluarPath.push(_.pathToString(ctx.path));
 
           return false;
         }
@@ -100,25 +97,19 @@ describe('eachDeep', () => {
 
   it('Array', () => {
     let c = 0;
-    _.eachDeep(
-      [demo, demo],
-      (value, key, path, depth, parent, parentKey, parentPath) => {
-        if (key == 'skip') return false;
-        c++;
-      }
-    );
+    _.eachDeep([demo, demo], (value, key) => {
+      if (key == 'skip') return false;
+      c++;
+    });
     expect(c).equal(52);
   });
 
   it('String', () => {
     let c = 0;
-    _.eachDeep(
-      'Hello?',
-      (value, key, path, depth, parent, parentKey, parentPath) => {
-        if (key == 'skip') return false;
-        c++;
-      }
-    );
+    _.eachDeep('Hello?', (value, key) => {
+      if (key == 'skip') return false;
+      c++;
+    });
     expect(c).equal(0);
   });
   it('empty props', () => {
@@ -144,15 +135,15 @@ describe('eachDeep', () => {
     expect(c).equal(3);
   });
   it('generated string paths are correct', () => {
-    _.eachDeep(demo, function(value, key, path) {
-      assert(_.has(demo, path), 'Incorrect path: ' + path);
+    _.eachDeep(demo, function(value, key, obj, ctx) {
+      assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
     });
   });
   it('generated array paths are correct', () => {
     _.eachDeep(
       demo,
-      function(value, key, path) {
-        assert(_.has(demo, path), 'Incorrect path: ' + path);
+      function(value, key, obj, ctx) {
+        assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
       },
       { pathFormat: 'array' }
     );
