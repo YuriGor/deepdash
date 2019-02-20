@@ -6,30 +6,23 @@ const chai = require('chai'),
   assert = require('assert'),
   _ = require('../deepdash')(require('lodash'));
 
-describe('eachDeep', () => {
-  it('default', () => {
+describe('README examples', () => {
+  it('eachDeep', () => {
     let circular = { a: { b: { c: {} } } };
     let log = [];
     circular.a.b.c = circular;
-    _.eachDeep(
-      circular,
-      (value, key, obj, ctx) => {
-        if (_.findIndex(ctx.parents, ['value', value]) !== -1) {
-          log.push(
-            "Circular reference skipped for '" + key + "' at " + ctx.parentPath
-          );
-          return false;
-        }
-        //do your things
-      },
-      { track: true }
-    );
+    _.eachDeep(circular, (value, key, parent, ctx) => {
+      if (_.findIndex(ctx.parents, ['value', value]) !== -1) {
+        log.push(
+          "Circular reference skipped for '" + key + "' at " + ctx.parent.path
+        );
+        return false;
+      }
+      //do your things
+    });
     expect(log).to.deep.equal(["Circular reference skipped for 'c' at a.b"]);
   });
-});
-
-describe('indexate', () => {
-  it('leafsOnly', () => {
+  it('indexate', () => {
     let index = _.indexate(
       {
         a: {
@@ -39,7 +32,7 @@ describe('indexate', () => {
           },
         },
       },
-      { leafsOnly: true }
+      { leavesOnly: true }
     );
     expect(index).to.deep.equal({
       'a.b.c[0]': 1,
@@ -48,10 +41,7 @@ describe('indexate', () => {
       'a.b["hello world"]': {},
     });
   });
-});
-
-describe('keysDeep', () => {
-  it('default', () => {
+  it('keysDeep', () => {
     let keys = _.keysDeep(
       {
         a: {
@@ -61,7 +51,7 @@ describe('keysDeep', () => {
           },
         },
       },
-      { leafsOnly: false }
+      { leavesOnly: false }
     );
     expect(keys).to.deep.equal([
       'a',
@@ -73,7 +63,7 @@ describe('keysDeep', () => {
       'a.b["hello world"]',
     ]);
   });
-  it('leafsOnly', () => {
+  it('keysDeep leavesOnly', () => {
     let keys = _.keysDeep(
       {
         a: {
@@ -83,7 +73,7 @@ describe('keysDeep', () => {
           },
         },
       },
-      { leafsOnly: true }
+      { leavesOnly: true }
     );
     expect(keys).to.deep.equal([
       'a.b.c[0]',
@@ -92,10 +82,7 @@ describe('keysDeep', () => {
       'a.b["hello world"]',
     ]);
   });
-});
-
-describe('filterDeep', () => {
-  it('Count paths', () => {
+  it('filterDeep', () => {
     let things = {
       things: [
         { name: 'something', good: false },
@@ -118,11 +105,11 @@ describe('filterDeep', () => {
     };
     let filtrate = _.filterDeep(
       things,
-      (value, key, obj, ctx) => {
-        if (key == 'name' && ctx.parent.good) return true;
+      (value, key, parent) => {
+        if (key == 'name' && parent.good) return true;
         if (key == 'good' && value == true) return true;
       },
-      { leafsOnly: true }
+      { leavesOnly: true }
     );
     // console.log(filtrate);
     filtrate.should.to.deep.equal({
@@ -140,9 +127,6 @@ describe('filterDeep', () => {
       ],
     });
   });
-});
-
-describe('condenseDeep', () => {
   it('condense', () => {
     let arr = ['a', 'b', 'c', 'd', 'e'];
     delete arr[1];
@@ -163,9 +147,7 @@ describe('condenseDeep', () => {
     // console.log(obj);
     obj.should.to.deep.equal({ arr: ['a', { c: [1, 2, 3] }, 'e'] });
   });
-});
 
-describe('docs for exists', () => {
   it('exists', () => {
     var obj = [, { a: [, 'b'] }];
     expect(_.exists(obj, 0)).to.equal(false);

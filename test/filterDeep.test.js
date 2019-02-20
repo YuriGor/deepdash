@@ -18,27 +18,27 @@ function isNS(value) {
 describe('filterDeep', () => {
   it('Count paths', () => {
     let filtrate = _(demo)
-      .filterDeep(isNS, { leafsOnly: true })
-      .indexate({ leafsOnly: true })
+      .filterDeep(isNS, { leavesOnly: true })
+      .indexate({ leavesOnly: true })
       .value();
     // console.log(_.filterDeep(demo, isNS));
     expect(_.size(filtrate)).equal(9);
   });
   it('Array', () => {
-    let filtrate = _.filterDeep([demo, demo], isNS, { leafsOnly: true });
+    let filtrate = _.filterDeep([demo, demo], isNS, { leavesOnly: true });
     expect(filtrate).to.be.an('array');
-    filtrate = _.indexate(filtrate, { leafsOnly: true });
+    filtrate = _.indexate(filtrate, { leavesOnly: true });
     expect(_.size(filtrate)).equal(18);
   });
   it('Count paths circular', () => {
     let filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     // console.log(circular);
     // console.log(filtrate);
     filtrate = _.paths(filtrate, {
-      leafsOnly: true,
+      leavesOnly: true,
       checkCircular: true,
     });
     // console.log(filtrate);
@@ -47,7 +47,7 @@ describe('filterDeep', () => {
   it('Chaining', () => {
     let filtrate = _(demo)
       .filterDeep(isNS, { leafsOnly: true })
-      .paths({ leafsOnly: true })
+      .paths({ leavesOnly: true })
       .value();
     expect(_.size(filtrate)).equal(9);
   });
@@ -78,17 +78,17 @@ describe('filterDeep', () => {
   it('Obj only', () => {
     let filtrate = _(demo)
       .filterDeep(_.isObject, {
-        leafsOnly: false,
+        leavesOnly: false,
         cloneDeep: (o) => (_.isArray(o) ? [] : _.isObject ? {} : o),
       })
-      .paths({ leafsOnly: false })
+      .paths({ leavesOnly: false })
       .value();
     expect(_.size(filtrate)).equal(18);
   });
   it('Circular', () => {
     let filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     filtrate.should.have.nested.property('a.b.c.e').and.equal(filtrate.a.b);
     // console.log(_.get(filtrate, 'i[5][1][0].b'));
@@ -104,12 +104,12 @@ describe('filterDeep', () => {
     let filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
       keepCircular: false,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     // console.log(circular);
     //console.log(filtrate);
     filtrate = _.paths(filtrate, {
-      leafsOnly: true,
+      leavesOnly: true,
       checkCircular: true,
     });
     // console.log(filtrate);
@@ -124,17 +124,17 @@ describe('filterDeep', () => {
     obj.x.y.z1 = obj.x.y;
     let filtrate = _.filterDeep(obj, isNS, {
       checkCircular: true,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     // console.log(filtrate);
     filtrate.should.not.have.property('x');
   });
   it('Sparse array', () => {
     var obj = { a: [{ b: false }, , { b: true }, { b: false }] };
-    var filtrate = _.filterDeep(obj, (v) => v === true, { leafsOnly: true });
+    var filtrate = _.filterDeep(obj, (v) => v === true, { leavesOnly: true });
     filtrate.should.deep.equal({ a: [{ b: true }] });
     filtrate = _.filterDeep(obj, (v) => v === true, {
-      leafsOnly: true,
+      leavesOnly: true,
       condense: false,
     });
     filtrate.should.deep.equal({ a: [, , { b: true }] });
@@ -143,7 +143,7 @@ describe('filterDeep', () => {
     let again = Symbol('[circular]');
     let filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
-      leafsOnly: true,
+      leavesOnly: true,
       replaceCircularBy: again,
     });
     // console.log(filtrate);
@@ -152,7 +152,7 @@ describe('filterDeep', () => {
     filtrate.should.have.nested.property('i[5][1][0].b.c.e').and.equal(again);
     filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
-      leafsOnly: true,
+      leavesOnly: true,
       replaceCircularBy: undefined,
     });
     // console.log(filtrate);
@@ -204,26 +204,26 @@ describe('filterDeep', () => {
     // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
     var foundHit = _.filterDeep(
       input,
-      function(value, key, obj, ctx) {
+      function(value, key, parent, ctx) {
         expect(ctx.path).to.be.an.array();
-        expect(ctx.parentPath).to.be.an.array();
+        expect(ctx.parent.path).to.be.an.array();
         if (value.value && value.value.includes(keyword)) return true;
       },
       {
         condense: false, // keep empty slots in array to preserve correct paths
-        leafsOnly: false,
+        leavesOnly: false,
         pathFormat: 'array',
       }
     );
     // second pass - to add missed fields both for found 'Hit' nodes and their parents.
     var filtrate = _.filterDeep(
       input,
-      function(value, key, obj, ctx) {
+      function(value, key, parent, ctx) {
         expect(ctx.path).to.be.an.array();
-        expect(ctx.parentPath).to.be.an.array();
+        expect(ctx.parent.path).to.be.an.array();
         if (
           _.get(foundHit, ctx.path) !== undefined ||
-          _.get(foundHit, ctx.parentPath) !== undefined
+          _.get(foundHit, ctx.parent.path) !== undefined
         ) {
           return true;
         }
@@ -263,7 +263,7 @@ describe('filterDeep', () => {
         if (_.endsWith(c.path, 'o.f')) return false;
       },
       {
-        leafsOnly: false,
+        leavesOnly: false,
         keepUndefined: true,
       }
     );

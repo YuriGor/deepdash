@@ -17,16 +17,19 @@ describe('indexate', () => {
     expect(_.size(index)).equal(30);
   });
   it('Array', () => {
-    let index = _.indexate([demo, demo], { leafsOnly: false });
+    let index = _.indexate([demo, demo], { leavesOnly: false });
     expect(_.size(index)).equal(62);
   });
   it('Count paths circular', () => {
-    let index = _.indexate(circular, { checkCircular: true, leafsOnly: false });
+    let index = _.indexate(circular, {
+      checkCircular: true,
+      leavesOnly: false,
+    });
     // console.log(index);
     expect(_.size(index)).equal(25);
     index = _.indexate(circular, {
       checkCircular: true,
-      leafsOnly: false,
+      leavesOnly: false,
       includeCircularPath: false,
     });
     // console.log(index);
@@ -34,7 +37,7 @@ describe('indexate', () => {
   });
   it('Chaining', () => {
     let index = _(demo)
-      .indexate({ leafsOnly: false })
+      .indexate({ leavesOnly: false })
       .value();
     expect(_.size(index)).equal(30);
   });
@@ -62,17 +65,17 @@ describe('indexate', () => {
   });
 
   it('Leafs only', () => {
-    let index = _.indexate(demo, { leafsOnly: true });
+    let index = _.indexate(demo, { leavesOnly: true });
     expect(_.size(index)).equal(14);
   });
 
   it('Leafs only circular', () => {
-    let index = _.indexate(circular, { checkCircular: true, leafsOnly: true });
+    let index = _.indexate(circular, { checkCircular: true, leavesOnly: true });
     expect(_.size(index)).equal(12);
     index = _.indexate(circular, {
       checkCircular: true,
       includeCircularPath: false,
-      leafsOnly: true,
+      leavesOnly: true,
     });
     expect(_.size(index)).equal(9);
   });

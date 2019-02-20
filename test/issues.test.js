@@ -59,7 +59,7 @@ describe('issues', () => {
       },
     ];
     let images = [];
-    _.eachDeep(imgCollection, (value, key, obj, ctx) => {
+    _.eachDeep(imgCollection, (value, key, parent, ctx) => {
       if (key == 'key1' && value == 'take this') images.push(ctx.parent);
     });
     expect(images.length).equal(2);

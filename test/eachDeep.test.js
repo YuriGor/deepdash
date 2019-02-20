@@ -50,17 +50,13 @@ describe('eachDeep', () => {
 
   it('circular', () => {
     let circluarPath = [];
-    _.eachDeep(
-      circular,
-      (value, key, obj, ctx) => {
-        if (_.findIndex(ctx.parents, ['value', value]) != -1) {
-          circluarPath.push(ctx.path);
+    _.eachDeep(circular, (value, key, parent, ctx) => {
+      if (_.findIndex(ctx.parents, ['value', value]) != -1) {
+        circluarPath.push(ctx.path);
 
-          return false;
-        }
-      },
-      { track: true }
-    );
+        return false;
+      }
+    });
 
     expect(circluarPath)
       .to.include('a.b.c.e')
@@ -74,7 +70,7 @@ describe('eachDeep', () => {
     let circluarPath = [];
     _.eachDeep(
       circular,
-      (value, key, obj, ctx) => {
+      (value, key, parent, ctx) => {
         ctx.parents.forEach((p) => {
           expect(p.path).to.be.an.array();
         });
@@ -84,7 +80,7 @@ describe('eachDeep', () => {
           return false;
         }
       },
-      { track: true, pathFormat: 'array' }
+      { pathFormat: 'array' }
     );
 
     expect(circluarPath)
@@ -135,14 +131,14 @@ describe('eachDeep', () => {
     expect(c).equal(3);
   });
   it('generated string paths are correct', () => {
-    _.eachDeep(demo, function(value, key, obj, ctx) {
+    _.eachDeep(demo, function(value, key, parent, ctx) {
       assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
     });
   });
   it('generated array paths are correct', () => {
     _.eachDeep(
       demo,
-      function(value, key, obj, ctx) {
+      function(value, key, parent, ctx) {
         assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
       },
       { pathFormat: 'array' }
