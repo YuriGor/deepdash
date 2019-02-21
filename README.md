@@ -14,7 +14,8 @@ Looking for eachDeep, filterDeep, omitDeep, keysDeep etc? Tree traversal extensi
 - [exists](https://deepdash.io/#exists) - like a `_.has` but returns `false` for empty array slots
 - [filterDeep](https://deepdash.io/#filterdeep) - deep filter object
 - [indexate](https://deepdash.io/#indexate) - get an object with all the paths as keys and corresponding values
-- [omitDeep](https://deepdash.io/#omitdeep) - get object without keys specified as string name or regex
+- [pickDeep](https://deepdash.io/#pickdeep) - get object only with keys specified by names or regexes
+- [omitDeep](https://deepdash.io/#omitdeep) - get object without keys specified by names or regexes
 - [paths](https://deepdash.io/#paths-keysdeep) - (keysDeep) get an array of paths
 - [pathToString](https://deepdash.io/#pathtostring) - convert an array to string path (opposite to _.toPath)
 
