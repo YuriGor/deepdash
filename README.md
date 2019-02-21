@@ -78,21 +78,21 @@ let obj = {
   },
   nl: null,
 };
-_.eachDeep(obj, (value, key, path, depth, parent, parentKey, parentPath) => {
+_.eachDeep(obj, (value, key, parent, context) => {
   console.log(
-    _.repeat('  ', depth) +
+    _.repeat('  ', context.depth) +
       key +
       ':' +
       (value === null ? 'null' : typeof value),
-    parentPath && ' @' + parentPath
+    context.parent.path && ' @' + context.parent.path
   );
-  if(key=="skip"){
+  if (key == 'skip') {
     return false; // return false explicitly to skip iteration over current value's children
   }
 });
 ```
 Console:
-```
+```json
 a:object
   b:object  @a
     c:object  @a.b
@@ -122,7 +122,7 @@ nl:null
 ```
 Chaining works too:
 ```js
-  _(obj).eachDeep((value, key, path, depth, parent, parentKey, parentPath) => {/* do */}).value();
+  _(obj).eachDeep((value, key, parent, context) => {/* do */}).value();
 ```
 
 ### See [docs](https://deepdash.io) for details.

@@ -7,6 +7,56 @@ const chai = require('chai'),
   _ = require('../deepdash')(require('lodash'));
 
 describe('README examples', () => {
+  it('usage', () => {
+    let obj = {
+      a: {
+        b: {
+          c: {
+            d: [
+              { i: 0 },
+              { i: 1 },
+              { i: 2 },
+              { i: 3 },
+              { i: 4 },
+              { i: 5 },
+              {
+                o: {
+                  d: new Date(),
+                  f: function() {},
+                  skip: {
+                    please: {
+                      dont: {
+                        go: {
+                          here: 'skip it',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+            s: 'hello',
+          },
+          b: true,
+        },
+        n: 12345,
+        u: undefined,
+      },
+      nl: null,
+    };
+    _.eachDeep(obj, (value, key, parent, context) => {
+      // console.log(
+      //   _.repeat('  ', context.depth) +
+      //     key +
+      //     ':' +
+      //     (value === null ? 'null' : typeof value),
+      //   context.parent.path && ' @' + context.parent.path
+      // );
+      if (key == 'skip') {
+        return false; // return false explicitly to skip iteration over current value's children
+      }
+    });
+  });
   it('eachDeep', () => {
     let circular = { a: { b: { c: {} } } };
     let log = [];
@@ -154,5 +204,60 @@ describe('README examples', () => {
     expect(_.exists(obj, 1)).to.equal(true);
     expect(_.exists(obj, '[1].a[0]')).to.equal(false);
     expect(_.exists(obj, '[1].a[1]')).to.equal(true);
+  });
+
+  it('omitDeep', () => {
+    let obj = {
+      good1: true,
+      bad1: false,
+      good2: { good3: true, bad3: false },
+      bad2: { good: true },
+      good4: [{ good5: true, bad5: false }],
+      bad4: [],
+    };
+    var clean = _.omitDeep(obj, ['bad1', 'bad2', 'bad3', 'bad4', 'bad5']);
+    expect(clean).to.deep.equal({
+      good1: true,
+      good2: { good3: true },
+      good4: [{ good5: true }],
+    });
+    clean = _.omitDeep(obj, /^bad.*$/);
+    expect(clean).to.deep.equal({
+      good1: true,
+      good2: { good3: true },
+      good4: [{ good5: true }],
+    });
+  });
+
+  it('pickDeep', () => {
+    let obj = {
+      good1: true,
+      bad1: false,
+      good2: { good3: true, bad3: true },
+      bad2: { good: true },
+      good4: [{ good5: true, bad5: true }],
+      bad4: [],
+    };
+    let clean = _.pickDeep(obj, [
+      'good1',
+      'good2',
+      'good3',
+      'good',
+      'good4',
+      'good5',
+    ]);
+    expect(clean).to.deep.equal({
+      good1: true,
+      good2: { good3: true, bad3: true },
+      bad2: { good: true },
+      good4: [{ good5: true, bad5: true }],
+    });
+    clean = _.pickDeep(obj, /^good.*$/);
+    expect(clean).to.deep.equal({
+      good1: true,
+      good2: { good3: true, bad3: true },
+      bad2: { good: true },
+      good4: [{ good5: true, bad5: true }],
+    });
   });
 });
