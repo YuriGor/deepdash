@@ -60,17 +60,24 @@ describe('README examples', () => {
   it('eachDeep', () => {
     let circular = { a: { b: { c: {} } } };
     let log = [];
-    circular.a.b.c = circular;
-    _.eachDeep(circular, (value, key, parent, ctx) => {
-      if (_.findIndex(ctx.parents, ['value', value]) !== -1) {
-        log.push(
-          "Circular reference skipped for '" + key + "' at " + ctx.parent.path
-        );
-        return false;
-      }
-      //do your things
-    });
-    expect(log).to.deep.equal(["Circular reference skipped for 'c' at a.b"]);
+    circular.a.b.c = circular.a;
+    _.eachDeep(
+      circular,
+      (value, key, parent, ctx) => {
+        if (ctx.isCircular) {
+          log.push(
+            'Circular reference to ' +
+              ctx.circularParent.path +
+              ' skipped at ' +
+              ctx.path
+          );
+          return false;
+        }
+        //do your things
+      },
+      { checkCircular: true }
+    );
+    expect(log).to.deep.equal(['Circular reference to a skipped at a.b.c']);
   });
   it('indexate', () => {
     let index = _.indexate(
