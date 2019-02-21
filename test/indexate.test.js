@@ -12,6 +12,12 @@ chai.use(asserttype);
 var { demo, circular } = require('./object');
 
 describe('indexate', () => {
+  it('no mutation', () => {
+    let orig = _.cloneDeep(demo);
+    let obj = _.cloneDeep(demo);
+    _.indexate(obj, { leavesOnly: true });
+    expect(obj).to.deep.equal(orig);
+  });
   it('Count paths', () => {
     let index = _.indexate(demo, { leafsOnly: false });
     expect(_.size(index)).equal(30);

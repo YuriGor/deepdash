@@ -16,6 +16,12 @@ function isNS(value) {
 }
 
 describe('filterDeep', () => {
+  it('no mutation', () => {
+    let orig = _.cloneDeep(demo);
+    let obj = _.cloneDeep(demo);
+    _.filterDeep(obj, isNS, { leavesOnly: true });
+    expect(obj).to.deep.equal(orig);
+  });
   it('Count paths', () => {
     let filtrate = _(demo)
       .filterDeep(isNS, { leavesOnly: true })
