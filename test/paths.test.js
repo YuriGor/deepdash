@@ -12,6 +12,12 @@ chai.use(asserttype);
 var { demo, circular } = require('./object');
 
 describe('paths', () => {
+  it('no mutation', () => {
+    let orig = _.cloneDeep(demo);
+    let obj = _.cloneDeep(demo);
+    _.paths(obj, { leavesOnly: true });
+    expect(obj).to.deep.equal(orig);
+  });
   it('Count paths', () => {
     let paths = _.paths(demo, { leavesOnly: false });
     expect(paths.length).equal(30);

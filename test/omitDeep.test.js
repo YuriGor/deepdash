@@ -12,6 +12,27 @@ chai.use(asserttype);
 var { demo, circular } = require('./object');
 
 describe('omitDeep', () => {
+  it('no mutation', () => {
+    let orig = _.cloneDeep(demo);
+    let obj = _.cloneDeep(demo);
+    let clean = _.omitDeep(obj, 'skip');
+    clean = _.omitDeep(clean, 'o');
+    expect(clean).to.deep.equal({
+      a: {
+        b: {
+          c: {
+            d: [{ i: 0 }, { i: 1 }, { i: 2 }, { i: 3 }, { i: 4 }, { i: 5 }, {}],
+            s: 'hello',
+          },
+          b: true,
+        },
+        n: 12345,
+        u: undefined,
+      },
+      nl: null,
+    });
+    expect(obj).to.deep.equal(orig);
+  });
   it('demo skip', () => {
     let clean = _.omitDeep(demo, 'skip');
     clean = _.omitDeep(clean, 'o');

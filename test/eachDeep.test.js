@@ -8,6 +8,14 @@ const chai = require('chai'),
 var { demo, circular } = require('./object');
 
 describe('eachDeep', () => {
+  it('no mutation', () => {
+    let orig = _.cloneDeep(demo);
+    let obj = _.cloneDeep(demo);
+    _.eachDeep(obj, (value, key) => {
+      if (key == 'skip') return false;
+    });
+    expect(obj).to.deep.equal(orig);
+  });
   it('Count nodes', () => {
     let c = 0;
     _.eachDeep(demo, (value, key) => {
