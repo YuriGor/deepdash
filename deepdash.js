@@ -324,13 +324,14 @@
             keepCircular: true,
             //replaceCircularBy: <by>,
             condense: true,
+            cloneDeep: _.cloneDeep,
+            invert: false,
           },
           options || {}
         );
         options.leavesOnly = false;
         options.pathFormat = 'array';
-        options.keepUndefined = true;
-        options.cloneDeep = _.cloneDeep;
+        options.keepUndefined = !options.invert;
 
         if (!_.isArray(keys)) keys = [keys];
         keys = _.groupBy(keys, function(key) {
@@ -338,21 +339,30 @@
         });
         var test = function(value, key) {
           if (_.includes(keys.const, key)) {
-            return false;
+            return options.invert;
           }
           if (
             _.some(keys.regex, function(rx) {
               return rx.test(key);
             })
           ) {
-            return false;
+            return options.invert;
           }
           if (_.isObject(value) && _.size(value) !== 0) return undefined;
-          return true;
+          return !options.invert;
         };
         return _.filterDeep(obj, test, options);
       };
       _.mixin({ omitDeep: omitDeep });
+    }
+
+    if (!_.pickDeep) {
+      var pickDeep = function(obj, keys, options) {
+        options = options || {};
+        options.invert = true;
+        return _.omitDeep(obj, keys, options);
+      };
+      _.mixin({ pickDeep: pickDeep });
     }
 
     return _;
