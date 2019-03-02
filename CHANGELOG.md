@@ -23,3 +23,8 @@ Now it's much easier to iterate over tree with known `children` collection field
 
 - checkCircular option added to [eachDeep](/#eachdeep-foreachdeep) method.
 - [pickDeep](/#peekdeep) method implemented.
+
+## v1-9-5
+*(2019-02-09)*
+
+*no changelog earlier, sorry*
