@@ -58,13 +58,17 @@ describe('eachDeep', () => {
 
   it('circular', () => {
     let circluarPath = [];
-    _.eachDeep(circular, (value, key, parent, ctx) => {
-      if (_.findIndex(ctx.parents, ['value', value]) != -1) {
-        circluarPath.push(ctx.path);
+    _.eachDeep(
+      circular,
+      (value, key, parent, ctx) => {
+        if (ctx.isCircular) {
+          circluarPath.push(ctx.path);
 
-        return false;
-      }
-    });
+          return false;
+        }
+      },
+      { checkCircular: true }
+    );
 
     expect(circluarPath)
       .to.include('a.b.c.e')
