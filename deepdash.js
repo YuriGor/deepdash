@@ -41,7 +41,8 @@
       if (depth === undefined) depth = 0;
       if (parents === undefined) parents = [];
       if (obj === undefined) obj = value;
-
+      if (options.pathFormat === undefined) options.pathFormat = 'string';
+      if (options.checkCircular === undefined) options.checkCircular = false;
       var currentObj = {
         value: value,
         key: key,
@@ -49,6 +50,58 @@
         parent: parent,
       };
       var currentParents = parents.concat(currentObj);
+      if (options.tree) {
+        if (!_.isObject(options.tree)) {
+          options.tree = {};
+        }
+        if (options.tree.rootIsChildren === undefined) {
+          options.tree.rootIsChildren = true;
+        }
+        if (!options.tree.children) {
+          options.tree.children = ['children'];
+        }
+        if (!_.isArray(options.tree.children)) {
+          options.tree.children = [options.tree.children];
+        }
+        // console.log('tree options', options.tree);
+        if (!depth && options.tree.rootIsChildren) {
+          currentObj.isTreeChildren = true;
+          currentObj.treeChildrenPath =
+            options.pathFormat == 'string' ? '' : [];
+        } else {
+          for (var i = 0; i < options.tree.children.length; i++) {
+            if (_.isString(options.tree.children[i])) {
+              options.tree.children[i] = _.toPath(options.tree.children[i]);
+            }
+            if (
+              (_.isArray(options.tree.children[i]) &&
+                path.length >= options.tree.children[i].length &&
+                _.isEqual(
+                  _.takeRight(path, options.tree.children[i].length),
+                  options.tree.children[i]
+                )) ||
+              (options.tree.children[i].test &&
+                options.tree.children[i].test(
+                  options.pathFormat == 'string'
+                    ? currentObj.path
+                    : pathToString(path)
+                ))
+            ) {
+              currentObj.isTreeChildren = true;
+              currentObj.treeChildrenPath =
+                options.pathFormat == 'array' ||
+                !_.isArray(options.tree.children[i])
+                  ? options.tree.children[i]
+                  : pathToString(options.tree.children[i]);
+              // console.log('✓ ' + options.tree.children[i], path);
+              break;
+            } else {
+              currentObj.isTreeChildren = false;
+              // console.log('× ' + options.tree.children[i], path);
+            }
+          }
+        }
+      }
       _.forOwn(value, function(childValue, childKey) {
         if (_.isArray(value)) {
           if (childValue === undefined && !(childKey in value)) {
@@ -62,29 +115,37 @@
         var circularParent = undefined;
         if (options.checkCircular) {
           if (_.isObject(childValue) && !_.isEmpty(childValue)) {
-            circularParentIndex = _.findIndex(currentParents, [
-              'value',
-              childValue,
-            ]);
+            circularParentIndex = _.findIndex(currentParents, function(v) {
+              return v.value === childValue;
+            });
             circularParent = currentParents[circularParentIndex];
           } else {
             circularParentIndex = -1;
             circularParent = null;
           }
           isCircular = circularParentIndex !== -1;
+          if (options.tree) {
+            // console.log(
+            //   (isCircular ? 'IS' : 'NOT') + ' circular: ' + childPath
+            // );
+          }
         }
-
-        var res = callback(childValue, childKey, value, {
-          path:
-            options.pathFormat == 'array' ? childPath : pathToString(childPath),
-          parent: currentObj,
-          parents: currentParents,
-          obj: obj,
-          depth: depth,
-          isCircular: isCircular,
-          circularParent: circularParent,
-          circularParentIndex: circularParentIndex,
-        });
+        var res;
+        if (!options.tree || currentObj.isTreeChildren) {
+          res = callback(childValue, childKey, value, {
+            path:
+              options.pathFormat == 'array'
+                ? childPath
+                : pathToString(childPath),
+            parent: currentObj,
+            parents: currentParents,
+            obj: obj,
+            depth: depth,
+            isCircular: isCircular,
+            circularParent: circularParent,
+            circularParentIndex: circularParentIndex,
+          });
+        }
         if (res !== false && !isCircular && _.isObject(value)) {
           iterate(
             childValue,
@@ -104,7 +165,7 @@
     if (!_.eachDeep || !_.forEachDeep) {
       var eachDeep = function(obj, callback, options) {
         if (callback === undefined) callback = _.identity;
-        options = _.merge({ checkCircular: false }, options || {});
+        options = _.merge({}, options || {});
         iterate(obj, callback, options);
         return obj;
       };
