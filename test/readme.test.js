@@ -79,6 +79,47 @@ describe('README examples', () => {
     );
     expect(log).to.deep.equal(['Circular reference to a skipped at a.b.c']);
   });
+  it('eachDeep tree', () => {
+    let children = [
+      {
+        name: 'grand 1',
+        children: [
+          {
+            name: 'parent 1.1',
+            children: [{ name: 'child 1.1.1' }, { name: 'child 1.1.2' }],
+          },
+          {
+            name: 'parent 1.2',
+            children: [{ name: 'child 1.2.1' }, { name: 'child 1.2.2' }],
+          },
+        ],
+      },
+      {
+        name: 'grand 2',
+        children: [
+          {
+            name: 'parent 2.1',
+            children: [{ name: 'child 2.1.1' }, { name: 'child 2.1.2' }],
+          },
+          {
+            name: 'parent 2.2',
+            children: [{ name: 'child 2.2.1' }, { name: 'child 2.2.2' }],
+          },
+        ],
+      },
+    ];
+    let total = 0;
+    _.eachDeep(
+      children,
+      (child, i, parent, ctx) => {
+        // console.log(_.repeat('  ', ctx.depth) + child.name);
+        total++;
+      },
+      { tree: true }
+    );
+    // console.log('total nodes: ' + total);
+    expect(total).equal(14);
+  });
   it('indexate', () => {
     let index = _.indexate(
       {
