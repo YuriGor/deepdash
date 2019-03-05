@@ -1,11 +1,34 @@
 # Change Log
 
+## v3-0-0
+*(2019-03-05)*
+
+**Breaking Changes**
+
+- `keepUndefined` option removed from the [filterDeep](/#filterdeep) method. Use onUndefined:{keepIfEmpty:true}, instead.
+- `keys` argument of the [omitDeep](/#omitdeep) and [pickDeep](/#pickdeep) methods became `paths`
+
+**Features added**
+
+- `tree` option added to the [filterDeep](/#filterdeep) method.
+- `tree` option added to the [indexate](/#indexate) method.
+- `tree` option added to the [paths (keysDeep)](/#paths-keysdeep) method.
+- `predicate` option of the [filterDeep](/#filterdeep) method is Lodash _.iteratee.
+- `cloneDeep` option of the [filterDeep](/#filterdeep) now can be set to `false`.
+- `callbackAfterIterate` option added to the [eachDeep](/#eachdeep-foreachdeep) method.
+- `onTrue` `onUndefined` and `onFalse` options added to the [filterDeep](/#filterdeep) method. `cloneDeep`, `keepIfEmpty`, `skipChildren` default values can be overwritten for each condition.
+- custom object replies now are possible from [filterDeep](/#filterdeep) iteratee, with `cloneDeep`, `keepIfEmpty`, `skipChildren` and `empty` fields.
+
+**Bugs fixed**
+
+- [filterDeep](/#filterdeep) method continues to iterate over object's children if it passed the filter.
+
 ## v2-1-0
 *(2019-03-02)*
 
 **Features added**
 
-- `tree` option added to [eachDeep](/#eachdeep-foreachdeep) method.
+- `tree` option added to the [eachDeep](/#eachdeep-foreachdeep) method.
 Now it's much easier to iterate over tree with known `children` collection field name / path
 
 **Bugs fixed**
@@ -21,7 +44,7 @@ Now it's much easier to iterate over tree with known `children` collection field
 
 **Features added**
 
-- checkCircular option added to [eachDeep](/#eachdeep-foreachdeep) method.
+- checkCircular option added to the [eachDeep](/#eachdeep-foreachdeep) method.
 - [pickDeep](/#peekdeep) method implemented.
 
 ## v1-9-5

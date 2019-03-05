@@ -269,7 +269,7 @@ describe('README examples', () => {
       good2: { good3: true },
       good4: [{ good5: true }],
     });
-    clean = _.omitDeep(obj, /^bad.*$/);
+    clean = _.omitDeep(obj, /\.?bad.*$/);
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true },
@@ -300,7 +300,7 @@ describe('README examples', () => {
       bad2: { good: true },
       good4: [{ good5: true, bad5: true }],
     });
-    clean = _.pickDeep(obj, /^good.*$/);
+    clean = _.pickDeep(obj, /\.?good.*$/);
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true, bad3: true },

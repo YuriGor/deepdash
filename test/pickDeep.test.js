@@ -101,7 +101,7 @@ describe('pickDeep', () => {
       good4: [{ good5: true, bad5: true }],
       bad4: [],
     };
-    let clean = _.pickDeep(obj, /^good.*$/);
+    let clean = _.pickDeep(obj, /\.?good.*$/);
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true, bad3: true },
