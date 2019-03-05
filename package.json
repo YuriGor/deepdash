@@ -1,6 +1,6 @@
 {
   "name": "deepdash",
-  "version": "2.1.3",
+  "version": "3.0.0",
   "description": "➔ 𝐃eep extension for 𝐋odash: ✓ eachDeep ✓ filterDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ indexate ✓ condenseDeep ⋮ Parent nodes tracking ⋮ Circular references check ⋮ Leaves only mode ⋮ Path as a valid js string or an array ⋮",
   "main": "deepdash.js",
   "directories": {
