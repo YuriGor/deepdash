@@ -336,29 +336,15 @@ describe('stackoverflow', () => {
       },
     ];
     var endsWith = 'foo';
-    // We will need 2 passes, first - to collect needed 'name' nodes ending with 'foo':
     var foundFoo = _.filterDeep(
       obj,
       function(value, key) {
-        if (key == 'name' && _.endsWith(value, endsWith)) return true;
+        return _.endsWith(value.name, endsWith);
       },
-      // we need to disable condensing this time to keep all the paths in result object matching source,
-      // otherwise array indexes may be changed and we will not find correct values in the source object later.
-      { condense: false }
+      { tree: { children: ['sub_categories', 'indicators'] } }
     );
-    // console.log(foundFoo);
-    // second pass - to add missed fields both for found 'foo' nodes and their parents.
-    var filtrate = _.filterDeep(obj, function(value, key, parent, ctx) {
-      if (
-        _.get(foundFoo, ctx.path) !== undefined ||
-        (!_.isObject(value) && _.get(foundFoo, ctx.parent.path) !== undefined)
-      ) {
-        // if (_.has(foundFoo, path)) console.log(`${key} has ${path}`);
-        // else console.log(`${key} has parent ${parentPath}`);
-        return true;
-      }
-    });
-    expect(filtrate).to.deep.equal([
+
+    expect(foundFoo).to.deep.equal([
       {
         id: 1,
         name: 'topic title 1',
