@@ -90,25 +90,15 @@ describe('stackoverflow', () => {
       },
     ];
     var idList = [2, 3];
-    // We will need 2 passes, first - to collect needed 'id' nodes:
-    var foundIds = _.filterDeep(
+    var found = _.filterDeep(
       obj,
-      function(value, key) {
-        if (key == 'id' && _.indexOf(idList, value) !== -1) return true;
+      function(value) {
+        return _.indexOf(idList, value.id) !== -1;
       },
-      // we need to disable condensing this time to keep all the paths in result object matching source,
-      // otherwise array indexes may be changed and we will not find correct values in the source object later.
-      { condense: false }
+      { tree: true }
     );
-    // second pass - to put missed 'title' nodes both for found ids and their parents.
-    var filtrate = _.filterDeep(obj, function(value, key, parent, ctx) {
-      if (
-        _.get(foundIds, ctx.path) !== undefined ||
-        (key == 'title' && _.get(foundIds, ctx.parent.path) !== undefined)
-      )
-        return true;
-    });
-    expect(filtrate).to.deep.equal([
+
+    expect(found).to.deep.equal([
       {
         title: 'category 1',
         children: [
