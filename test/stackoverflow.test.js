@@ -421,27 +421,18 @@ describe('stackoverflow', () => {
       },
     ];
     var keyword = 'Hit';
-    // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
     var foundHit = _.filterDeep(
       input,
       function(value) {
-        if (value.value && value.value.includes(keyword)) return true;
+        return value.value.includes(keyword);
       },
       {
-        condense: false, // keep empty slots in array to preserve correct paths
-        leavesOnly: false,
+        tree: true,
+        onTrue: { skipChildren: true },
       }
     );
-    // second pass - to add missed fields both for found 'Hit' nodes and their parents.
-    var filtrate = _.filterDeep(input, function(value, key, parent, ctx) {
-      if (
-        _.get(foundHit, ctx.path) !== undefined ||
-        _.get(foundHit, ctx.parent.path) !== undefined
-      ) {
-        return true;
-      }
-    });
-    expect(filtrate).to.deep.equal([
+
+    expect(foundHit).to.deep.equal([
       {
         value: 'Miss1',
         children: [{ value: 'Hit1', children: [{ value: 'Miss3' }] }],
