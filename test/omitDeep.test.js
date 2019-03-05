@@ -76,7 +76,7 @@ describe('omitDeep', () => {
       good4: [{ good5: true, bad5: true }],
       bad4: [],
     };
-    let clean = _.omitDeep(obj, /^bad.*$/);
+    let clean = _.omitDeep(obj, /\.?bad.*$/);
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true },

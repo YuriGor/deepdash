@@ -9,7 +9,7 @@ const chai = require('chai'),
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-var { demo, circular } = require('./object');
+var { demo, circular, children } = require('./object');
 
 describe('paths', () => {
   it('no mutation', () => {
@@ -156,6 +156,37 @@ describe('paths', () => {
       ['a', 'n'],
       ['a', 'u'],
       ['nl'],
+    ]);
+  });
+
+  it('No leavesOnly in tree', () => {
+    try {
+      _.paths(children, { tree: true, leavesOnly: true });
+    } catch (exc) {
+      expect(exc.message).equal(
+        '"leavesOnly" option cannot be true in the "tree" mode.'
+      );
+    }
+  });
+  it('paths of tree', () => {
+    let paths = _.paths(children, { tree: true });
+
+    // console.log(paths);
+    expect(paths).to.deep.equal([
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+      '[1].children[0].children[1]',
+      '[1].children[1]',
+      '[1].children[1].children[0]',
+      '[1].children[1].children[1]',
     ]);
   });
 });

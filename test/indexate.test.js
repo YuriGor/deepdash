@@ -9,7 +9,7 @@ const chai = require('chai'),
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-var { demo, circular } = require('./object');
+var { demo, circular, children } = require('./object');
 
 describe('indexate', () => {
   it('no mutation', () => {
@@ -69,9 +69,9 @@ describe('indexate', () => {
     index = _.indexate(/.*/);
     expect(index).to.deep.equal({});
   });
-
   it('Leafs only', () => {
     let index = _.indexate(demo, { leavesOnly: true });
+    // console.log(index);
     expect(_.size(index)).equal(14);
   });
 
@@ -97,5 +97,38 @@ describe('indexate', () => {
     var slots = ['start', , 'middle', , 'finish'];
     index = _.indexate(slots);
     expect(_.size(index)).equal(3);
+  });
+  it('No leavesOnly in tree', () => {
+    try {
+      _.indexate(children, { tree: true, leavesOnly: true });
+    } catch (exc) {
+      expect(exc.message).equal(
+        '"leavesOnly" option cannot be true in the "tree" mode.'
+      );
+    }
+  });
+  it('Indexate tree', () => {
+    let index = _.indexate(children, { tree: true });
+    let names = _(index)
+      .values()
+      .map('name')
+      .value();
+    // console.log(names);
+    expect(names).to.deep.equal([
+      'grand 1',
+      'parent 1.1',
+      'child 1.1.1',
+      'child 1.1.2',
+      'parent 1.2',
+      'child 1.2.1',
+      'child 1.2.2',
+      'grand 2',
+      'parent 2.1',
+      'child 2.1.1',
+      'child 2.1.2',
+      'parent 2.2',
+      'child 2.2.1',
+      'child 2.2.2',
+    ]);
   });
 });

@@ -38,17 +38,6 @@ module.exports = {
     },
     nl: null,
   },
-  circular: {
-    a: {
-      b: {
-        c: {
-          // e: circular.a.b,
-          hi: 'planet',
-        },
-      },
-    },
-    i: [1, 2, 3, 4, { hello: 'world' }],
-  },
   children: [
     {
       name: 'grand 1',
@@ -153,6 +142,93 @@ module.exports = {
           text: '+1',
           verified: false,
         },
+        {
+          name: 'Larry',
+          text: '+1',
+          verified: true,
+        },
+      ],
+    },
+    {
+      name: 'Regina',
+      rating: 2,
+      text: 'Not really like it',
+      verified: true,
+      replies: [
+        {
+          name: 'admin',
+          text: ':(',
+          verified: true,
+        },
+      ],
+    },
+  ],
+  verifiedComments: [
+    {
+      name: 'Bob',
+      text: 'Perfect!',
+      rating: 5,
+      verified: true,
+      replies: [
+        {
+          name: 'admin',
+          text: 'Thank you!',
+          verified: true,
+          replies: [
+            {
+              name: 'Bob',
+              text: 'Write more!',
+              verified: true,
+              replies: [
+                {
+                  name: 'admin',
+                  text: 'Ok :)',
+                  verified: true,
+                },
+              ],
+            },
+          ],
+        },
+        {
+          name: 'Augusta',
+          text: 'like a brillaint!11',
+          verified: true,
+        },
+      ],
+    },
+    {
+      name: 'mr.John',
+      text: 'Well done..',
+      rating: 4,
+      verified: false,
+      replies: [
+        {
+          name: 'admin',
+          text: 'Can it be better?',
+          verified: true,
+          replies: [
+            {
+              name: 'mr.John',
+              text: 'May be last three lines can be shorter..',
+              verified: false,
+              replies: [
+                {
+                  name: 'Bob',
+                  verified: true,
+                  text: "Don't listen to him, it will be unreadable!",
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: 'Mark',
+      rating: 5,
+      text: 'Any way to donate?',
+      verified: false,
+      replies: [
         {
           name: 'Larry',
           text: '+1',
@@ -338,14 +414,66 @@ module.exports = {
       },
     },
   ],
+  badChildren: [
+    {
+      name: '1',
+      bad: false,
+      children: [
+        { name: '1.1', bad: false },
+        { name: '1.2' },
+        { name: '1.3', bad: true },
+      ],
+    },
+    {
+      name: '2',
+      children: [
+        { name: '2.1', bad: false },
+        { name: '2.2' },
+        { name: '2.3', bad: true },
+      ],
+    },
+    {
+      name: '3',
+      bad: true,
+      children: [
+        { name: '3.1', bad: false },
+        { name: '3.2' },
+        { name: '3.3', bad: true },
+      ],
+    },
+  ],
 };
 
+module.exports.circular = {
+  a: {
+    b: {
+      c: {
+        // e: circular.a.b,
+        hi: 'planet',
+      },
+    },
+  },
+  i: [
+    1,
+    2,
+    3,
+    4,
+    {
+      hello: 'world',
+    } /*
+    ,[
+      circular
+      ,[circular.a]
+      ,{j:{ hello: 'world' }
+      ,{k:circular}}]*/,
+  ],
+};
 module.exports.circular.a.b.c.e = module.exports.circular.a.b;
 module.exports.circular.i.push([
   module.exports.circular,
   [module.exports.circular.a],
   { j: module.exports.circular.i[4] },
-  { k: module.exports.circular.i[5] },
+  { k: undefined },
 ]);
 
 var childrenCircular = _.cloneDeep(module.exports.children);

@@ -36,6 +36,14 @@ describe('filterDeep', () => {
     filtrate = _.indexate(filtrate, { leavesOnly: true });
     expect(_.size(filtrate)).equal(18);
   });
+  it('Completely filtered out', () => {
+    let obj = { a: { b: undefined } };
+    let filtrate = _.filterDeep(obj, isNS, {
+      leavesOnly: true,
+    });
+    //console.log(filtrate);
+    expect(filtrate).to.deep.equal({});
+  });
   it('Count paths circular', () => {
     let filtrate = _.filterDeep(circular, isNS, {
       checkCircular: true,
@@ -85,11 +93,33 @@ describe('filterDeep', () => {
     let filtrate = _(demo)
       .filterDeep(_.isObject, {
         leavesOnly: false,
-        cloneDeep: (o) => (_.isArray(o) ? [] : _.isObject ? {} : o),
+        onTrue: { skipChildren: false },
       })
-      .paths({ leavesOnly: false })
+      .omitDeep('o.d')
       .value();
-    expect(_.size(filtrate)).equal(18);
+    // console.log(JSON.stringify(filtrate));
+    expect(filtrate).to.deep.equal({
+      a: {
+        b: {
+          c: {
+            d: [
+              {},
+              {},
+              {},
+              {},
+              {},
+              {},
+              {
+                o: {
+                  f: {},
+                  skip: { please: { dont: { go: {} } } },
+                },
+              },
+            ],
+          },
+        },
+      },
+    });
   });
   it('Circular', () => {
     let filtrate = _.filterDeep(circular, isNS, {
@@ -112,14 +142,13 @@ describe('filterDeep', () => {
       keepCircular: false,
       leavesOnly: true,
     });
-    // console.log(circular);
-    //console.log(filtrate);
-    filtrate = _.paths(filtrate, {
-      leavesOnly: true,
-      checkCircular: true,
-    });
-    // console.log(filtrate);
-    expect(_.size(filtrate)).equal(8);
+    let err;
+    try {
+      JSON.stringify(filtrate);
+    } catch (exc) {
+      err = exc;
+    }
+    expect(err).equal(undefined);
   });
   it('Not matched circular ', () => {
     let obj = { a: { b: {} } };
@@ -143,7 +172,8 @@ describe('filterDeep', () => {
       leavesOnly: true,
       condense: false,
     });
-    filtrate.should.deep.equal({ a: [, , { b: true }] });
+    // console.log(filtrate);
+    filtrate.should.deep.equal({ a: [, , { b: true }, ,] });
   });
   it('replaceCircularBy', () => {
     let again = Symbol('[circular]');
@@ -168,98 +198,7 @@ describe('filterDeep', () => {
       .property('i[5][1][0].b.c.e')
       .and.equal(undefined);
   });
-  it('array path format', () => {
-    const input = [
-      {
-        value: 'Miss1',
-        children: [
-          { value: 'Miss2' },
-          { value: 'Hit1', children: [{ value: 'Miss3' }] },
-        ],
-      },
-      {
-        value: 'Miss4',
-        children: [
-          { value: 'Miss5' },
-          { value: 'Miss6', children: [{ value: 'Hit2' }] },
-        ],
-      },
-      {
-        value: 'Miss7',
-        children: [
-          { value: 'Miss8' },
-          { value: 'Miss9', children: [{ value: 'Miss10' }] },
-        ],
-      },
-      {
-        value: 'Hit3',
-        children: [
-          { value: 'Miss11' },
-          { value: 'Miss12', children: [{ value: 'Miss13' }] },
-        ],
-      },
-      {
-        value: 'Miss14',
-        children: [
-          { value: 'Hit4' },
-          { value: 'Miss15', children: [{ value: 'Miss16' }] },
-        ],
-      },
-    ];
-    var keyword = 'Hit';
-    // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
-    var foundHit = _.filterDeep(
-      input,
-      function(value, key, parent, ctx) {
-        expect(ctx.path).to.be.an.array();
-        expect(ctx.parent.path).to.be.an.array();
-        if (value.value && value.value.includes(keyword)) return true;
-      },
-      {
-        condense: false, // keep empty slots in array to preserve correct paths
-        leavesOnly: false,
-        pathFormat: 'array',
-      }
-    );
-    // second pass - to add missed fields both for found 'Hit' nodes and their parents.
-    var filtrate = _.filterDeep(
-      input,
-      function(value, key, parent, ctx) {
-        expect(ctx.path).to.be.an.array();
-        expect(ctx.parent.path).to.be.an.array();
-        if (
-          _.get(foundHit, ctx.path) !== undefined ||
-          _.get(foundHit, ctx.parent.path) !== undefined
-        ) {
-          return true;
-        }
-      },
-      {
-        pathFormat: 'array',
-      }
-    );
-    expect(filtrate).to.deep.equal([
-      {
-        value: 'Miss1',
-        children: [{ value: 'Hit1', children: [{ value: 'Miss3' }] }],
-      },
-      {
-        value: 'Miss4',
-        children: [{ value: 'Miss6', children: [{ value: 'Hit2' }] }],
-      },
-      {
-        value: 'Hit3',
-        children: [
-          { value: 'Miss11' },
-          { value: 'Miss12', children: [{ value: 'Miss13' }] },
-        ],
-      },
-      {
-        value: 'Miss14',
-        children: [{ value: 'Hit4' }],
-      },
-    ]);
-  });
+
   it('keepUndefined', () => {
     let filtrate = _.filterDeep(
       demo,
@@ -270,7 +209,7 @@ describe('filterDeep', () => {
       },
       {
         leavesOnly: false,
-        keepUndefined: true,
+        onUndefined: { keepIfEmpty: true },
       }
     );
     // console.log(filtrate);
@@ -297,6 +236,68 @@ describe('filterDeep', () => {
         },
         n: 12345,
         u: undefined,
+      },
+      nl: null,
+    });
+  });
+  it('Custom reply', () => {
+    let filtrate = _.filterDeep(demo, (v) => {
+      if (v instanceof Date) {
+        return {
+          cloneDeep: false,
+          keepIfEmpty: false,
+          skipChildren: true,
+          empty: true,
+        };
+      }
+      let t = typeof v;
+      if (t == 'object') {
+        return { cloneDeep: false, keepIfEmpty: true };
+      }
+      if (t == 'string' || t == 'number') return true;
+    });
+    // console.log(JSON.stringify(filtrate, null, 2));
+    expect(filtrate).to.deep.equal({
+      a: {
+        b: {
+          c: {
+            d: [
+              {
+                i: 0,
+              },
+              {
+                i: 1,
+              },
+              {
+                i: 2,
+              },
+              {
+                i: 3,
+              },
+              {
+                i: 4,
+              },
+              {
+                i: 5,
+              },
+              {
+                o: {
+                  skip: {
+                    please: {
+                      dont: {
+                        go: {
+                          here: 'skip it',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            ],
+            s: 'hello',
+          },
+        },
+        n: 12345,
       },
       nl: null,
     });
