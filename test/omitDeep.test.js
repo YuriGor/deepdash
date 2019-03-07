@@ -16,7 +16,7 @@ describe('omitDeep', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
     let clean = _.omitDeep(obj, 'skip');
-    clean = _.omitDeep(clean, 'o');
+    clean = _.omitDeep(clean, 'o', { onMatch: { skipChildren: true } });
     expect(clean).to.deep.equal({
       a: {
         b: {
@@ -35,7 +35,7 @@ describe('omitDeep', () => {
   });
   it('demo skip', () => {
     let clean = _.omitDeep(demo, 'skip');
-    clean = _.omitDeep(clean, 'o');
+    clean = _.omitDeep(clean, 'o', { onMatch: { skipChildren: true } });
     expect(clean).to.deep.equal({
       a: {
         b: {
@@ -60,7 +60,9 @@ describe('omitDeep', () => {
       good4: [{ good5: true, bad5: false }],
       bad4: [],
     };
-    let clean = _.omitDeep(obj, ['bad1', 'bad2', 'bad3', 'bad4', 'bad5']);
+    let clean = _.omitDeep(obj, ['bad1', 'bad2', 'bad3', 'bad4', 'bad5'], {
+      onMatch: { skipChildren: true },
+    });
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true },

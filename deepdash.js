@@ -49,6 +49,7 @@
             pathArray.length >= paths[i].length &&
             _.isEqual(_.takeRight(pathArray, paths[i].length), paths[i])
           ) {
+            // console.log('path matched');
             return paths[i];
           }
         } else if (paths[i] instanceof RegExp) {
@@ -56,6 +57,7 @@
             pathString = pathToString(path);
           }
           if (paths[i].test(pathString)) {
+            // console.log('regex matched', paths[i]);
             return paths[i];
           }
         } else {
@@ -64,6 +66,7 @@
           );
         }
       }
+      // console.log('matched nothing');
       return false;
     }
     if (!_.pathMatches) {
@@ -417,6 +420,7 @@
           },
           options
         );
+
         var eachDeepOptions = {
           pathFormat: options.pathFormat,
           checkCircular: options.checkCircular,
@@ -544,18 +548,38 @@
           },
           options || {}
         );
+        var isOmit = !options.invert;
+        options = _.merge(
+          {
+            onMatch: {
+              cloneDeep: false,
+              skipChildren: false,
+              keepIfEmpty: !isOmit,
+            },
+            onNotMatch: {
+              cloneDeep: false,
+              skipChildren: false,
+              keepIfEmpty: isOmit,
+            },
+          },
+          options
+        );
         options.leavesOnly = false;
+        options.tree = false;
         options.pathFormat = 'array';
-        options.onFalse = { skipChildren: !options.invert, cloneDeep: false };
-        options.onTrue = { skipChildren: options.invert, cloneDeep: true };
+        options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
+        options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
 
         var test = function(value, key, parent, context) {
           if (pathMatches(context.path, paths) !== false) {
+            // console.log('path match, return ', options.invert);
             return options.invert;
           } else {
+            // console.log('path not match, return ', !options.invert);
             return !options.invert;
           }
         };
+        // console.log(options);
         return _.filterDeep(obj, test, options);
       };
       _.mixin({ omitDeep: omitDeep });
@@ -563,7 +587,12 @@
 
     if (!_.pickDeep) {
       var pickDeep = function(obj, paths, options) {
-        options = options || {};
+        options = _.merge(
+          {
+            invert: false,
+          },
+          options || {}
+        );
         options.invert = true;
         return _.omitDeep(obj, paths, options);
       };

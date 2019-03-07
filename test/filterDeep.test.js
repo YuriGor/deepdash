@@ -95,7 +95,7 @@ describe('filterDeep', () => {
         leavesOnly: false,
         onTrue: { skipChildren: false },
       })
-      .omitDeep('o.d')
+      .omitDeep('o.d', { onMatch: {} })
       .value();
     // console.log(JSON.stringify(filtrate));
     expect(filtrate).to.deep.equal({
