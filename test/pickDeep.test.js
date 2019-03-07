@@ -12,10 +12,12 @@ chai.use(asserttype);
 var { demo } = require('./object');
 
 describe('pickDeep', () => {
-  it('no mutation', () => {
+  it('pickDeep no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
-    let clean = _.pickDeep(obj, 'skip');
+    let clean = _.pickDeep(obj, 'skip', {
+      onMatch: { cloneDeep: true, skipChildren: true },
+    });
     expect(clean).to.deep.equal({
       a: {
         b: {
@@ -42,7 +44,9 @@ describe('pickDeep', () => {
     expect(obj).to.deep.equal(orig);
   });
   it('demo skip', () => {
-    let clean = _.pickDeep(demo, 'skip');
+    let clean = _.pickDeep(demo, 'skip', {
+      onMatch: { skipChildren: true, cloneDeep: true },
+    });
 
     expect(clean).to.deep.equal({
       a: {
@@ -77,14 +81,11 @@ describe('pickDeep', () => {
       good4: [{ good5: true, bad5: true }],
       bad4: [],
     };
-    let clean = _.pickDeep(obj, [
-      'good1',
-      'good2',
-      'good3',
-      'good',
-      'good4',
-      'good5',
-    ]);
+    let clean = _.pickDeep(
+      obj,
+      ['good1', 'good2', 'good3', 'good', 'good4', 'good5'],
+      { onMatch: { cloneDeep: true, skipChildren: true } }
+    );
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true, bad3: true },

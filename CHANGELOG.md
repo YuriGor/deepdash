@@ -1,7 +1,6 @@
 # Change Log
 
-## v3-0-0
-*(2019-03-05)*
+## unpublished
 
 **Breaking Changes**
 
@@ -17,7 +16,8 @@
 - `cloneDeep` option of the [filterDeep](/#filterdeep) now can be set to `false`.
 - `callbackAfterIterate` option added to the [eachDeep](/#eachdeep-foreachdeep) method.
 - `onTrue` `onUndefined` and `onFalse` options added to the [filterDeep](/#filterdeep) method. `cloneDeep`, `keepIfEmpty`, `skipChildren` default values can be overwritten for each condition.
-- custom object replies now are possible from [filterDeep](/#filterdeep) iteratee, with `cloneDeep`, `keepIfEmpty`, `skipChildren` and `empty` fields.
+- `onMatched` and `onNotMatched` options added to the [omitDeep](/#omitdeep) and [pickDeep](/#pickdeep) methods.
+- custom object replies from [filterDeep](/#filterdeep) iteratee, with `cloneDeep`, `keepIfEmpty`, `skipChildren` and `empty` fields now are supported.
 
 **Bugs fixed**
 

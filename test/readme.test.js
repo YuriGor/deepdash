@@ -132,6 +132,7 @@ describe('README examples', () => {
       },
       { leavesOnly: true }
     );
+    //console.log(index);
     expect(index).to.deep.equal({
       'a.b.c[0]': 1,
       'a.b.c[1]': 2,
@@ -140,7 +141,7 @@ describe('README examples', () => {
     });
   });
   it('keysDeep', () => {
-    let keys = _.keysDeep(
+    let paths = _.paths(
       {
         a: {
           b: {
@@ -151,7 +152,8 @@ describe('README examples', () => {
       },
       { leavesOnly: false }
     );
-    expect(keys).to.deep.equal([
+    // console.log(paths);
+    expect(paths).to.deep.equal([
       'a',
       'a.b',
       'a.b.c',
@@ -267,12 +269,14 @@ describe('README examples', () => {
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true },
+      bad2: { good: true },
       good4: [{ good5: true }],
     });
-    clean = _.omitDeep(obj, /\.?bad.*$/);
+    clean = _.omitDeep(obj, /\.?bad\d?$/);
     expect(clean).to.deep.equal({
       good1: true,
       good2: { good3: true },
+      bad2: { good: true },
       good4: [{ good5: true }],
     });
   });
@@ -296,16 +300,526 @@ describe('README examples', () => {
     ]);
     expect(clean).to.deep.equal({
       good1: true,
-      good2: { good3: true, bad3: true },
+      good2: { good3: true },
       bad2: { good: true },
-      good4: [{ good5: true, bad5: true }],
+      good4: [{ good5: true }],
     });
-    clean = _.pickDeep(obj, /\.?good.*$/);
+    clean = _.pickDeep(obj, /\.?good\d?$/);
     expect(clean).to.deep.equal({
       good1: true,
-      good2: { good3: true, bad3: true },
+      good2: { good3: true },
       bad2: { good: true },
-      good4: [{ good5: true, bad5: true }],
+      good4: [{ good5: true }],
     });
+  });
+  it('usage', () => {
+    let children = [
+      {
+        description: 'description for node 1',
+        comment: 'comment for node 1',
+        note: 'note for node 1',
+        name: 'node 1',
+        bad: false,
+        children: [
+          {
+            description: 'description for node 1.1',
+            comment: 'comment for node 1.1',
+            note: 'note for node 1.1',
+            name: 'node 1.1',
+            bad: false,
+          },
+          {
+            description: 'description for node 1.2',
+            comment: 'comment for node 1.2',
+            note: 'note for node 1.2',
+            name: 'node 1.2',
+            good: true,
+          },
+          {
+            description: 'description for node 1.3',
+            comment: 'comment for node 1.3',
+            note: 'note for node 1.3',
+            name: 'node 1.3',
+            bad: true,
+            good: false,
+          },
+        ],
+      },
+      {
+        description: 'description for node 2',
+        comment: 'comment for node 2',
+        note: 'note for node 2',
+        name: 'node 2',
+        good: true,
+        children: [
+          {
+            description: 'description for node 2.1',
+            comment: 'comment for node 2.1',
+            note: 'note for node 2.1',
+            name: 'node 2.1',
+            bad: false,
+          },
+          {
+            description: 'description for node 2.2',
+            comment: 'comment for node 2.2',
+            note: 'note for node 2.2',
+            name: 'node 2.2',
+            good: true,
+          },
+          {
+            description: 'description for node 2.3',
+            comment: 'comment for node 2.3',
+            note: 'note for node 2.3',
+            name: 'node 2.3',
+            bad: true,
+            good: false,
+          },
+        ],
+      },
+      {
+        description: 'description for node 3',
+        comment: 'comment for node 3',
+        note: 'note for node 3',
+        name: 'node 3',
+        bad: true,
+        good: false,
+        children: [
+          {
+            description: 'description for node 3.1',
+            comment: 'comment for node 3.1',
+            note: 'note for node 3.1',
+            name: 'node 3.1',
+            bad: false,
+          },
+          {
+            description: 'description for node 3.2',
+            comment: 'comment for node 3.2',
+            note: 'note for node 3.2',
+            name: 'node 3.2',
+            good: true,
+          },
+          {
+            description: 'description for node 3.3',
+            comment: 'comment for node 3.3',
+            note: 'note for node 3.3',
+            name: 'node 3.3',
+            bad: true,
+            good: false,
+          },
+        ],
+      },
+    ];
+    let out = [];
+    function displayField(val, key, parent, context) {
+      if (_.isArray(parent)) {
+        key = '[' + key + ']';
+      }
+      // console.log(
+      out.push(
+        _.repeat('   ', context.depth) +
+          '→ ' +
+          key +
+          ': ' +
+          (_.isArray(val)
+            ? '[' + val.length + ']'
+            : _.isObject(val)
+            ? '{' + (val.name || '') + '}'
+            : val)
+      );
+    }
+
+    // console.log('\n = Iterate over tree (each child object) = \n');
+
+    _.eachDeep(children, displayField, { tree: true });
+
+    // console.log('\n = Iterate over object (each field) = \n');
+
+    _.eachDeep(children, displayField);
+    expect(out).to.deep.equal([
+      '→ [0]: {node 1}',
+      '      → [0]: {node 1.1}',
+      '      → [1]: {node 1.2}',
+      '      → [2]: {node 1.3}',
+      '→ [1]: {node 2}',
+      '      → [0]: {node 2.1}',
+      '      → [1]: {node 2.2}',
+      '      → [2]: {node 2.3}',
+      '→ [2]: {node 3}',
+      '      → [0]: {node 3.1}',
+      '      → [1]: {node 3.2}',
+      '      → [2]: {node 3.3}',
+      '→ [0]: {node 1}',
+      '   → description: description for node 1',
+      '   → comment: comment for node 1',
+      '   → note: note for node 1',
+      '   → name: node 1',
+      '   → bad: false',
+      '   → children: [3]',
+      '      → [0]: {node 1.1}',
+      '         → description: description for node 1.1',
+      '         → comment: comment for node 1.1',
+      '         → note: note for node 1.1',
+      '         → name: node 1.1',
+      '         → bad: false',
+      '      → [1]: {node 1.2}',
+      '         → description: description for node 1.2',
+      '         → comment: comment for node 1.2',
+      '         → note: note for node 1.2',
+      '         → name: node 1.2',
+      '         → good: true',
+      '      → [2]: {node 1.3}',
+      '         → description: description for node 1.3',
+      '         → comment: comment for node 1.3',
+      '         → note: note for node 1.3',
+      '         → name: node 1.3',
+      '         → bad: true',
+      '         → good: false',
+      '→ [1]: {node 2}',
+      '   → description: description for node 2',
+      '   → comment: comment for node 2',
+      '   → note: note for node 2',
+      '   → name: node 2',
+      '   → good: true',
+      '   → children: [3]',
+      '      → [0]: {node 2.1}',
+      '         → description: description for node 2.1',
+      '         → comment: comment for node 2.1',
+      '         → note: note for node 2.1',
+      '         → name: node 2.1',
+      '         → bad: false',
+      '      → [1]: {node 2.2}',
+      '         → description: description for node 2.2',
+      '         → comment: comment for node 2.2',
+      '         → note: note for node 2.2',
+      '         → name: node 2.2',
+      '         → good: true',
+      '      → [2]: {node 2.3}',
+      '         → description: description for node 2.3',
+      '         → comment: comment for node 2.3',
+      '         → note: note for node 2.3',
+      '         → name: node 2.3',
+      '         → bad: true',
+      '         → good: false',
+      '→ [2]: {node 3}',
+      '   → description: description for node 3',
+      '   → comment: comment for node 3',
+      '   → note: note for node 3',
+      '   → name: node 3',
+      '   → bad: true',
+      '   → good: false',
+      '   → children: [3]',
+      '      → [0]: {node 3.1}',
+      '         → description: description for node 3.1',
+      '         → comment: comment for node 3.1',
+      '         → note: note for node 3.1',
+      '         → name: node 3.1',
+      '         → bad: false',
+      '      → [1]: {node 3.2}',
+      '         → description: description for node 3.2',
+      '         → comment: comment for node 3.2',
+      '         → note: note for node 3.2',
+      '         → name: node 3.2',
+      '         → good: true',
+      '      → [2]: {node 3.3}',
+      '         → description: description for node 3.3',
+      '         → comment: comment for node 3.3',
+      '         → note: note for node 3.3',
+      '         → name: node 3.3',
+      '         → bad: true',
+      '         → good: false',
+    ]);
+
+    // console.log('\n = Filter tree (good children) = \n');
+
+    // console.log(
+    //   JSON.stringify(_.filterDeep(children, 'good', { tree: true }), null, 2)
+    // );
+    expect(_.filterDeep(children, 'good', { tree: true })).to.deep.equal([
+      {
+        description: 'description for node 1',
+        comment: 'comment for node 1',
+        note: 'note for node 1',
+        name: 'node 1',
+        bad: false,
+        children: [
+          {
+            description: 'description for node 1.2',
+            comment: 'comment for node 1.2',
+            note: 'note for node 1.2',
+            name: 'node 1.2',
+            good: true,
+          },
+        ],
+      },
+      {
+        description: 'description for node 2',
+        comment: 'comment for node 2',
+        note: 'note for node 2',
+        name: 'node 2',
+        good: true,
+        children: [
+          {
+            description: 'description for node 2.2',
+            comment: 'comment for node 2.2',
+            note: 'note for node 2.2',
+            name: 'node 2.2',
+            good: true,
+          },
+        ],
+      },
+      {
+        description: 'description for node 3',
+        comment: 'comment for node 3',
+        note: 'note for node 3',
+        name: 'node 3',
+        bad: true,
+        good: false,
+        children: [
+          {
+            description: 'description for node 3.2',
+            comment: 'comment for node 3.2',
+            note: 'note for node 3.2',
+            name: 'node 3.2',
+            good: true,
+          },
+        ],
+      },
+    ]);
+
+    // console.log('\n = Filter object (names of good children) = \n');
+
+    // console.log(
+    //   JSON.stringify(
+    //     _.filterDeep(children, (val, key, parent) => {
+    //       if (key == 'name' && parent.good) return true;
+    //     }),
+    //     null,
+    //     2
+    //   )
+    // );
+
+    expect(
+      _.filterDeep(children, (val, key, parent) => {
+        if (key == 'name' && parent.good) return true;
+      })
+    ).to.deep.equal([
+      {
+        children: [
+          {
+            name: 'node 1.2',
+          },
+        ],
+      },
+      {
+        name: 'node 2',
+        children: [
+          {
+            name: 'node 2.2',
+          },
+        ],
+      },
+      {
+        children: [
+          {
+            name: 'node 3.2',
+          },
+        ],
+      },
+    ]);
+
+    let badChildren = [
+      {
+        name: '1',
+        bad: false,
+        children: [
+          { name: '1.1', bad: false },
+          { name: '1.2' },
+          { name: '1.3', bad: true },
+        ],
+      },
+      {
+        name: '2',
+        children: [
+          { name: '2.1', bad: false },
+          { name: '2.2' },
+          { name: '2.3', bad: true },
+        ],
+      },
+      {
+        name: '3',
+        bad: true,
+        children: [
+          { name: '3.1', bad: false },
+          { name: '3.2' },
+          { name: '3.3', bad: true },
+        ],
+      },
+    ];
+
+    let reallyBad = _.filterDeep(badChildren, 'bad', { tree: true });
+    // console.log(JSON.stringify(reallyBad, null, 2));
+    expect(reallyBad).to.deep.equal([
+      {
+        name: '1',
+        bad: false,
+        children: [
+          {
+            name: '1.3',
+            bad: true,
+          },
+        ],
+      },
+      {
+        name: '2',
+        children: [
+          {
+            name: '2.3',
+            bad: true,
+          },
+        ],
+      },
+      {
+        name: '3',
+        bad: true,
+        children: [
+          {
+            name: '3.3',
+            bad: true,
+          },
+        ],
+      },
+    ]);
+
+    // console.log('\n = Pick name and description only = \n');
+
+    // console.log(
+    //   JSON.stringify(_.pickDeep(children, ['name', 'description']), null, 2)
+    // );
+
+    expect(_.pickDeep(children, ['name', 'description'])).to.deep.equal([
+      {
+        description: 'description for node 1',
+        name: 'node 1',
+        children: [
+          {
+            description: 'description for node 1.1',
+            name: 'node 1.1',
+          },
+          {
+            description: 'description for node 1.2',
+            name: 'node 1.2',
+          },
+          {
+            description: 'description for node 1.3',
+            name: 'node 1.3',
+          },
+        ],
+      },
+      {
+        description: 'description for node 2',
+        name: 'node 2',
+        children: [
+          {
+            description: 'description for node 2.1',
+            name: 'node 2.1',
+          },
+          {
+            description: 'description for node 2.2',
+            name: 'node 2.2',
+          },
+          {
+            description: 'description for node 2.3',
+            name: 'node 2.3',
+          },
+        ],
+      },
+      {
+        description: 'description for node 3',
+        name: 'node 3',
+        children: [
+          {
+            description: 'description for node 3.1',
+            name: 'node 3.1',
+          },
+          {
+            description: 'description for node 3.2',
+            name: 'node 3.2',
+          },
+          {
+            description: 'description for node 3.3',
+            name: 'node 3.3',
+          },
+        ],
+      },
+    ]);
+
+    // console.log('\n = Omit paths not ending with "e" = \n');
+
+    // console.log(
+    //   JSON.stringify(
+    //     _.omitDeep(children, /[^e]$/i, { onMatch: { skipChildren: false } }),
+    //     null,
+    //     2
+    //   )
+    // );
+
+    expect(
+      _.omitDeep(children, /[^e]$/i, { onMatch: { skipChildren: false } })
+    ).to.deep.equal([
+      {
+        note: 'note for node 1',
+        name: 'node 1',
+        children: [
+          {
+            note: 'note for node 1.1',
+            name: 'node 1.1',
+          },
+          {
+            note: 'note for node 1.2',
+            name: 'node 1.2',
+          },
+          {
+            note: 'note for node 1.3',
+            name: 'node 1.3',
+          },
+        ],
+      },
+      {
+        note: 'note for node 2',
+        name: 'node 2',
+        children: [
+          {
+            note: 'note for node 2.1',
+            name: 'node 2.1',
+          },
+          {
+            note: 'note for node 2.2',
+            name: 'node 2.2',
+          },
+          {
+            note: 'note for node 2.3',
+            name: 'node 2.3',
+          },
+        ],
+      },
+      {
+        note: 'note for node 3',
+        name: 'node 3',
+        children: [
+          {
+            note: 'note for node 3.1',
+            name: 'node 3.1',
+          },
+          {
+            note: 'note for node 3.2',
+            name: 'node 3.2',
+          },
+          {
+            note: 'note for node 3.3',
+            name: 'node 3.3',
+          },
+        ],
+      },
+    ]);
   });
 });
