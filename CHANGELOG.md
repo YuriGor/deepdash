@@ -1,6 +1,7 @@
 # Change Log
 
-## unpublished
+## v3-1-0
+*(2019-03-08)* ✿❃❀
 
 **Breaking Changes**
 
