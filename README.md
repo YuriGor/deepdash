@@ -27,6 +27,9 @@ import lodash from "lodash";
 import deepdash from "deepdash";
 const _ = deepdash(lodash);
 ```
+## Demo
+
+[Example react+redux app](https://kw0zox7r.codesandbox.io/) with nested comments filtered by Deepdash.([play with code here](https://codesandbox.io/s/kw0zox7r))
 
 ## Methods
 
