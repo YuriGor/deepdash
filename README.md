@@ -435,12 +435,12 @@ Console:
 </details>
 
 
-### indexate - get an object with all the paths as keys and corresponding values (📚 [docs](https://deepdash.io/#indexate))
+### index - get an object with all the paths as keys and corresponding values (📚 [docs](https://deepdash.io/#index))
 <details>
   <summary>Example</summary>
 
 ```js
-  let index = _.indexate(
+  let index = _.index(
     {
       a: {
         b: {

@@ -213,47 +213,50 @@
         _.mixin({ forEachDeep: eachDeep });
       }
     }
-    if (!_.indexate) {
-      var indexate = function(obj, options) {
-        if (options && options.leafsOnly !== undefined) {
-          options.leavesOnly = options.leafsOnly;
-        }
+    var indexate = function(obj, options) {
+      if (options && options.leafsOnly !== undefined) {
+        options.leavesOnly = options.leafsOnly;
+      }
 
-        options = _.merge(
-          {
-            checkCircular: false,
-            includeCircularPath: true,
-            leavesOnly: !options || !options.tree,
-          },
-          options || {}
-        );
-        if (options.tree && options.leavesOnly) {
-          throw new Error(errorNoLeavesOnlyAndTree);
-        }
-        var eachDeepOptions = {
-          pathFormat: 'string',
-          checkCircular: options.checkCircular,
-          tree: options.tree,
-        };
-        var res = {};
-        _.eachDeep(
-          obj,
-          function(value, key, parent, context) {
-            if (!context.isCircular || options.includeCircularPath) {
-              if (
-                !options.tree &&
-                options.leavesOnly &&
-                res[context.parent.path]
-              ) {
-                delete res[context.parent.path];
-              }
-              res[context.path] = value;
-            }
-          },
-          eachDeepOptions
-        );
-        return res;
+      options = _.merge(
+        {
+          checkCircular: false,
+          includeCircularPath: true,
+          leavesOnly: !options || !options.tree,
+        },
+        options || {}
+      );
+      if (options.tree && options.leavesOnly) {
+        throw new Error(errorNoLeavesOnlyAndTree);
+      }
+      var eachDeepOptions = {
+        pathFormat: 'string',
+        checkCircular: options.checkCircular,
+        tree: options.tree,
       };
+      var res = {};
+      _.eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          if (!context.isCircular || options.includeCircularPath) {
+            if (
+              !options.tree &&
+              options.leavesOnly &&
+              res[context.parent.path]
+            ) {
+              delete res[context.parent.path];
+            }
+            res[context.path] = value;
+          }
+        },
+        eachDeepOptions
+      );
+      return res;
+    };
+    if (!_.index) {
+      _.mixin({ index: indexate });
+    }
+    if (!_.indexate) {
       _.mixin({ indexate: indexate });
     }
     if (!_.keysDeep || !_.paths) {
