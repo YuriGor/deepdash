@@ -11,7 +11,7 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 - [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and sub-children
 - [exists](#exists) - like a `_.has` but returns `false` for empty array slots
 - [filterDeep](#filterdeep) - deep filter object
-- [indexate](#indexate) - get an object with all the paths as keys and corresponding values
+- [index](#index) - get an object with all the paths as keys and corresponding values
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
 - [pickDeep](#pickdeep) - get object only with keys specified by names or regexes
 - [omitDeep](#omitdeep) - get object without keys specified by names or regexes
@@ -526,12 +526,13 @@ Console:
 ]
 ```
 
-## indexate
+## index
+#### (indexate)
 
 Creates an 'index' flat object with paths as keys and corresponding values.
 
 ```js
-_.indexate( obj, options={
+_.index( obj, options={
     checkCircular: false,
     includeCircularPath: true,
     leavesOnly: true,
@@ -552,7 +553,7 @@ _.indexate( obj, options={
 **Example:**
 
 ```js
-  let index = _.indexate(
+  let index = _.index(
     {
       a: {
         b: {

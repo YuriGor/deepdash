@@ -11,29 +11,33 @@ chai.use(asserttype);
 
 var { demo, circular, children } = require('./object');
 
-describe('indexate', () => {
+describe('index', () => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
-    _.indexate(obj, { leavesOnly: true });
+    _.index(obj, { leavesOnly: true });
     expect(obj).to.deep.equal(orig);
   });
-  it('Count paths', () => {
+  it('Alias', () => {
     let index = _.indexate(demo, { leafsOnly: false });
     expect(_.size(index)).equal(30);
   });
+  it('Count paths', () => {
+    let index = _.index(demo, { leafsOnly: false });
+    expect(_.size(index)).equal(30);
+  });
   it('Array', () => {
-    let index = _.indexate([demo, demo], { leavesOnly: false });
+    let index = _.index([demo, demo], { leavesOnly: false });
     expect(_.size(index)).equal(62);
   });
   it('Count paths circular', () => {
-    let index = _.indexate(circular, {
+    let index = _.index(circular, {
       checkCircular: true,
       leavesOnly: false,
     });
     // console.log(index);
     expect(_.size(index)).equal(25);
-    index = _.indexate(circular, {
+    index = _.index(circular, {
       checkCircular: true,
       leavesOnly: false,
       includeCircularPath: false,
@@ -43,42 +47,42 @@ describe('indexate', () => {
   });
   it('Chaining', () => {
     let index = _(demo)
-      .indexate({ leavesOnly: false })
+      .index({ leavesOnly: false })
       .value();
     expect(_.size(index)).equal(30);
   });
   it('returns empty obj', () => {
-    let index = _.indexate(1);
+    let index = _.index(1);
     expect(index).to.deep.equal({});
 
-    index = _.indexate('123');
+    index = _.index('123');
     expect(index).to.deep.equal({});
 
-    index = _.indexate(null);
+    index = _.index(null);
     expect(index).to.deep.equal({});
 
-    index = _.indexate(undefined);
+    index = _.index(undefined);
     expect(index).to.deep.equal({});
 
-    index = _.indexate(() => {});
+    index = _.index(() => {});
     expect(index).to.deep.equal({});
 
-    index = _.indexate(new Date());
+    index = _.index(new Date());
     expect(index).to.deep.equal({});
 
-    index = _.indexate(/.*/);
+    index = _.index(/.*/);
     expect(index).to.deep.equal({});
   });
   it('Leafs only', () => {
-    let index = _.indexate(demo, { leavesOnly: true });
+    let index = _.index(demo, { leavesOnly: true });
     // console.log(index);
     expect(_.size(index)).equal(14);
   });
 
   it('Leafs only circular', () => {
-    let index = _.indexate(circular, { checkCircular: true, leavesOnly: true });
+    let index = _.index(circular, { checkCircular: true, leavesOnly: true });
     expect(_.size(index)).equal(12);
-    index = _.indexate(circular, {
+    index = _.index(circular, {
       checkCircular: true,
       includeCircularPath: false,
       leavesOnly: true,
@@ -88,19 +92,19 @@ describe('indexate', () => {
   it('empty props', () => {
     var o = { a: 0, b: 1, c: 2 };
     delete o.b;
-    let index = _.indexate(o);
+    let index = _.index(o);
     expect(_.size(index)).equal(2);
     var a = ['a', 'b', 'c'];
     delete a[1];
-    index = _.indexate(a);
+    index = _.index(a);
     expect(_.size(index)).equal(2);
     var slots = ['start', , 'middle', , 'finish'];
-    index = _.indexate(slots);
+    index = _.index(slots);
     expect(_.size(index)).equal(3);
   });
   it('No leavesOnly in tree', () => {
     try {
-      _.indexate(children, { tree: true, leavesOnly: true });
+      _.index(children, { tree: true, leavesOnly: true });
     } catch (exc) {
       expect(exc.message).equal(
         '"leavesOnly" option cannot be true in the "tree" mode.'
@@ -108,7 +112,7 @@ describe('indexate', () => {
     }
   });
   it('Indexate tree', () => {
-    let index = _.indexate(children, { tree: true });
+    let index = _.index(children, { tree: true });
     let names = _(index)
       .values()
       .map('name')
