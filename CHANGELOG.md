@@ -1,5 +1,16 @@
 # Change Log
 
+## v4-0-0
+*(unreleased)*
+
+**Breaking Changes**
+- `indexate` renamed to [index](/#index).
+
+**Deprecated**
+
+**Features added**
+- `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.
+
 ## v3-1-0
 *(2019-03-08)* ✿❃❀
 

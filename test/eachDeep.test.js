@@ -5,6 +5,8 @@ const chai = require('chai'),
   expect = chai.expect,
   assert = require('assert'),
   _ = require('../deepdash')(require('lodash'));
+const asserttype = require('chai-asserttype');
+chai.use(asserttype);
 var { demo, circular } = require('./object');
 
 describe('eachDeep', () => {

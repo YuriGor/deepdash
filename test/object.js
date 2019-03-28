@@ -485,3 +485,8 @@ deeperCommentsCircular[0].feedback.replies[1].feedback.replies[0] =
   deeperCommentsCircular[0];
 
 module.exports.deeperCommentsCircular = deeperCommentsCircular;
+
+module.exports.singleRoot = {
+  name: 'progenitor',
+  children: module.exports.children,
+};

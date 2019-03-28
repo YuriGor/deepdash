@@ -18,10 +18,6 @@ describe('index', () => {
     _.index(obj, { leavesOnly: true });
     expect(obj).to.deep.equal(orig);
   });
-  it('Alias', () => {
-    let index = _.indexate(demo, { leafsOnly: false });
-    expect(_.size(index)).equal(30);
-  });
   it('Count paths', () => {
     let index = _.index(demo, { leafsOnly: false });
     expect(_.size(index)).equal(30);

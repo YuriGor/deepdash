@@ -527,7 +527,6 @@ Console:
 ```
 
 ## index
-#### (indexate)
 
 Creates an 'index' flat object with paths as keys and corresponding values.
 

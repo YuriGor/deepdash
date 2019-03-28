@@ -120,8 +120,8 @@ describe('README examples', () => {
     // console.log('total nodes: ' + total);
     expect(total).equal(14);
   });
-  it('indexate', () => {
-    let index = _.indexate(
+  it('index', () => {
+    let index = _.index(
       {
         a: {
           b: {
