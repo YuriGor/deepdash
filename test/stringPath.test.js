@@ -18,7 +18,7 @@ describe('string paths', () => {
     expect(_.get(o, 'a["\\"\'"]')).to.equal('d');
     expect(_.get(o, "a['.']")).to.equal('e');
 
-    let index = _.indexate(o);
+    let index = _.index(o);
     _.each(index, (v, k) => {
       expect(_.get(o, k)).to.equal(v);
     });

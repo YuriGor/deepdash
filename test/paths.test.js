@@ -133,7 +133,7 @@ describe('paths', () => {
       ],
     };
     _(obj)
-      .indexate()
+      .index()
       .each((v, k) => {
         expect(k).to.equal(v);
         expect(_.get(obj, k)).to.equal(v);

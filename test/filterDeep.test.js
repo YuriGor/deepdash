@@ -1,9 +1,9 @@
 'use strict';
 
 const chai = require('chai'),
-  // should = chai.should(),
+  should = chai.should(),
   expect = chai.expect,
-  // assert = require('assert'),
+  assert = require('assert'),
   _ = require('../deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
@@ -25,7 +25,7 @@ describe('filterDeep', () => {
   it('Count paths', () => {
     let filtrate = _(demo)
       .filterDeep(isNS, { leavesOnly: true })
-      .indexate({ leavesOnly: true })
+      .index({ leavesOnly: true })
       .value();
     // console.log(_.filterDeep(demo, isNS));
     expect(_.size(filtrate)).equal(9);
@@ -33,7 +33,7 @@ describe('filterDeep', () => {
   it('Array', () => {
     let filtrate = _.filterDeep([demo, demo], isNS, { leavesOnly: true });
     expect(filtrate).to.be.an('array');
-    filtrate = _.indexate(filtrate, { leavesOnly: true });
+    filtrate = _.index(filtrate, { leavesOnly: true });
     expect(_.size(filtrate)).equal(18);
   });
   it('Completely filtered out', () => {

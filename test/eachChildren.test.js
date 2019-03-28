@@ -5,7 +5,10 @@ const chai = require('chai'),
   expect = chai.expect,
   assert = require('assert'),
   _ = require('../deepdash')(require('lodash'));
+const asserttype = require('chai-asserttype');
+chai.use(asserttype);
 var {
+  singleRoot,
   children,
   childrenCircular,
   comments,
@@ -22,7 +25,19 @@ describe('eachChildren', () => {
       (value, key) => {
         if (key == 'skip') return false;
       },
-      { children: ['replies'] }
+      { tree: { children: ['replies'] } }
+    );
+    expect(obj).to.deep.equal(orig);
+  });
+  it('no mutation include root', () => {
+    let orig = _.cloneDeep(comments);
+    let obj = _.cloneDeep(comments);
+    _.eachDeep(
+      obj,
+      (value, key) => {
+        if (key == 'skip') return false;
+      },
+      { children: ['replies'], includeRoot: true }
     );
     expect(obj).to.deep.equal(orig);
   });
@@ -31,25 +46,102 @@ describe('eachChildren', () => {
     _.eachDeep(
       children,
       (value, key, parent, ctx) => {
+        // console.log(ctx.path);
         expect(ctx.parent.treeChildrenPath).to.be.a.string();
+        expect(ctx.path).to.be.a.string();
         total++;
       },
       { tree: true }
     );
     expect(total).equal(14);
   });
-  it('defaults - array path format', () => {
+  it('array path format', () => {
     let total = 0;
     _.eachDeep(
       children,
       (value, key, parent, ctx) => {
         expect(ctx.parent.treeChildrenPath).to.be.an.array();
+        expect(ctx.path).to.be.an.array();
         total++;
       },
       { tree: true, pathFormat: 'array' }
     );
     expect(total).equal(14);
   });
+  it('include root', () => {
+    let total = 0;
+    _.eachDeep(
+      singleRoot,
+      (value, key, parent, ctx) => {
+        if (ctx.parent) {
+          expect(ctx.parent.treeChildrenPath).to.be.a.string();
+          expect(ctx.path).to.be.a.string();
+        }
+        // console.log('@' + ctx.path);
+        total++;
+      },
+      { tree: true, includeRoot: true }
+    );
+    expect(total).equal(15);
+  });
+
+  it('array path format - include root', () => {
+    let total = 0;
+    _.eachDeep(
+      singleRoot,
+      (value, key, parent, ctx) => {
+        if (ctx.parent) {
+          expect(ctx.parent.treeChildrenPath).to.be.a.array();
+          expect(ctx.path).to.be.a.array();
+        }
+        // console.log('@' + ctx.path);
+        total++;
+      },
+      { tree: true, includeRoot: true, pathFormat: 'array' }
+    );
+    expect(total).equal(15);
+  });
+
+  it('checkCircular - include root', () => {
+    let total = 0;
+    _.eachDeep(
+      singleRoot,
+      (value, key, parent, ctx) => {
+        // console.log('@' + ctx.path);
+        if (ctx.parent) {
+          expect(ctx.parent.treeChildrenPath).to.be.a.array();
+          expect(ctx.path).to.be.a.array();
+          expect(ctx.circularParent).to.equal(null);
+          expect(ctx.circularParentIndex).to.equal(-1);
+        }
+        total++;
+      },
+      {
+        tree: true,
+        includeRoot: true,
+        pathFormat: 'array',
+        checkCircular: true,
+      }
+    );
+    expect(total).equal(15);
+  });
+
+  it('skip root', () => {
+    let total = 0;
+    _.eachDeep(
+      singleRoot,
+      (value, key, parent, ctx) => {
+        total++;
+        if (!ctx.parent) {
+          return false;
+        }
+        // console.log('@' + ctx.path);
+      },
+      { tree: true, includeRoot: true, callbackAfterIterate: true }
+    );
+    expect(total).equal(2);
+  });
+
   it('String field', () => {
     let total = 0;
     _.eachDeep(

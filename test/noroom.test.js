@@ -22,9 +22,9 @@ describe('Methods exist already', () => {
     expect(_.forEachDeep()).to.equal('no room!');
 
     _ = _.runInContext();
-    _.mixin({ indexate: () => 'no room!' });
+    _.mixin({ index: () => 'no room!' });
     _ = deep(_);
-    expect(_.indexate()).to.equal('no room!');
+    expect(_.index()).to.equal('no room!');
 
     _ = _.runInContext();
     _.mixin({ keysDeep: () => 'no room!' });

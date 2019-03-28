@@ -1,4 +1,5 @@
 'use strict';
+/* eslint-disable no-sparse-arrays */
 
 const chai = require('chai'),
   // should = chai.should(),
@@ -7,8 +8,8 @@ const chai = require('chai'),
   _ = require('../deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
-var { demo, circular } = require('./object');
 chai.use(asserttype);
+var { circular } = require('./object');
 
 describe('condense', () => {
   it('slot 0', () => {
