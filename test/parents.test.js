@@ -15,6 +15,7 @@ describe('Parents', () => {
       // console.log('ctx.parent:', ctx.parent);
       // console.log('parents:', ctx.parents);
       // console.log('-----------');
+      if (ctx.parent === undefined) return;
       expect(parent).equal(ctx.parent.value);
       expect(ctx.parent).equal(_.last(ctx.parents));
       _.each(ctx.parents, (p, i) => {

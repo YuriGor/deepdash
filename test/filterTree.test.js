@@ -18,6 +18,7 @@ var {
   deeperCommentsCircular,
   badChildren,
 } = require('./object');
+var { validateIteration } = require('./common.js');
 
 describe('filterDeep tree', () => {
   it('no mutation', () => {
@@ -434,19 +435,18 @@ describe('filterDeep tree', () => {
       },
     ];
     var keyword = 'Hit';
-    // We will need 2 passes, first - to collect needed nodes with 'Hit' value:
+    let options = {
+      pathFormat: 'array',
+      tree: true,
+      onTrue: { skipChildren: true },
+    };
     var filtrate = _.filterDeep(
       input,
       function(value, key, parent, ctx) {
-        expect(ctx.path).to.be.an.array();
-        expect(ctx.parent.path).to.be.an.array();
+        validateIteration(value, key, parent, ctx, options);
         if (value.value && value.value.includes(keyword)) return true;
       },
-      {
-        pathFormat: 'array',
-        tree: true,
-        onTrue: { skipChildren: true },
-      }
+      options
     );
     //console.log(JSON.stringify(filtrate, null, 2));
     expect(filtrate).to.deep.equal([

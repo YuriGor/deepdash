@@ -746,20 +746,22 @@ describe('stackoverflow', () => {
     let arr = _.filterDeep(
       data,
       (item, key, parentVal, ctx) => {
-        return (
+        let res =
           _.includes(filterList, item.name) ||
           (ctx.parent &&
             _.includes(
               filterList,
               _.get(ctx, 'parent.parent.parent.value.name')
-            ))
-        );
+            ));
+        // console.log(' - ' + ctx.path, res);
+        return res;
       },
       {
         tree: { children: 'items' },
       }
     );
     // remove empty 'child'
+    // console.log(JSON.stringify(arr, null, 2));
     arr = _.filterDeep(
       arr,
       (val, key) => {
@@ -767,8 +769,8 @@ describe('stackoverflow', () => {
       },
       { leavesOnly: false, onTrue: { skipChildren: false } }
     );
-    // console.log(JSON.stringify(arr, null, 2));
     expect(arr).to.deep.equal({
+      level: 'Level 1',
       items: [
         {
           name: 'Some Business Name',

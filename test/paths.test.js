@@ -94,11 +94,13 @@ describe('paths', () => {
   it('Leafs only circular', () => {
     let paths = _.paths(circular, { checkCircular: true, leavesOnly: true });
     expect(paths.length).equal(12);
+    // console.log(paths);
     paths = _.paths(circular, {
       checkCircular: true,
       includeCircularPath: false,
       leavesOnly: true,
     });
+    // console.log(paths);
     expect(paths.length).equal(9);
   });
   it('empty props', () => {

@@ -4,6 +4,7 @@
 *(unreleased)*
 
 **Breaking Changes**
+- source object/array (root) passed to the iteratee/predicate too, as a very first value with undefined key/path/parent
 - `indexate` renamed to [index](/#index).
 
 **Deprecated**
