@@ -416,7 +416,7 @@ describe('README examples', () => {
       }
       // console.log(
       out.push(
-        _.repeat('   ', context.depth) +
+        _.repeat('   ', context.depth - 1) +
           '→ ' +
           key +
           ': ' +

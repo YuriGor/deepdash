@@ -465,7 +465,7 @@ module.exports.circular = {
       circular
       ,[circular.a]
       ,{j:{ hello: 'world' }
-      ,{k:circular}}]*/,
+      ,{k:undefined}}]*/,
   ],
 };
 module.exports.circular.a.b.c.e = module.exports.circular.a.b;
