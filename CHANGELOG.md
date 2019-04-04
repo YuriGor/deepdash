@@ -6,8 +6,8 @@
 **Breaking Changes**
 - source object/array (root) passed to the iteratee/predicate too, as a very first value with undefined key/path/parent
 - `indexate` renamed to [index](/#index).
-
-**Deprecated**
+- in case of completely rejected object [filterDeep](/#filterdeep) returns null instead of empty {}/[]
+- if not an object passed as a source to [filterDeep](/#filterdeep) source will be returned if it passes the filter, otherwise null.
 
 **Features added**
 - `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.
