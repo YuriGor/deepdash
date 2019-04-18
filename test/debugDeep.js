@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 var { demo, circular } = require('./object');
 const _ = require('../deepdash')(require('lodash'));
 function isNS(value, key, parent, ctx) {
@@ -14,3 +14,4 @@ let filtrate = _.filterDeep(obj, isNS, {
   onFalse: { skipChildren: false },
 });
 console.log(JSON.stringify(filtrate, null, 2));
+*/
