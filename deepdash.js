@@ -94,36 +94,18 @@
       parents,
       obj
     ) {
-      // if (!_.isObject(value)) return;
-      // if (key === undefined) key = '';
-      // if (path === undefined) path = [];
-      if (depth === undefined) depth = 0;
-      if (parents === undefined) parents = [];
-      if (obj === undefined) obj = value;
-      if (options.includeRoot === undefined)
-        options.includeRoot = !_.isArray(value);
-      if (options.pathFormat === undefined) options.pathFormat = 'string';
-      if (options.checkCircular === undefined) options.checkCircular = false;
-
       var currentObj = {
         value: value,
         key: key,
         path: options.pathFormat == 'array' ? path : pathToString(path),
         parent: parent,
-        isTreeNode: parent && parent.isTreeChildren,
+        isTreeNode:
+          (parent && parent.isTreeChildren) ||
+          (!depth && options.tree && !parent && options.includeRoot),
       };
       // console.log('it', currentObj.path);
       var currentParents = parents.concat(currentObj);
       if (options.tree) {
-        if (!_.isObject(options.tree)) {
-          options.tree = {};
-        }
-        if (!options.includeRoot && options.tree.rootIsChildren === undefined) {
-          options.tree.rootIsChildren = _.isArray(value);
-        }
-        if (!options.tree.children) {
-          options.tree.children = ['children'];
-        }
         if (!depth && options.tree.rootIsChildren) {
           currentObj.isTreeChildren = true;
           currentObj.treeChildrenPath = undefined;
@@ -175,6 +157,28 @@
         res = callback(value, key, parent && parent.value, context);
       }
       if (res !== false && !isCircular && _.isObject(value)) {
+        //         if (options.tree) {
+        //           _.each(options.tree.children, function(cp) {
+        //             var children = _.get(value, cp);
+        //             if (children && _.isObject(children)) {
+        //               _.forOwn(children, function(childValue, childKey) {
+        //                 var childPath = (path || []).concat(cp,[childKey]);
+        //
+        //                 iterate(
+        //                   childValue,
+        //                   callback,
+        //                   options,
+        //                   childKey,
+        //                   childPath,
+        //                   depth + 1,
+        //                   currentObj,
+        //                   currentParents,
+        //                   obj
+        //                 );
+        //               });
+        //             }
+        //           });
+        //         } else {
         _.forOwn(value, function(childValue, childKey) {
           if (_.isArray(value)) {
             if (childValue === undefined && !(childKey in value)) {
@@ -196,6 +200,7 @@
             obj
           );
         });
+        // }
       }
       if (options.callbackAfterIterate && needCallback) {
         context.afterIterate = true;
@@ -206,8 +211,39 @@
     if (!_.eachDeep || !_.forEachDeep) {
       var eachDeep = function(obj, callback, options) {
         if (callback === undefined) callback = _.identity;
-        options = _.merge({}, options || {});
-        iterate(obj, callback, options);
+        options = _.merge(
+          {
+            includeRoot: !_.isArray(obj),
+            pathFormat: 'string',
+            checkCircular: false,
+          },
+          options || {}
+        );
+        if (options.tree) {
+          if (!_.isObject(options.tree)) {
+            options.tree = {};
+          }
+          if (
+            !options.includeRoot &&
+            options.tree.rootIsChildren === undefined
+          ) {
+            options.tree.rootIsChildren = _.isArray(obj);
+          }
+          if (options.tree.children === undefined) {
+            options.tree.children = ['children'];
+          }
+        }
+        iterate(
+          obj,
+          callback,
+          options,
+          undefined,
+          undefined,
+          0,
+          undefined,
+          [],
+          obj
+        );
         return obj;
       };
       if (!_.eachDeep) {
