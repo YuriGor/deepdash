@@ -11,7 +11,7 @@
 - treeChildrenPath renamed to childrenPath.
 - isTreeChildren, isTreeNode iteratee sub-parameters deprecated.
 - regexp children path support dropped to optimise tree walking
-- `tree` sub-object option deprecated, `tree.children` renamed to 'childrenPath', `tree.rootIsChildren` renamed to `rootIsChildren`
+- `tree` sub-object option deprecated, `tree.children` renamed to `childrenPath`, `tree.rootIsChildren` renamed to `rootIsChildren`
 
 **Features added**
 - `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.
