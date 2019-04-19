@@ -15,6 +15,7 @@
 
 **Features added**
 - `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.
+- leavesOnly implemented for tree mode. eachDeep now also has leavesOnly option.
 
 ## v3-1-0
 *(2019-03-08)* ✿❃❀
