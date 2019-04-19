@@ -455,14 +455,13 @@ describe('filterDeep', () => {
   });
   it('Sparse array', () => {
     var obj = { a: [{ b: false }, , { b: true }, { b: false }] };
-    var filtrate = _.filterDeep(obj, (v) => v === true, { leavesOnly: true });
+    var filtrate = _.filterDeep(obj, (v) => v === true);
     filtrate.should.deep.equal({ a: [{ b: true }] });
     filtrate = _.filterDeep(obj, (v) => v === true, {
-      leavesOnly: true,
       condense: false,
     });
     // console.log(filtrate);
-    filtrate.should.deep.equal({ a: [, , { b: true }, ,] });
+    filtrate.should.deep.equal({ a: [, , { b: true }] });
   });
   it('replaceCircularBy', () => {
     let again = Symbol('[circular]');
