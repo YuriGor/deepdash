@@ -2,12 +2,6 @@ const _ = require('../deepdash')(require('lodash'));
 
 module.exports = {
   validateIteration: function(value, key, parentVal, context, options) {
-    if (key !== undefined && !_.exists(parentVal, key)) {
-      throw new Error(`key "${key}" not found.`);
-    }
-    if (!context) {
-      throw new Error('context not exists');
-    }
     options = options || {};
     if (options.method === 'filterDeep') {
       options.callbackAfterIterate = true;
@@ -28,6 +22,36 @@ module.exports = {
       }
     }
     try {
+      if (key !== undefined && !options.tree && !_.exists(parentVal, key)) {
+        throw new Error(`key "${key}" not found.`);
+      }
+      if (!context) {
+        throw new Error('context not exists');
+      }
+      if (options.tree) {
+        if (!context.depth && context.childrenPath !== undefined) {
+          throw new Error(
+            `children path ${context.childrenPath} on zero depth`
+          );
+        }
+        // if (context.depth && context.childrenPath === undefined) {
+        //   throw new Error(`no children path on depth ${context.depth}`);
+        // }
+        if (context.childrenPath) {
+          var children = _.obtain(parentVal, context.childrenPath);
+          if (!children) {
+            throw new Error(
+              `no children collection found by children path ${
+                context.childrenPath
+              }`
+            );
+          }
+          if (!_.exists(children, key)) {
+            throw new Error(`child not found by key ${key}`);
+          }
+        }
+      }
+
       if (options.pathFormat == 'array') {
         if (!(context.path === undefined || _.isArray(context.path))) {
           throw new Error(`path ${context.path} is not array`);
@@ -44,6 +68,16 @@ module.exports = {
           if (!(parent.path === undefined || _.isArray(parent.path))) {
             throw new Error(`parents path ${parent.path} is not array`);
           }
+          if (
+            !(
+              parent.childrenPath === undefined ||
+              _.isArray(parent.childrenPath)
+            )
+          ) {
+            throw new Error(
+              `parents children path ${parent.childrenPath} is not array`
+            );
+          }
         });
         if (
           context.circularParent &&
@@ -55,6 +89,15 @@ module.exports = {
           throw new Error(
             `circular parent path ${context.circularParent.path} is not array`
           );
+        }
+
+        if (
+          !(
+            context.childrenPath === undefined ||
+            _.isArray(context.childrenPath)
+          )
+        ) {
+          throw new Error(`children path ${context.childrenPath} is not array`);
         }
       } else {
         if (!(context.path === undefined || _.isString(context.path))) {
@@ -72,6 +115,16 @@ module.exports = {
           if (!(parent.path === undefined || _.isString(parent.path))) {
             throw new Error(`parents path ${parent.path} is not string`);
           }
+          if (
+            !(
+              parent.childrenPath === undefined ||
+              _.isString(parent.childrenPath)
+            )
+          ) {
+            throw new Error(
+              `parents children path ${parent.childrenPath} is not string`
+            );
+          }
         });
         if (
           context.circularParent &&
@@ -82,6 +135,16 @@ module.exports = {
         ) {
           throw new Error(
             `circular parent path ${context.circularParent.path} is not string`
+          );
+        }
+        if (
+          !(
+            context.childrenPath === undefined ||
+            _.isString(context.childrenPath)
+          )
+        ) {
+          throw new Error(
+            `children path ${context.childrenPath} is not string`
           );
         }
       }
@@ -144,8 +207,13 @@ module.exports = {
           throw new Error(`empty parents on depth ${context.depth}`);
         if (!context.obj || !_.isObject(context.obj) || _.isEmpty(context.obj))
           throw new Error(`incorrect obj on depth ${context.depth}`);
-        if (parentVal[key] !== value)
+        if (!options.tree && parentVal[key] !== value)
           throw new Error('value doesnt match one got by key');
+        if (
+          options.tree &&
+          _.obtain(parentVal, context.childrenPath)[key] != value
+        )
+          throw new Error('child value doesnt match one got by key');
         if (_.get(context.obj, context.path) !== value)
           throw new Error('value doesnt match one got by path');
         if (

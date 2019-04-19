@@ -92,36 +92,18 @@
       depth,
       parent,
       parents,
-      obj
+      obj,
+      childrenPath
     ) {
       var currentObj = {
         value: value,
         key: key,
         path: options.pathFormat == 'array' ? path : pathToString(path),
         parent: parent,
-        isTreeNode:
-          (parent && parent.isTreeChildren) ||
-          (!depth && options.tree && !parent && options.includeRoot),
       };
-      // console.log('it', currentObj.path);
+
       var currentParents = parents.concat(currentObj);
-      if (options.tree) {
-        if (!depth && options.tree.rootIsChildren) {
-          currentObj.isTreeChildren = true;
-          currentObj.treeChildrenPath = undefined;
-        } else {
-          var matches = pathMatches(path, options.tree.children);
-          if (matches !== false) {
-            currentObj.isTreeChildren = true;
-            currentObj.treeChildrenPath =
-              options.pathFormat == 'array' || !_.isArray(matches)
-                ? matches
-                : pathToString(matches);
-          } else {
-            currentObj.isTreeChildren = false;
-          }
-        }
-      }
+
       var isCircular = undefined;
       var circularParentIndex = undefined;
       var circularParent = undefined;
@@ -137,70 +119,82 @@
         }
         isCircular = circularParentIndex !== -1;
       }
-      var context = {
-        path: options.pathFormat == 'array' ? path : pathToString(path),
-        parent: parent,
-        parents: parents,
-        obj: obj,
-        depth: depth,
-        isCircular: isCircular,
-        circularParent: circularParent,
-        circularParentIndex: circularParentIndex,
-      };
       var res;
-      var needCallback =
-        (options.tree &&
-          ((parent && parent.isTreeChildren) ||
-            (!depth && options.includeRoot))) ||
-        (!options.tree && (depth || options.includeRoot));
+      var needCallback = depth || options.includeRoot;
+
       if (needCallback) {
+        var context = {
+          path: options.pathFormat == 'array' ? path : pathToString(path),
+          parent: parent,
+          parents: parents,
+          obj: obj,
+          depth: depth,
+          isCircular: isCircular,
+          circularParent: circularParent,
+          circularParentIndex: circularParentIndex,
+        };
+        if (options.tree) {
+          currentObj.childrenPath =
+            options.pathFormat == 'array'
+              ? childrenPath
+              : pathToString(childrenPath);
+          context.childrenPath = currentObj.childrenPath;
+        }
         res = callback(value, key, parent && parent.value, context);
       }
+      function forChildren(children, cp) {
+        if (children && _.isObject(children)) {
+          _.forOwn(children, function(childValue, childKey) {
+            var childPath = (path || []).concat(cp || [], [childKey]);
+
+            iterate(
+              childValue,
+              callback,
+              options,
+              childKey,
+              childPath,
+              depth + 1,
+              currentObj,
+              currentParents,
+              obj,
+              cp
+            );
+          });
+        }
+      }
       if (res !== false && !isCircular && _.isObject(value)) {
-        //         if (options.tree) {
-        //           _.each(options.tree.children, function(cp) {
-        //             var children = _.get(value, cp);
-        //             if (children && _.isObject(children)) {
-        //               _.forOwn(children, function(childValue, childKey) {
-        //                 var childPath = (path || []).concat(cp,[childKey]);
-        //
-        //                 iterate(
-        //                   childValue,
-        //                   callback,
-        //                   options,
-        //                   childKey,
-        //                   childPath,
-        //                   depth + 1,
-        //                   currentObj,
-        //                   currentParents,
-        //                   obj
-        //                 );
-        //               });
-        //             }
-        //           });
-        //         } else {
-        _.forOwn(value, function(childValue, childKey) {
-          if (_.isArray(value)) {
-            if (childValue === undefined && !(childKey in value)) {
-              return; //empty slot
-            }
+        if (options.tree) {
+          if (!depth && options.tree.rootIsChildren) {
+            forChildren(value, undefined);
+          } else {
+            _.each(options.tree.children, function(cp) {
+              var children = _.get(value, cp);
+              forChildren(children, cp);
+            });
           }
+        } else {
+          _.forOwn(value, function(childValue, childKey) {
+            if (_.isArray(value)) {
+              if (childValue === undefined && !(childKey in value)) {
+                return; //empty slot
+              }
+            }
 
-          var childPath = (path || []).concat([childKey]);
+            var childPath = (path || []).concat([childKey]);
 
-          iterate(
-            childValue,
-            callback,
-            options,
-            childKey,
-            childPath,
-            depth + 1,
-            currentObj,
-            currentParents,
-            obj
-          );
-        });
-        // }
+            iterate(
+              childValue,
+              callback,
+              options,
+              childKey,
+              childPath,
+              depth + 1,
+              currentObj,
+              currentParents,
+              obj
+            );
+          });
+        }
       }
       if (options.callbackAfterIterate && needCallback) {
         context.afterIterate = true;
@@ -230,7 +224,14 @@
             options.tree.rootIsChildren = _.isArray(obj);
           }
           if (options.tree.children === undefined) {
-            options.tree.children = ['children'];
+            options.tree.children = [['children']];
+          } else {
+            if (_.isString(options.tree.children)) {
+              options.tree.children = [options.tree.children];
+            }
+            for (var i = options.tree.children.length - 1; i >= 0; i--) {
+              options.tree.children[i] = _.toPath(options.tree.children[i]);
+            }
           }
         }
         iterate(
@@ -450,7 +451,7 @@
             checkCircular: false,
             keepCircular: true,
             //replaceCircularBy: <by>,
-            leavesOnly: true,
+            leavesOnly: !options.tree,
             condense: true,
             cloneDeep: _.cloneDeep,
             pathFormat: 'string',
@@ -492,7 +493,7 @@
                 var reply;
                 if (
                   !options.leavesOnly ||
-                  (context.parent && context.parent.isTreeChildren) ||
+                  options.tree ||
                   !_.isObject(value) ||
                   _.isEmpty(value)
                 ) {
@@ -574,10 +575,7 @@
               ) {
                 _.unset(res, context.path);
               } else {
-                var p = !options.tree
-                  ? context.parent
-                  : _.findLast(context.parents, 'isTreeNode');
-
+                var p = context.parent;
                 if (p && p.path != undefined) {
                   p = pathToString(p.path);
                   // if (!replies[p])

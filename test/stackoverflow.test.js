@@ -748,16 +748,12 @@ describe('stackoverflow', () => {
       (item, key, parentVal, ctx) => {
         let res =
           _.includes(filterList, item.name) ||
-          (ctx.parent &&
-            _.includes(
-              filterList,
-              _.get(ctx, 'parent.parent.parent.value.name')
-            ));
+          _.includes(filterList, _.get(ctx, 'parent.value.name'));
         // console.log(' - ' + ctx.path, res);
         return res;
       },
       {
-        tree: { children: 'items' },
+        tree: { children: ['child.items', 'items'] },
       }
     );
     // remove empty 'child'

@@ -247,7 +247,7 @@ callback function which will be invoked for each child of object.
         - `parent` - grandparent with the same structure.
     - next `parent` fields are available if `tree` option was activated:
         - `isTreeChildren` - true if this parent is `children` collection.
-        - `treeChildrenPath` - contains matched `children` path (specific one from `tree.children` option array)
+        - `childrenPath` - contains matched `children` path (specific one from `tree.children` option array)
         - `isTreeNode` - true if `parent` is an element of some `children` collection. Only this values will be passed into iteratee.
     - `parents` - an array with all parent objects starting from the root level. `parent` object listed above is just the last element of this array
     - `obj` - source object
@@ -367,7 +367,7 @@ _.filterDeep( obj, predicate, options={
     condense: true,
     cloneDeep: _.cloneDeep,
     pathFormat: 'string',
-    leavesOnly: true,
+    leavesOnly: !options.tree,
     tree: false, // true → { rootIsChildren: true, children: 'children' }
     onTrue: {
       skipChildren: true,   // false if options.tree
@@ -396,7 +396,7 @@ _.filterDeep( obj, predicate, options={
     - `condense` (true) - Condense the result object (excluding some paths may produce sparse arrays)
     - `cloneDeep` (_.cloneDeep)- Method to use for deep cloning values, Lodash cloneDeep by default.
     - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
-    - `leavesOnly` (true) - Call predicate for childless values only. Incompatible with `options.tree`.
+    - `leavesOnly` (!options.tree) - Call predicate for childless values only. Incompatible with `options.tree`.
     - `tree` (false) - treat the `obj` as a "tree" of nodes with `children` collections. Can be boolean or object.
         - `children` ('children') - children collection's field name, path, path's regex or array of any of this. Only elements of such collections will be passed into `iteratee`.
         - `rootIsChildren` (true) - treat `obj` as top-level children collection, so its elements will be passed into iteratee without parent path check (so you don't need to specify empty path as `tree.children` option)

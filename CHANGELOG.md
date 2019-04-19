@@ -8,6 +8,11 @@
 - `indexate` renamed to [index](/#index).
 - in case of completely rejected object [filterDeep](/#filterdeep) returns null instead of empty {}/[]
 - if not an object passed as a source to [filterDeep](/#filterdeep) source will be returned if it passes the filter, otherwise null.
+- treeChildrenPath renamed to childrenPath.
+- isTreeChildren, isTreeNode iteratee sub-parameters deprecated.
+- regexp children path support dropped to optimise tree walking
+- tree mode extracted into separate family of methods.
+- `tree` option deprecated, `tree.children` renamed to 'childrenPath', `tree.rootIsChildren` renamed to `rootIsChildren`
 
 **Features added**
 - `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.

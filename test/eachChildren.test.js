@@ -56,8 +56,8 @@ describe('eachChildren', () => {
       (value, key, parent, ctx) => {
         // console.log('@' + ctx.path);
         validateIteration(value, key, parent, ctx, options);
-        if (ctx.parent && ctx.parent.treeChildrenPath !== undefined) {
-          expect(ctx.parent.treeChildrenPath).to.be.a.string();
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
         }
         if (ctx.parent) {
           expect(ctx.path).to.be.a.string();
@@ -93,8 +93,29 @@ describe('eachChildren', () => {
       (value, key, parent, ctx) => {
         // console.log('@' + ctx.path);
         validateIteration(value, key, parent, ctx, options);
-        if (ctx.parent && ctx.parent.treeChildrenPath !== undefined) {
-          expect(ctx.parent.treeChildrenPath).to.be.a.string();
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
+        }
+        if (ctx.parent) {
+          expect(ctx.path).to.be.a.string();
+        }
+        visited.push(ctx.path);
+      },
+      options
+    );
+    expect(visited).to.deep.equal([undefined]);
+  });
+
+  it('children array - include root, root is children', () => {
+    let visited = [];
+    let options = { tree: { rootIsChildren: true }, includeRoot: true };
+    _.eachDeep(
+      children,
+      (value, key, parent, ctx) => {
+        // console.log('@' + ctx.path);
+        validateIteration(value, key, parent, ctx, options);
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
         }
         if (ctx.parent) {
           expect(ctx.path).to.be.a.string();
@@ -105,12 +126,14 @@ describe('eachChildren', () => {
     );
     expect(visited).to.deep.equal([
       undefined,
+      '[0]',
       '[0].children[0]',
       '[0].children[0].children[0]',
       '[0].children[0].children[1]',
       '[0].children[1]',
       '[0].children[1].children[0]',
       '[0].children[1].children[1]',
+      '[1]',
       '[1].children[0]',
       '[1].children[0].children[0]',
       '[1].children[0].children[1]',
@@ -128,8 +151,8 @@ describe('eachChildren', () => {
       (value, key, parent, ctx) => {
         // console.log('@' + ctx.path);
         validateIteration(value, key, parent, ctx, options);
-        if (ctx.parent && ctx.parent.treeChildrenPath !== undefined) {
-          expect(ctx.parent.treeChildrenPath).to.be.a.string();
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
         }
         if (ctx.parent) {
           expect(ctx.path).to.be.a.string();
@@ -138,20 +161,7 @@ describe('eachChildren', () => {
       },
       options
     );
-    expect(visited).to.deep.equal([
-      '[0].children[0]',
-      '[0].children[0].children[0]',
-      '[0].children[0].children[1]',
-      '[0].children[1]',
-      '[0].children[1].children[0]',
-      '[0].children[1].children[1]',
-      '[1].children[0]',
-      '[1].children[0].children[0]',
-      '[1].children[0].children[1]',
-      '[1].children[1]',
-      '[1].children[1].children[0]',
-      '[1].children[1].children[1]',
-    ]);
+    expect(visited).to.deep.equal([]);
   });
 
   it('array path format', () => {
@@ -161,8 +171,8 @@ describe('eachChildren', () => {
       children,
       (value, key, parent, ctx) => {
         validateIteration(value, key, parent, ctx, options);
-        if (ctx.parent && ctx.parent.treeChildrenPath !== undefined) {
-          expect(ctx.parent.treeChildrenPath).to.be.an.array();
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.an.array();
         }
         if (ctx.parent) {
           expect(ctx.path).to.be.an.array();
@@ -196,8 +206,8 @@ describe('eachChildren', () => {
       singleRoot,
       (value, key, parent, ctx) => {
         validateIteration(value, key, parent, ctx, options);
-        if (ctx.parent.treeChildrenPath !== undefined) {
-          expect(ctx.parent.treeChildrenPath).to.be.a.string();
+        if (ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
         }
         expect(ctx.path).to.be.a.string();
         // console.log('@' + ctx.path);
@@ -232,8 +242,8 @@ describe('eachChildren', () => {
       (value, key, parent, ctx) => {
         validateIteration(value, key, parent, ctx, options);
         if (ctx.parent) {
-          if (ctx.parent.treeChildrenPath !== undefined) {
-            expect(ctx.parent.treeChildrenPath).to.be.a.array();
+          if (ctx.parent.childrenPath !== undefined) {
+            expect(ctx.parent.childrenPath).to.be.a.array();
           }
           expect(ctx.path).to.be.a.array();
         }
@@ -275,8 +285,8 @@ describe('eachChildren', () => {
         // console.log('@' + ctx.path);
         validateIteration(value, key, parent, ctx, options);
         if (ctx.parent) {
-          if (ctx.parent.treeChildrenPath !== undefined) {
-            expect(ctx.parent.treeChildrenPath).to.be.a.array();
+          if (ctx.parent.childrenPath !== undefined) {
+            expect(ctx.parent.childrenPath).to.be.a.array();
           }
           expect(ctx.path).to.be.a.array();
           expect(ctx.circularParent).to.equal(null);
@@ -327,7 +337,7 @@ describe('eachChildren', () => {
 
   it('String field', () => {
     let visited = [];
-    let options = { tree: { children: 'replies', rootIsChildren: true } };
+    let options = { tree: { children: 'replies' } };
     _.eachDeep(
       comments,
       (value, key, parent, ctx) => {
@@ -405,27 +415,27 @@ describe('eachChildren', () => {
     // console.log(visited);
     expect(visited).to.deep.equal([
       '[0]',
-      '[0].feedback.reactions[0]',
-      '[0].feedback.reactions[1]',
       '[0].feedback.replies[0]',
       '[0].feedback.replies[1]',
       '[0].feedback.replies[1].feedback.replies[0]',
-      '[0].feedback.replies[1].feedback.replies[0].feedback.reactions[0]',
       '[0].feedback.replies[1].feedback.replies[0].feedback.replies[0]',
+      '[0].feedback.replies[1].feedback.replies[0].feedback.reactions[0]',
       '[0].feedback.replies[2]',
       '[0].feedback.replies[2].feedback.reactions[0]',
+      '[0].feedback.reactions[0]',
+      '[0].feedback.reactions[1]',
       '[1]',
       '[1].feedback.replies[0]',
       '[1].feedback.replies[0].feedback.replies[0]',
-      '[1].feedback.replies[0].feedback.replies[0].feedback.reactions[0]',
       '[1].feedback.replies[0].feedback.replies[0].feedback.replies[0]',
       '[1].feedback.replies[0].feedback.replies[0].feedback.replies[0].feedback.reactions[0]',
+      '[1].feedback.replies[0].feedback.replies[0].feedback.reactions[0]',
       '[2]',
       '[2].feedback.replies[0]',
       '[2].feedback.replies[1]',
       '[3]',
-      '[3].feedback.reactions[0]',
       '[3].feedback.replies[0]',
+      '[3].feedback.reactions[0]',
     ]);
   });
   it('String paths - array path format', () => {
@@ -442,11 +452,9 @@ describe('eachChildren', () => {
       },
       options
     );
-    // console.log(visited);
+    // console.log(JSON.stringify(visited, null, 2));
     expect(visited).to.deep.equal([
       ['0'],
-      ['0', 'feedback', 'reactions', '0'],
-      ['0', 'feedback', 'reactions', '1'],
       ['0', 'feedback', 'replies', '0'],
       ['0', 'feedback', 'replies', '1'],
       ['0', 'feedback', 'replies', '1', 'feedback', 'replies', '0'],
@@ -459,7 +467,7 @@ describe('eachChildren', () => {
         'replies',
         '0',
         'feedback',
-        'reactions',
+        'replies',
         '0',
       ],
       [
@@ -471,11 +479,13 @@ describe('eachChildren', () => {
         'replies',
         '0',
         'feedback',
-        'replies',
+        'reactions',
         '0',
       ],
       ['0', 'feedback', 'replies', '2'],
       ['0', 'feedback', 'replies', '2', 'feedback', 'reactions', '0'],
+      ['0', 'feedback', 'reactions', '0'],
+      ['0', 'feedback', 'reactions', '1'],
       ['1'],
       ['1', 'feedback', 'replies', '0'],
       ['1', 'feedback', 'replies', '0', 'feedback', 'replies', '0'],
@@ -488,26 +498,26 @@ describe('eachChildren', () => {
         'replies',
         '0',
         'feedback',
+        'replies',
+        '0',
+      ],
+      [
+        '1',
+        'feedback',
+        'replies',
+        '0',
+        'feedback',
+        'replies',
+        '0',
+        'feedback',
+        'replies',
+        '0',
+        'feedback',
         'reactions',
         '0',
       ],
       [
         '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-      ],
-      [
-        '1',
-        'feedback',
-        'replies',
-        '0',
         'feedback',
         'replies',
         '0',
@@ -522,143 +532,8 @@ describe('eachChildren', () => {
       ['2', 'feedback', 'replies', '0'],
       ['2', 'feedback', 'replies', '1'],
       ['3'],
-      ['3', 'feedback', 'reactions', '0'],
       ['3', 'feedback', 'replies', '0'],
-    ]);
-  });
-  it('Regex paths', () => {
-    let visited = [];
-    let options = { tree: { children: /feedback\.(replies|reactions)$/ } };
-    _.eachDeep(
-      deeperComments,
-      (value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx, options);
-        visited.push(ctx.path);
-      },
-      options
-    );
-    // console.log(visited);
-    expect(visited).to.deep.equal([
-      '[0]',
-      '[0].feedback.reactions[0]',
-      '[0].feedback.reactions[1]',
-      '[0].feedback.replies[0]',
-      '[0].feedback.replies[1]',
-      '[0].feedback.replies[1].feedback.replies[0]',
-      '[0].feedback.replies[1].feedback.replies[0].feedback.reactions[0]',
-      '[0].feedback.replies[1].feedback.replies[0].feedback.replies[0]',
-      '[0].feedback.replies[2]',
-      '[0].feedback.replies[2].feedback.reactions[0]',
-      '[1]',
-      '[1].feedback.replies[0]',
-      '[1].feedback.replies[0].feedback.replies[0]',
-      '[1].feedback.replies[0].feedback.replies[0].feedback.reactions[0]',
-      '[1].feedback.replies[0].feedback.replies[0].feedback.replies[0]',
-      '[1].feedback.replies[0].feedback.replies[0].feedback.replies[0].feedback.reactions[0]',
-      '[2]',
-      '[2].feedback.replies[0]',
-      '[2].feedback.replies[1]',
-      '[3]',
-      '[3].feedback.reactions[0]',
-      '[3].feedback.replies[0]',
-    ]);
-  });
-
-  it('Regex paths - array path format', () => {
-    let visited = [];
-    let options = {
-      tree: { children: /feedback\.(replies|reactions)$/ },
-      pathFormat: 'array',
-    };
-    _.eachDeep(
-      deeperComments,
-      (value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx, options);
-        visited.push(ctx.path);
-      },
-      options
-    );
-    expect(visited).to.deep.equal([
-      ['0'],
-      ['0', 'feedback', 'reactions', '0'],
-      ['0', 'feedback', 'reactions', '1'],
-      ['0', 'feedback', 'replies', '0'],
-      ['0', 'feedback', 'replies', '1'],
-      ['0', 'feedback', 'replies', '1', 'feedback', 'replies', '0'],
-      [
-        '0',
-        'feedback',
-        'replies',
-        '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'reactions',
-        '0',
-      ],
-      [
-        '0',
-        'feedback',
-        'replies',
-        '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-      ],
-      ['0', 'feedback', 'replies', '2'],
-      ['0', 'feedback', 'replies', '2', 'feedback', 'reactions', '0'],
-      ['1'],
-      ['1', 'feedback', 'replies', '0'],
-      ['1', 'feedback', 'replies', '0', 'feedback', 'replies', '0'],
-      [
-        '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'reactions',
-        '0',
-      ],
-      [
-        '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-      ],
-      [
-        '1',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'replies',
-        '0',
-        'feedback',
-        'reactions',
-        '0',
-      ],
-      ['2'],
-      ['2', 'feedback', 'replies', '0'],
-      ['2', 'feedback', 'replies', '1'],
-      ['3'],
       ['3', 'feedback', 'reactions', '0'],
-      ['3', 'feedback', 'replies', '0'],
     ]);
   });
 
@@ -684,7 +559,7 @@ describe('eachChildren', () => {
   it('deeper circular', () => {
     let circluarPath = [];
     let options = {
-      tree: { children: /feedback\.(replies|reactions)$/ },
+      tree: { children: ['feedback.replies', 'feedback.reactions'] },
       checkCircular: true,
     };
     _.eachDeep(
