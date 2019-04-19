@@ -25,14 +25,14 @@ describe('filterDeep tree', () => {
     let orig = _.cloneDeep(comments);
     let obj = _.cloneDeep(comments);
     _.filterDeep(obj, 'verified', {
-      tree: { children: 'replies' },
+      childrenPath: 'replies',
     });
     expect(obj).to.deep.equal(orig);
   });
   it('filter by field', () => {
     let filtrate = _(comments)
       .filterDeep('verified', {
-        tree: { children: 'replies' },
+        childrenPath: 'replies',
       })
       .value();
     //console.log(JSON.stringify(filtrate, null, 2));
@@ -41,7 +41,7 @@ describe('filterDeep tree', () => {
   it('filter by field - pathFormat: array', () => {
     let filtrate = _(comments)
       .filterDeep('verified', {
-        tree: { children: 'replies' },
+        childrenPath: 'replies',
         pathFormat: 'array',
       })
       .value();
@@ -52,7 +52,7 @@ describe('filterDeep tree', () => {
     try {
       let filtrate = _(comments)
         .filterDeep('verified', {
-          tree: { children: 'replies' },
+          childrenPath: 'replies',
           leavesOnly: true,
         })
         .value();
@@ -64,7 +64,7 @@ describe('filterDeep tree', () => {
   });
   it('default', () => {
     let filtrate = _.filterDeep(children, ['name', 'child 1.2.1'], {
-      tree: true,
+      childrenPath: 'children',
     });
     expect(filtrate).to.deep.equal([
       {
@@ -82,7 +82,7 @@ describe('filterDeep tree', () => {
     let filtrate = _.filterDeep(deeperCommentsCircular, 'verified', {
       checkCircular: true,
       keepCircular: false,
-      tree: { children: 'feedback.replies' },
+      childrenPath: 'feedback.replies',
     });
     expect(filtrate).to.deep.equal([
       {
@@ -221,7 +221,7 @@ describe('filterDeep tree', () => {
     let filtrate = _.filterDeep(childrenCircular, () => true, {
       checkCircular: true,
       keepCircular: false,
-      tree: true,
+      childrenPath: 'children',
     });
     let err;
     try {
@@ -235,7 +235,7 @@ describe('filterDeep tree', () => {
     let filtrate = _.filterDeep(deeperCommentsCircular, () => true, {
       checkCircular: true,
       keepCircular: false,
-      tree: { children: 'feedback.replies' },
+      childrenPath: 'feedback.replies',
     });
     let err;
     try {
@@ -247,7 +247,7 @@ describe('filterDeep tree', () => {
   });
   it('Skip children of undefined', () => {
     let filtrate = _.filterDeep(badChildren, 'bad', {
-      tree: true,
+      childrenPath: 'children',
       onUndefined: { skipChildren: true },
     });
     // console.log(JSON.stringify(filtrate, null, 2));
@@ -276,7 +276,7 @@ describe('filterDeep tree', () => {
   });
   it('Skip children of false', () => {
     let filtrate = _.filterDeep(badChildren, 'bad', {
-      tree: true,
+      childrenPath: 'children',
       onFalse: { skipChildren: true },
     });
     // console.log(JSON.stringify(filtrate, null, 2));
@@ -304,7 +304,7 @@ describe('filterDeep tree', () => {
   });
   it("Don't clone true", () => {
     let filtrate = _.filterDeep(badChildren, 'bad', {
-      tree: true,
+      childrenPath: 'children',
       onTrue: { cloneDeep: false },
     });
     // console.log(JSON.stringify(filtrate, null, 2));
@@ -325,7 +325,7 @@ describe('filterDeep tree', () => {
   });
   it("Don't clone undefined", () => {
     let filtrate = _.filterDeep(badChildren, 'bad', {
-      tree: true,
+      childrenPath: 'children',
       onUndefined: { cloneDeep: false },
     });
     // console.log(JSON.stringify(filtrate, null, 2));
@@ -362,7 +362,7 @@ describe('filterDeep tree', () => {
   });
   it("Don't clone false", () => {
     let filtrate = _.filterDeep(badChildren, 'bad', {
-      tree: true,
+      childrenPath: 'children',
       onFalse: { cloneDeep: false },
     });
     // console.log(JSON.stringify(filtrate, null, 2));
@@ -437,7 +437,7 @@ describe('filterDeep tree', () => {
     var keyword = 'Hit';
     let options = {
       pathFormat: 'array',
-      tree: true,
+      childrenPath: 'children',
       onTrue: { skipChildren: true },
     };
     var filtrate = _.filterDeep(

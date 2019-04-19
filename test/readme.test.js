@@ -115,7 +115,7 @@ describe('README examples', () => {
         // console.log(_.repeat('  ', ctx.depth) + child.name);
         total++;
       },
-      { tree: true }
+      { childrenPath: 'children' }
     );
     // console.log('total nodes: ' + total);
     expect(total).equal(14);
@@ -430,7 +430,7 @@ describe('README examples', () => {
 
     // console.log('\n = Iterate over tree (each child object) = \n');
     out = [];
-    _.eachDeep(children, displayField, { tree: true });
+    _.eachDeep(children, displayField, { childrenPath: 'children' });
     expect(out).to.deep.equal([
       '→ [0]: {node 1}',
       '   → 0: {node 1.1}',
@@ -534,9 +534,11 @@ describe('README examples', () => {
     // console.log('\n = Filter tree (good children) = \n');
 
     // console.log(
-    //   JSON.stringify(_.filterDeep(children, 'good', { tree: true }), null, 2)
+    //   JSON.stringify(_.filterDeep(children, 'good', { childrenPath: 'children' }), null, 2)
     // );
-    expect(_.filterDeep(children, 'good', { tree: true })).to.deep.equal([
+    expect(
+      _.filterDeep(children, 'good', { childrenPath: 'children' })
+    ).to.deep.equal([
       {
         description: 'description for node 1',
         comment: 'comment for node 1',
@@ -658,7 +660,9 @@ describe('README examples', () => {
       },
     ];
 
-    let reallyBad = _.filterDeep(badChildren, 'bad', { tree: true });
+    let reallyBad = _.filterDeep(badChildren, 'bad', {
+      childrenPath: 'children',
+    });
     // console.log(JSON.stringify(reallyBad, null, 2));
     expect(reallyBad).to.deep.equal([
       {

@@ -163,7 +163,7 @@ describe('paths', () => {
 
   it('No leavesOnly in tree', () => {
     try {
-      _.paths(children, { tree: true, leavesOnly: true });
+      _.paths(children, { childrenPath: 'children', leavesOnly: true });
     } catch (exc) {
       expect(exc.message).equal(
         '"leavesOnly" option cannot be true in the "tree" mode.'
@@ -171,7 +171,7 @@ describe('paths', () => {
     }
   });
   it('paths of tree', () => {
-    let paths = _.paths(children, { tree: true });
+    let paths = _.paths(children, { childrenPath: 'children' });
 
     // console.log(paths);
     expect(paths).to.deep.equal([

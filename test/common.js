@@ -10,25 +10,29 @@ module.exports = {
       options.includeRoot = !_.isArray(value);
     if (options.pathFormat === undefined) options.pathFormat = 'string';
     if (options.checkCircular === undefined) options.checkCircular = false;
-    if (options.tree) {
-      if (!_.isObject(options.tree)) {
-        options.tree = {};
+    if (options.childrenPath) {
+      if (!_.isObject(options.childrenPath)) {
+        options.childrenPath = {};
       }
-      if (!options.includeRoot && options.tree.rootIsChildren === undefined) {
-        options.tree.rootIsChildren = _.isArray(value);
+      if (!options.includeRoot && options.rootIsChildren === undefined) {
+        options.rootIsChildren = _.isArray(value);
       }
-      if (!options.tree.children) {
-        options.tree.children = ['children'];
+      if (!options.childrenPath) {
+        options.childrenPath = ['children'];
       }
     }
     try {
-      if (key !== undefined && !options.tree && !_.exists(parentVal, key)) {
+      if (
+        key !== undefined &&
+        !options.childrenPath &&
+        !_.exists(parentVal, key)
+      ) {
         throw new Error(`key "${key}" not found.`);
       }
       if (!context) {
         throw new Error('context not exists');
       }
-      if (options.tree) {
+      if (options.childrenPath) {
         if (!context.depth && context.childrenPath !== undefined) {
           throw new Error(
             `children path ${context.childrenPath} on zero depth`
@@ -207,10 +211,10 @@ module.exports = {
           throw new Error(`empty parents on depth ${context.depth}`);
         if (!context.obj || !_.isObject(context.obj) || _.isEmpty(context.obj))
           throw new Error(`incorrect obj on depth ${context.depth}`);
-        if (!options.tree && parentVal[key] !== value)
+        if (!options.childrenPath && parentVal[key] !== value)
           throw new Error('value doesnt match one got by key');
         if (
-          options.tree &&
+          options.childrenPath &&
           _.obtain(parentVal, context.childrenPath)[key] != value
         )
           throw new Error('child value doesnt match one got by key');

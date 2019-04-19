@@ -227,7 +227,7 @@ let arr = _.filterDeep(
     return res;
   },
   {
-    tree: { children: ['child.items', 'items'] },
+    childrenPath: ['child.items', 'items'],
   }
 );
 //remove empty 'child'
