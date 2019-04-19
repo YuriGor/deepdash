@@ -409,7 +409,7 @@ describe('README examples', () => {
         ],
       },
     ];
-    let out = [];
+    let out;
     function displayField(val, key, parent, context) {
       if (_.isArray(parent)) {
         key = '[' + key + ']';
@@ -429,25 +429,27 @@ describe('README examples', () => {
     }
 
     // console.log('\n = Iterate over tree (each child object) = \n');
-
+    out = [];
     _.eachDeep(children, displayField, { tree: true });
-
-    // console.log('\n = Iterate over object (each field) = \n');
-
-    _.eachDeep(children, displayField);
     expect(out).to.deep.equal([
       '→ [0]: {node 1}',
-      '      → [0]: {node 1.1}',
-      '      → [1]: {node 1.2}',
-      '      → [2]: {node 1.3}',
+      '   → 0: {node 1.1}',
+      '   → 1: {node 1.2}',
+      '   → 2: {node 1.3}',
       '→ [1]: {node 2}',
-      '      → [0]: {node 2.1}',
-      '      → [1]: {node 2.2}',
-      '      → [2]: {node 2.3}',
+      '   → 0: {node 2.1}',
+      '   → 1: {node 2.2}',
+      '   → 2: {node 2.3}',
       '→ [2]: {node 3}',
-      '      → [0]: {node 3.1}',
-      '      → [1]: {node 3.2}',
-      '      → [2]: {node 3.3}',
+      '   → 0: {node 3.1}',
+      '   → 1: {node 3.2}',
+      '   → 2: {node 3.3}',
+    ]);
+
+    // console.log('\n = Iterate over object (each field) = \n');
+    out = [];
+    _.eachDeep(children, displayField);
+    expect(out).to.deep.equal([
       '→ [0]: {node 1}',
       '   → description: description for node 1',
       '   → comment: comment for node 1',

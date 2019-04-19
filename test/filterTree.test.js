@@ -45,7 +45,7 @@ describe('filterDeep tree', () => {
         pathFormat: 'array',
       })
       .value();
-    //console.log(JSON.stringify(filtrate, null, 2));
+    // console.log(JSON.stringify(filtrate, null, 2));
     expect(filtrate).deep.equal(verifiedComments);
   });
   it('no leavesOnly', () => {
