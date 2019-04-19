@@ -95,7 +95,7 @@ describe('stackoverflow', () => {
       function(value) {
         return _.indexOf(idList, value.id) !== -1;
       },
-      { tree: true }
+      { childrenPath: 'children' }
     );
 
     expect(found).to.deep.equal([
@@ -341,7 +341,7 @@ describe('stackoverflow', () => {
       function(value, key) {
         return _.endsWith(value.name, endsWith);
       },
-      { tree: { children: ['sub_categories', 'indicators'] } }
+      { childrenPath: ['sub_categories', 'indicators'] }
     );
 
     expect(foundFoo).to.deep.equal([
@@ -427,7 +427,7 @@ describe('stackoverflow', () => {
         return value.value.includes(keyword);
       },
       {
-        tree: true,
+        childrenPath: 'children',
         onTrue: { skipChildren: true },
       }
     );
@@ -753,7 +753,7 @@ describe('stackoverflow', () => {
         return res;
       },
       {
-        tree: { children: ['child.items', 'items'] },
+        childrenPath: ['child.items', 'items'],
       }
     );
     // remove empty 'child'

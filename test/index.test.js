@@ -100,7 +100,7 @@ describe('index', () => {
   });
   it('No leavesOnly in tree', () => {
     try {
-      _.index(children, { tree: true, leavesOnly: true });
+      _.index(children, { childrenPath: 'children', leavesOnly: true });
     } catch (exc) {
       expect(exc.message).equal(
         '"leavesOnly" option cannot be true in the "tree" mode.'
@@ -108,7 +108,7 @@ describe('index', () => {
     }
   });
   it('Indexate tree', () => {
-    let index = _.index(children, { tree: true });
+    let index = _.index(children, { childrenPath: 'children' });
     let names = _(index)
       .values()
       .map('name')

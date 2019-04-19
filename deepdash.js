@@ -133,7 +133,7 @@
           circularParent: circularParent,
           circularParentIndex: circularParentIndex,
         };
-        if (options.tree) {
+        if (options.childrenPath !== undefined) {
           currentObj.childrenPath =
             options.pathFormat == 'array'
               ? childrenPath
@@ -163,11 +163,11 @@
         }
       }
       if (res !== false && !isCircular && _.isObject(value)) {
-        if (options.tree) {
-          if (!depth && options.tree.rootIsChildren) {
+        if (options.childrenPath !== undefined) {
+          if (!depth && options.rootIsChildren) {
             forChildren(value, undefined);
           } else {
-            _.each(options.tree.children, function(cp) {
+            _.each(options.childrenPath, function(cp) {
               var children = _.get(value, cp);
               forChildren(children, cp);
             });
@@ -213,24 +213,21 @@
           },
           options || {}
         );
-        if (options.tree) {
-          if (!_.isObject(options.tree)) {
-            options.tree = {};
+        if (options.childrenPath !== undefined) {
+          if (!options.includeRoot && options.rootIsChildren === undefined) {
+            options.rootIsChildren = _.isArray(obj);
           }
           if (
-            !options.includeRoot &&
-            options.tree.rootIsChildren === undefined
+            !_.isString(options.childrenPath) &&
+            !_.isArray(options.childrenPath)
           ) {
-            options.tree.rootIsChildren = _.isArray(obj);
-          }
-          if (options.tree.children === undefined) {
-            options.tree.children = [['children']];
+            throw Error('childrenPath can be string or array');
           } else {
-            if (_.isString(options.tree.children)) {
-              options.tree.children = [options.tree.children];
+            if (_.isString(options.childrenPath)) {
+              options.childrenPath = [options.childrenPath];
             }
-            for (var i = options.tree.children.length - 1; i >= 0; i--) {
-              options.tree.children[i] = _.toPath(options.tree.children[i]);
+            for (var i = options.childrenPath.length - 1; i >= 0; i--) {
+              options.childrenPath[i] = _.toPath(options.childrenPath[i]);
             }
           }
         }
@@ -264,17 +261,17 @@
           {
             checkCircular: false,
             includeCircularPath: true,
-            leavesOnly: !options || !options.tree,
+            leavesOnly: !options || options.childrenPath === undefined,
           },
           options || {}
         );
-        if (options.tree && options.leavesOnly) {
+        if (options.childrenPath !== undefined && options.leavesOnly) {
           throw new Error(errorNoLeavesOnlyAndTree);
         }
         var eachDeepOptions = {
           pathFormat: 'string',
           checkCircular: options.checkCircular,
-          tree: options.tree,
+          childrenPath: options.childrenPath,
           includeRoot: options.includeRoot,
         };
         var res = {};
@@ -283,7 +280,7 @@
           function(value, key, parent, context) {
             if (!context.isCircular || options.includeCircularPath) {
               if (
-                !options.tree &&
+                options.childrenPath === undefined &&
                 options.leavesOnly &&
                 context.parent &&
                 res[context.parent.path]
@@ -310,18 +307,18 @@
           {
             checkCircular: false,
             includeCircularPath: true,
-            leavesOnly: !options || !options.tree,
+            leavesOnly: !options || options.childrenPath === undefined,
             pathFormat: 'string',
           },
           options || {}
         );
-        if (options.tree && options.leavesOnly) {
+        if (options.childrenPath !== undefined && options.leavesOnly) {
           throw new Error(errorNoLeavesOnlyAndTree);
         }
         var eachDeepOptions = {
           pathFormat: options.pathFormat,
           checkCircular: options.checkCircular,
-          tree: options.tree,
+          childrenPath: options.childrenPath,
           includeRoot: options.includeRoot,
         };
         var res = [];
@@ -330,7 +327,7 @@
           function(value, key, parent, context) {
             if (!context.isCircular || options.includeCircularPath) {
               if (
-                !options.tree &&
+                options.childrenPath === undefined &&
                 options.leavesOnly &&
                 context.parent &&
                 _.last(res) === context.parent.path
@@ -422,7 +419,7 @@
         if (!options.onUndefined) {
           options.onUndefined = {};
         }
-        if (options.tree) {
+        if (options.childrenPath !== undefined) {
           if (options.leavesOnly) {
             throw new Error(errorNoLeavesOnlyAndTree);
           }
@@ -451,7 +448,7 @@
             checkCircular: false,
             keepCircular: true,
             //replaceCircularBy: <by>,
-            leavesOnly: !options.tree,
+            leavesOnly: options.childrenPath === undefined,
             condense: true,
             cloneDeep: _.cloneDeep,
             pathFormat: 'string',
@@ -473,7 +470,7 @@
         var eachDeepOptions = {
           pathFormat: options.pathFormat,
           checkCircular: options.checkCircular,
-          tree: options.tree,
+          childrenPath: options.childrenPath,
           includeRoot: options.includeRoot,
           callbackAfterIterate: true,
         };
@@ -482,7 +479,7 @@
         var replies = {};
         var rootReply;
         var foundCircular = [];
-        //console.log('filterDeep → eachDeep');
+        // console.log('filterDeep → eachDeep', eachDeepOptions);
         _.eachDeep(
           obj,
           function(value, key, parent, context) {
@@ -493,12 +490,12 @@
                 var reply;
                 if (
                   !options.leavesOnly ||
-                  options.tree ||
+                  options.childrenPath !== undefined ||
                   !_.isObject(value) ||
                   _.isEmpty(value)
                 ) {
                   reply = predicate(value, key, parent, context);
-                  // console.log('?', reply);
+                  // console.log(context.path + '?', reply);
                 }
                 if (!_.isObject(reply)) {
                   if (reply === undefined) {
@@ -648,7 +645,7 @@
           options
         );
         options.leavesOnly = false;
-        options.tree = false;
+        options.childrenPath = undefined;
         options.pathFormat = 'array';
         options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
         options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
