@@ -5,7 +5,7 @@ module.exports = {
     node: true,
     es6: true
   },
-  plugins: ['prettier'],
+  plugins: ['import', 'prettier'],
   rules: {
     // 'no-undef':1,
     'quotes': ["error", "single", { "avoidEscape": true }],
