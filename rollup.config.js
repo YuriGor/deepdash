@@ -7,74 +7,67 @@ import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import fs from 'fs';
 import path from 'path';
-var src = fs.readdirSync('./src').filter((fn) => fn.indexOf('.js') > -1);
-var input = src.reduce((res, fn) => {
-  res[path.basename(fn, '.js')] = './src/' + fn;
+var es = fs.readdirSync('./es').filter((fn) => fn.indexOf('.js') > -1);
+var input = es.reduce((res, fn) => {
+  res[path.basename(fn, '.js')] = './es/' + fn;
   return res;
 }, {});
-src = fs.readdirSync('./src/standalone').filter((fn) => fn.indexOf('.js') > -1);
-var standalone = src.reduce((res, fn) => {
-  res[path.basename(fn, '.js')] = './src/standalone/' + fn;
+es = fs.readdirSync('./es/deps/own/').filter((fn) => fn.indexOf('.js') > -1);
+var ownDeps = es.reduce((res, fn) => {
+  res[path.basename(fn, '.js')] = './es/deps/own/' + fn;
   return res;
 }, {});
-src = fs
-  .readdirSync('./src/standalone/deps/own/')
-  .filter((fn) => fn.indexOf('.js') > -1);
-var ownDeps = src.reduce((res, fn) => {
-  res[path.basename(fn, '.js')] = './src/standalone/deps/own/' + fn;
-  return res;
-}, {});
-input = _.merge(input, standalone, ownDeps);
+input = _.merge(input, ownDeps);
 // console.log(input);
 
 export default [
   {
-    input: 'src/deepdash.js',
+    input: 'es/deepdash.js',
     output: {
       name: 'deepdash',
       file: pkg.browser,
-      format: 'umd',
+      format: 'iife',
       esModule: false,
     },
     plugins: [resolve(), commonjs(), terser()],
   },
   {
-    input: 'src/deepdash.js',
+    input: 'es/deepdash.js',
     output: {
       name: 'deepdash',
       file: pkg.browser.replace('.min.', '.'),
-      format: 'umd',
+      format: 'iife',
       esModule: false,
     },
     plugins: [resolve(), commonjs()],
   },
   {
-    input: 'src/standalone/standalone.js',
+    input: 'es/standalone.js',
     output: {
       name: 'deepdash',
       file: pkg.browser.replace('.min.', '.standalone.'),
-      format: 'umd',
+      format: 'iife',
       esModule: false,
     },
     plugins: [resolve(), commonjs()],
   },
   {
-    input: 'src/standalone/standalone.js',
+    input: 'es/standalone.js',
     output: {
       name: 'deepdash',
       file: pkg.browser.replace('.min.', '.standalone.min.'),
-      format: 'umd',
+      format: 'iife',
       esModule: false,
     },
     plugins: [resolve(), commonjs(), terser()],
   },
   {
     input,
-    external: ['lodash-es', 'lodash'],
-    output: [{ dir: './', format: 'cjs' }, { dir: 'esm', format: 'es' }],
+    external: (id, parentId, isResolved) => _.startsWith(id, 'lodash/'),
+    output: [{ dir: './', format: 'cjs' }],
     plugins: [
       replace({
-        include: 'src/standalone/deps/**',
+        include: 'es/deps/**',
         delimiters: ['', ''],
         values: {
           'lodash-es': 'lodash',

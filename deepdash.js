@@ -1,6 +1,6 @@
 'use strict';
 
-require('./chunk-46374642.js');
+require('./chunk-27bec025.js');
 require('./getCondense.js');
 var addCondense = require('./addCondense.js');
 require('./getPathToString.js');
@@ -44,10 +44,6 @@ function apply(_) {
   addObtain(_);
   addPathMatches(_);
   return _;
-}
-
-if (typeof _ !== 'undefined') {
-  apply(_); // eslint-disable-line no-undef
 }
 
 module.exports = apply;
