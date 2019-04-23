@@ -1,5 +1,6 @@
 import './getPathToString.js';
 import './getEachDeep.js';
+import './getPaths.js';
 import 'lodash/merge';
 import './isArray.js';
 import './forArray.js';
@@ -15,8 +16,8 @@ import 'lodash/some';
 import './chunk-e6b54344.js';
 import 'lodash/reduce';
 import './chunk-a813a230.js';
-import eachDeep from './eachDeep.js';
+import paths from './paths.js';
 
+const keysDeep = paths;
 
-
-export default eachDeep;
+export default keysDeep;

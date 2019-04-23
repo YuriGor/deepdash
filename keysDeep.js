@@ -2,6 +2,7 @@
 
 require('./getPathToString.js');
 require('./getEachDeep.js');
+require('./getPaths.js');
 require('lodash/merge');
 require('./isArray.js');
 require('./forArray.js');
@@ -17,8 +18,8 @@ require('lodash/some');
 require('./chunk-b49b6706.js');
 require('lodash/reduce');
 require('./chunk-6b1697aa.js');
-var eachDeep = require('./eachDeep.js');
+var paths = require('./paths.js');
 
+const keysDeep = paths;
 
-
-module.exports = eachDeep;
+module.exports = keysDeep;

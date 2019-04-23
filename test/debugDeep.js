@@ -6,7 +6,7 @@ var {
   children,
   verifiedComments,
 } = require('./object');
-const _ = require('../dist/cjs/deepdash')(require('lodash'));
+const _ = require('../deepdash')(require('lodash'));
 function isNS(value, key, parent, ctx) {
   let t = typeof value;
   // console.log(`@${ctx.path}`, t == 'number' || t == 'string' ? value : false);

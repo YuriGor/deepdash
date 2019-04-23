@@ -1,10 +1,22 @@
-const lodash = require('lodash');
-const deepdash = require('../dist/cjs/deepdash');
-const _ = deepdash(lodash.runInContext());
-let deepdashAsAnObj = lodash.runInContext();
+const lodash = require('lodash').runInContext();
+
+let standalone = require('../standalone');
+if (standalone.eachDeep) {
+  console.log('standalone has eachDeep!!!');
+} else {
+  console.log('standalone has NO eachDeep!!!');
+}
+
+standalone = lodash.merge({}, lodash.runInContext(), standalone);
+standalone.v = 'standalone';
+
+let deepdashAsAnObj = lodash.merge({}, lodash.runInContext());
 delete deepdashAsAnObj.mixin;
 delete deepdashAsAnObj.chain;
-deepdashAsAnObj.v = 'object';
+deepdashAsAnObj.v = 'object cherry-pick';
+
+const deepdash = require('../deepdash');
+const _ = deepdash(lodash.runInContext());
 
 module.exports = {
   forLodashes: (methods, test, title) => {
@@ -12,20 +24,23 @@ module.exports = {
       methods = [methods];
     }
 
-    const standalone = { v: 'standalone' };
+    const standaloneCherry = { v: 'standalone cherry-pick' };
     methods.forEach((method) => {
-      standalone[method] = require('../dist/cjs/' + method);
-      require('../dist/cjs/' + _.camelCase('add ' + method))(deepdashAsAnObj);
+      standaloneCherry[method] = require('../' + method);
+      require('../' + _.camelCase('add ' + method))(deepdashAsAnObj);
     });
 
     const lodashes = [
       _,
-      lodash.merge(lodash.runInContext(), standalone),
+      lodash.merge({}, lodash.runInContext(), standaloneCherry),
+      standalone,
       deepdashAsAnObj,
     ];
-    lodashes.forEach(function(_) {
-      describe((_.v || '') + ' ' + (title || methods.join(' + ')), () => {
-        test(_);
+    // console.log('standalone:', standalone.filterDeep);
+
+    lodashes.forEach(function(dd) {
+      describe((dd.v || '') + ' ' + (title || methods.join(' + ')), () => {
+        test(dd);
       });
     });
   },

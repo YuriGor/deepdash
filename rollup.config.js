@@ -28,7 +28,6 @@ input = _.merge(input, standalone, ownDeps);
 // console.log(input);
 
 export default [
-  // browser-friendly UMD build
   {
     input: 'src/deepdash.js',
     output: {
@@ -37,13 +36,8 @@ export default [
       format: 'umd',
       esModule: false,
     },
-    plugins: [
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
-      terser(),
-    ],
+    plugins: [resolve(), commonjs(), terser()],
   },
-  // not minified
   {
     input: 'src/deepdash.js',
     output: {
@@ -52,18 +46,32 @@ export default [
       format: 'umd',
       esModule: false,
     },
-    plugins: [
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
-    ],
+    plugins: [resolve(), commonjs()],
+  },
+  {
+    input: 'src/standalone/standalone.js',
+    output: {
+      name: 'deepdash',
+      file: pkg.browser.replace('.min.', '.standalone.'),
+      format: 'umd',
+      esModule: false,
+    },
+    plugins: [resolve(), commonjs()],
+  },
+  {
+    input: 'src/standalone/standalone.js',
+    output: {
+      name: 'deepdash',
+      file: pkg.browser.replace('.min.', '.standalone.min.'),
+      format: 'umd',
+      esModule: false,
+    },
+    plugins: [resolve(), commonjs(), terser()],
   },
   {
     input,
     external: ['lodash-es', 'lodash'],
-    output: [
-      { dir: 'dist/cjs', format: 'cjs' },
-      { dir: 'dist/esm', format: 'es' },
-    ],
+    output: [{ dir: './', format: 'cjs' }, { dir: 'esm', format: 'es' }],
     plugins: [
       replace({
         include: 'src/standalone/deps/**',

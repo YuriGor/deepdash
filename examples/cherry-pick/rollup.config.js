@@ -12,6 +12,17 @@ export default [
       file: pkg.browser,
       format: 'umd',
     },
+    plugins: [
+      replace({
+        include: '*.js',
+        delimiters: ['', ''],
+        values: {
+          'lodash-es': 'lodash',
+        },
+      }),
+      resolve(), // so Rollup can find `ms`
+      commonjs(), // so Rollup can convert `ms` to an ES module
+    ],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
@@ -22,7 +33,7 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/main.js',
-    external: ['lodash', 'lodash-es'],
+    // external: ['lodash', 'lodash-es', 'deepdash'],
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
