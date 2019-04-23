@@ -4,11 +4,11 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { validateIteration } = require('./common.js');
+var { validateIteration, forLodashes } = require('./common.js');
 
 var { demo, circular } = require('./object');
 function isNS(options = {}) {
@@ -21,26 +21,26 @@ function isNS(options = {}) {
   };
 }
 
-describe('filterDeep', () => {
+forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
     _.filterDeep(obj, isNS());
     expect(obj).to.deep.equal(orig);
   });
-  it('filter object - defaults', () => {
-    let filtrate = _(demo)
-      .filterDeep(isNS())
-      .value();
-    expect(JSON.stringify(filtrate)).equal(
-      '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
-    );
-  });
+  if (!_.v) {
+    it('filter object - defaults', () => {
+      let filtrate = _(demo)
+        .filterDeep(isNS())
+        .value();
+      expect(JSON.stringify(filtrate)).equal(
+        '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
+      );
+    });
+  }
   it('filter object - no clone', () => {
     let options = { cloneDeep: false };
-    let filtrate = _(demo)
-      .filterDeep(isNS(options), options)
-      .value();
+    let filtrate = _.filterDeep(demo, isNS(options), options);
     expect(JSON.stringify(filtrate)).equal(
       '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
     );
@@ -48,9 +48,7 @@ describe('filterDeep', () => {
 
   it('filter array - no clone', () => {
     let options = { cloneDeep: false };
-    let filtrate = _([demo])
-      .filterDeep(isNS(options), options)
-      .value();
+    let filtrate = _.filterDeep([demo], isNS(options), options);
     expect(JSON.stringify(filtrate)).equal(
       '[{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}]'
     );
@@ -62,9 +60,19 @@ describe('filterDeep', () => {
       leavesOnly: false,
       onFalse: { skipChildren: false },
     };
-    let filtrate = _(demo)
-      .filterDeep(isNS(options), options)
-      .value();
+    let filtrate = _.filterDeep(demo, isNS(options), options);
+    expect(JSON.stringify(filtrate)).equal(
+      '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
+    );
+  });
+
+  it('filter object - no clone, not leafsOnly', () => {
+    let options = {
+      cloneDeep: false,
+      leafsOnly: false,
+      onFalse: { skipChildren: false },
+    };
+    let filtrate = _.filterDeep(demo, isNS(options), options);
     expect(JSON.stringify(filtrate)).equal(
       '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
     );
@@ -76,9 +84,7 @@ describe('filterDeep', () => {
       leavesOnly: false,
       onFalse: { skipChildren: false },
     };
-    let filtrate = _([demo])
-      .filterDeep(isNS(options), options)
-      .value();
+    let filtrate = _.filterDeep([demo], isNS(options), options);
     expect(JSON.stringify(filtrate)).equal(
       '[{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}]'
     );
@@ -91,9 +97,7 @@ describe('filterDeep', () => {
       onFalse: { skipChildren: false },
       includeRoot: true,
     };
-    let filtrate = _([demo])
-      .filterDeep(isNS(options), options)
-      .value();
+    let filtrate = _.filterDeep([demo], isNS(options), options);
     expect(JSON.stringify(filtrate)).equal(
       '[{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}]'
     );
@@ -129,23 +133,24 @@ describe('filterDeep', () => {
     //console.log(filtrate);
     expect(filtrate).equal(null);
   });
-
-  it('Chaining', () => {
-    let options = {
-      leafsOnly: false,
-      onTrue: { skipChildren: false },
-    };
-    let filtrate = _(demo)
-      .filterDeep(isNS())
-      .filterDeep((value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx, options);
-        return key !== 'skip';
-      }, options)
-      .value();
-    expect(JSON.stringify(filtrate)).equal(
-      '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{}}],"s":"hello"}},"n":12345}}'
-    );
-  });
+  if (!_.v) {
+    it('Chaining', () => {
+      let options = {
+        leafsOnly: false,
+        onTrue: { skipChildren: false },
+      };
+      let filtrate = _(demo)
+        .filterDeep(isNS())
+        .filterDeep((value, key, parent, ctx) => {
+          validateIteration(value, key, parent, ctx, options);
+          return key !== 'skip';
+        }, options)
+        .value();
+      expect(JSON.stringify(filtrate)).equal(
+        '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{}}],"s":"hello"}},"n":12345}}'
+      );
+    });
+  }
 
   it('non-object', () => {
     expect(
@@ -358,17 +363,16 @@ describe('filterDeep', () => {
   });
 
   it('Obj only', () => {
-    let filtrate = _(demo)
-      .filterDeep(
-        (value, key, parent, ctx) =>
-          validateIteration(value, key, parent, ctx) || _.isObject(value),
-        {
-          leavesOnly: false,
-          onTrue: { skipChildren: false },
-        }
-      )
-      .omitDeep('o.d', { onMatch: {} })
-      .value();
+    let filtrate = _.filterDeep(
+      demo,
+      (value, key, parent, ctx) =>
+        validateIteration(value, key, parent, ctx) || _.isObject(value),
+      {
+        leavesOnly: false,
+        onTrue: { skipChildren: false },
+      }
+    );
+    filtrate = _.omitDeep(filtrate, 'o.d', { onMatch: {} });
     // console.log(JSON.stringify(filtrate));
     expect(filtrate).to.deep.equal({
       a: {

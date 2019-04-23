@@ -4,10 +4,11 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 var { demo } = require('./object');
 
-describe('Parents', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['eachDeep'], (_) => {
   it('Count nodes', () => {
     _.eachDeep(demo, (value, key, parent, ctx) => {
       // console.log('path:', ctx.path);

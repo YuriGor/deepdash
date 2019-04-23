@@ -3,15 +3,17 @@
 
 const chai = require('chai'),
   // should = chai.should(),
-  expect = chai.expect,
-  // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  expect = chai.expect;
+// assert = require('assert'),
+const lodash = require('lodash');
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 var { circular } = require('./object');
 
-describe('condense', () => {
+var { forLodashes } = require('./common.js');
+
+forLodashes('condense', (_) => {
   it('slot 0', () => {
     var arr = [, 'b', 'c', 'd', 'e'];
     _.condense(arr);
@@ -41,7 +43,7 @@ describe('condense', () => {
   });
 });
 
-describe('condenseDeep', () => {
+forLodashes(['condenseDeep', 'paths'], (_) => {
   it('slot 0', () => {
     var arr = [, 'b', 'c', 'd', 'e'];
     _.condenseDeep(arr);
@@ -73,11 +75,9 @@ describe('condenseDeep', () => {
     var obj = _.cloneDeep(circular);
     delete obj.i[1];
     delete obj.i[2];
+    obj = _.condenseDeep(obj, { checkCircular: true });
     expect(
-      _(obj)
-        .condenseDeep({ checkCircular: true })
-        .paths({ checkCircular: true, leavesOnly: false })
-        .value().length
+      _.paths(obj, { checkCircular: true, leavesOnly: false }).length
     ).to.equal(23);
   });
 });

@@ -1,14 +1,12 @@
-'use strict';
-
 const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-var { validateIteration } = require('./common.js');
+var { validateIteration, forLodashes } = require('./common.js');
 
 var {
   singleRoot,
@@ -19,7 +17,7 @@ var {
   deeperCommentsCircular,
 } = require('./object');
 
-describe('eachChildren', () => {
+forLodashes('eachDeep', (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(comments);
     let obj = _.cloneDeep(comments);

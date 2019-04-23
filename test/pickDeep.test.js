@@ -4,14 +4,15 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
 var { demo } = require('./object');
 
-describe('pickDeep', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['pickDeep'], (_) => {
   it('pickDeep no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);

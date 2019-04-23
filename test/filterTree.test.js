@@ -4,7 +4,7 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
@@ -18,9 +18,9 @@ var {
   deeperCommentsCircular,
   badChildren,
 } = require('./object');
-var { validateIteration } = require('./common.js');
+var { validateIteration, forLodashes } = require('./common.js');
 
-describe('filterDeep tree', () => {
+forLodashes(['filterDeep'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(comments);
     let obj = _.cloneDeep(comments);
@@ -30,32 +30,26 @@ describe('filterDeep tree', () => {
     expect(obj).to.deep.equal(orig);
   });
   it('filter by field', () => {
-    let filtrate = _(comments)
-      .filterDeep('verified', {
-        childrenPath: 'replies',
-      })
-      .value();
+    let filtrate = _.filterDeep(comments, 'verified', {
+      childrenPath: 'replies',
+    });
     //console.log(JSON.stringify(filtrate, null, 2));
     expect(filtrate).deep.equal(verifiedComments);
   });
   it('filter by field - pathFormat: array', () => {
-    let filtrate = _(comments)
-      .filterDeep('verified', {
-        childrenPath: 'replies',
-        pathFormat: 'array',
-      })
-      .value();
+    let filtrate = _.filterDeep(comments, 'verified', {
+      childrenPath: 'replies',
+      pathFormat: 'array',
+    });
     // console.log(JSON.stringify(filtrate, null, 2));
     expect(filtrate).deep.equal(verifiedComments);
   });
   it('no leavesOnly', () => {
     try {
-      let filtrate = _(comments)
-        .filterDeep('verified', {
-          childrenPath: 'replies',
-          leavesOnly: true,
-        })
-        .value();
+      let filtrate = _.filterDeep(comments, 'verified', {
+        childrenPath: 'replies',
+        leavesOnly: true,
+      });
     } catch (exc) {
       expect(exc.message).equal(
         '"leavesOnly" option cannot be true in the "tree" mode.'

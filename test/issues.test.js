@@ -4,10 +4,11 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 var { demo, circular } = require('./object');
+var { forLodashes } = require('./common.js');
 
-describe('issues', () => {
+forLodashes(['eachDeep', 'filterDeep'], (_) => {
   //https://github.com/lodash/lodash/issues/591
   it('deep filtering & deep finding', () => {
     let imgCollection = [

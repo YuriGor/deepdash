@@ -4,12 +4,13 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-describe('string paths', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['index'], (_) => {
   it('[.]\'"', () => {
     let o = { a: { '[': 'c', '"\'': 'd', '.': 'e' } };
 

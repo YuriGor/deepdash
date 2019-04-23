@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "cherry-example",
+  "version": "1.0.0",
+  "description": "Cherry Pick example for Rollup",
+  "main": "dist/main.cjs.js",
+  "module": "dist/main.esm.js",
+  "browser": "dist/main.umd.js",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Yuri Gor",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.11",
+    "lodash-es": "^4.17.11",
+    "rollup": "^1.10.1",
+    "rollup-plugin-commonjs": "^9.3.4",
+    "rollup-plugin-node-resolve": "^4.2.3"
+  },
+  "devDependencies": {
+    "rollup-plugin-replace": "^2.2.0"
+  }
+}
