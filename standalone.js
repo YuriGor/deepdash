@@ -14,7 +14,7 @@ require('./getPaths.js');
 require('./getPathMatches.js');
 require('./getOmitDeep.js');
 require('./getPickDeep.js');
-require('./chunk-38e2ecce.js');
+require('./chunk-ef3705e8.js');
 var condense = require('./condense.js');
 require('lodash/merge');
 require('./isArray.js');
@@ -28,14 +28,14 @@ require('lodash/findIndex');
 require('lodash/forOwn');
 require('lodash/get');
 require('lodash/some');
-require('./chunk-b49b6706.js');
+require('./chunk-258312b1.js');
 require('lodash/reduce');
-require('./chunk-6b1697aa.js');
-require('./chunk-5e815ba3.js');
+require('./chunk-66c92009.js');
+require('./chunk-b3d75c33.js');
 var condenseDeep = require('./condenseDeep.js');
 var eachDeep = require('./eachDeep.js');
 require('lodash/clone');
-require('./chunk-d297bbe4.js');
+require('./chunk-d6666341.js');
 var exists = require('./exists.js');
 require('lodash/cloneDeep');
 require('lodash/each');
@@ -45,8 +45,8 @@ require('lodash/set');
 require('lodash/unset');
 require('lodash/isPlainObject');
 require('lodash/iteratee');
-require('./chunk-4b9ace32.js');
-require('./chunk-03173d1d.js');
+require('./chunk-11aabef8.js');
+require('./chunk-948c3722.js');
 var filterDeep = require('./filterDeep.js');
 var forEachDeep = require('./forEachDeep.js');
 var index = require('./index.js');
@@ -55,29 +55,14 @@ var keysDeep = require('./keysDeep.js');
 var obtain = require('./obtain.js');
 require('lodash/isEqual');
 require('lodash/takeRight');
-require('./chunk-7dcaf14e.js');
-require('./chunk-b837c39c.js');
+require('./chunk-68f626f1.js');
+require('./chunk-804fa575.js');
 var omitDeep = require('./omitDeep.js');
 var pathMatches = require('./pathMatches.js');
 var pathToString = require('./pathToString.js');
 var pickDeep = require('./pickDeep.js');
 
-var standalone = {
-  pathToString,
-  eachDeep,
-  forEachDeep,
-  index,
-  paths,
-  keysDeep,
-  exists,
-  condense,
-  condenseDeep,
-  filterDeep,
-  omitDeep,
-  pickDeep,
-  obtain,
-  pathMatches,
-};
+
 
 exports.condense = condense;
 exports.condenseDeep = condenseDeep;
@@ -93,4 +78,3 @@ exports.omitDeep = omitDeep;
 exports.pathMatches = pathMatches;
 exports.pathToString = pathToString;
 exports.pickDeep = pickDeep;
-exports.default = standalone;

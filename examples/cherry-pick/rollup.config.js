@@ -1,27 +1,27 @@
+import _ from 'lodash';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 
 export default [
-  // browser-friendly UMD build
+  // browser-friendly build
   {
     input: 'src/main.js',
     output: {
       name: 'main',
       file: pkg.browser,
-      format: 'umd',
+      format: 'iife',
     },
     plugins: [
       replace({
-        include: '*.js',
         delimiters: ['', ''],
         values: {
           'lodash-es': 'lodash',
         },
       }),
-      resolve(), // so Rollup can find `ms`
-      commonjs(), // so Rollup can convert `ms` to an ES module
+      resolve(),
+      commonjs(),
     ],
   },
 
@@ -33,14 +33,11 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/main.js',
-    // external: ['lodash', 'lodash-es', 'deepdash'],
-    output: [
-      { file: pkg.main, format: 'cjs' },
-      { file: pkg.module, format: 'es' },
-    ],
+    external: (id) =>
+      _.startsWith(id, 'lodash') || _.startsWith(id, 'deepdash'),
+    output: [{ file: pkg.main, format: 'cjs' }],
     plugins: [
       replace({
-        include: '*.js',
         delimiters: ['', ''],
         values: {
           'lodash-es': 'lodash',

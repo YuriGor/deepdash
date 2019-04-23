@@ -3,8 +3,8 @@
   "version": "3.1.3",
   "description": "➔ 𝐃eep extension for 𝐋odash: ✓ eachDeep ✓ filterDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ index ✓ condenseDeep ⋮ Parent nodes tracking ⋮ Circular references check ⋮ Leaves only mode ⋮ Path as a valid js string or an array ⋮",
   "main": "deepdash.js",
-  "module": "esm/deepdash.js",
-  "browser": "umd/deepdash.min.js",
+  "module": "es/standalone.js",
+  "browser": "browser/deepdash.min.js",
   "directories": {
     "test": "test"
   },
@@ -12,12 +12,12 @@
     "build": "rollup -c",
     "prepare": "npm run build",
     "pretest": "npm run build",
-    "prepublish": "npm run test",
     "test": "nyc mocha  --reporter spec",
     "report": "npm run build && nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "dev": "nodemon ./node_modules/.bin/mocha -g 'pickDeep no mutation' --reporter min --no-deprecation",
-    "debug": "node --inspect-brk test/debugDeep.js"
+    "debug": "node --inspect-brk test/debugDeep.js",
+    "demo":"serve"
   },
   "repository": {
     "type": "git",
