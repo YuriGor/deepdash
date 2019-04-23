@@ -1,2 +1,3 @@
 import eachDeep from './eachDeep';
-export default eachDeep;
+const forEachDeep = eachDeep;
+export default forEachDeep;

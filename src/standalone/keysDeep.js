@@ -1,2 +1,3 @@
 import paths from './paths';
-export default paths;
+const keysDeep = paths;
+export default keysDeep;

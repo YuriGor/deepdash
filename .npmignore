@@ -1,0 +1,17 @@
+.github
+.nyc_output
+coverage
+examples
+node_modules
+test
+txt
+.coverals.yml
+.eslintrc.js
+.gitignore
+.npmignore
+.travis.yml
+commitlint.config.js
+deepdash.full.svg
+deepdash.svg
+demo.js
+index.html

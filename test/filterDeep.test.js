@@ -3,8 +3,7 @@
 const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
-  assert = require('assert'),
-  _ = require('../dist/cjs/deepdash')(require('lodash'));
+  assert = require('assert');
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);

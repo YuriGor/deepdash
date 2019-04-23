@@ -35,7 +35,6 @@ function apply(_) {
   addKeysDeep(_);
   addExists(_);
   addCondense(_);
-  addCondense(_);
   addCondenseDeep(_);
   addFilterDeep(_);
   addOmitDeep(_);

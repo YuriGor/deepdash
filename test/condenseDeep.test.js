@@ -5,7 +5,6 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect;
 // assert = require('assert'),
-const lodash = require('lodash');
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);

@@ -2,9 +2,9 @@
   "name": "deepdash",
   "version": "3.1.3",
   "description": "➔ 𝐃eep extension for 𝐋odash: ✓ eachDeep ✓ filterDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ index ✓ condenseDeep ⋮ Parent nodes tracking ⋮ Circular references check ⋮ Leaves only mode ⋮ Path as a valid js string or an array ⋮",
-  "main": "dist/cjs/deepdash.js",
-  "module": "dist/esm/deepdash.js",
-  "browser": "dist/umd/deepdash.min.js",
+  "main": "deepdash.js",
+  "module": "esm/deepdash.js",
+  "browser": "umd/deepdash.min.js",
   "directories": {
     "test": "test"
   },
@@ -19,9 +19,6 @@
     "dev": "nodemon ./node_modules/.bin/mocha -g 'pickDeep no mutation' --reporter min --no-deprecation",
     "debug": "node --inspect-brk test/debugDeep.js"
   },
-  "files": [
-    "dist/*"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/YuriGor/deepdash.git"
