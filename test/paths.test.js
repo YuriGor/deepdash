@@ -4,14 +4,15 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
 var { demo, circular, children } = require('./object');
 
-describe('paths', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['paths', 'keysDeep', 'index'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
@@ -38,12 +39,14 @@ describe('paths', () => {
     // console.log(paths);
     expect(paths.length).equal(22);
   });
-  it('Chaining', () => {
-    let paths = _(demo)
-      .paths({ leavesOnly: false })
-      .value();
-    expect(paths.length).equal(30);
-  });
+  if (!_.v) {
+    it('Chaining', () => {
+      let paths = _(demo)
+        .paths({ leavesOnly: false })
+        .value();
+      expect(paths.length).equal(30);
+    });
+  }
   it('alias keysDeep', () => {
     let paths = _.keysDeep(demo, { leavesOnly: false });
     expect(paths.length).equal(30);
@@ -134,12 +137,10 @@ describe('paths', () => {
         },
       ],
     };
-    _(obj)
-      .index()
-      .each((v, k) => {
-        expect(k).to.equal(v);
-        expect(_.get(obj, k)).to.equal(v);
-      });
+    _.each(_.index(obj), (v, k) => {
+      expect(k).to.equal(v);
+      expect(_.get(obj, k)).to.equal(v);
+    });
   });
   it('array paths format', () => {
     var paths = _.paths(demo, { pathFormat: 'array' });

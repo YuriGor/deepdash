@@ -1,15 +1,14 @@
 'use strict';
 
 const chai = require('chai'),
-  // should = chai.should(),
-  expect = chai.expect,
-  // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  expect = chai.expect;
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-describe('exists', () => {
+var { forLodashes } = require('./common.js');
+
+forLodashes('exists', (_) => {
   it('slot 0', () => {
     var arr = [, 'b', , 'd', 'e'];
     expect(_.exists(arr, 0)).to.equal(false);

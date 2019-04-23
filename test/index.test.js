@@ -4,14 +4,14 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
 var { demo, circular, children } = require('./object');
-
-describe('index', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['index'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
@@ -41,12 +41,14 @@ describe('index', () => {
     // console.log(index);
     expect(_.size(index)).equal(22);
   });
-  it('Chaining', () => {
-    let index = _(demo)
-      .index({ leavesOnly: false })
-      .value();
-    expect(_.size(index)).equal(30);
-  });
+  if (!_.v) {
+    it('Chaining', () => {
+      let index = _(demo)
+        .index({ leavesOnly: false })
+        .value();
+      expect(_.size(index)).equal(30);
+    });
+  }
   it('returns empty obj', () => {
     let index = _.index(1);
     expect(index).to.deep.equal({});
@@ -109,10 +111,8 @@ describe('index', () => {
   });
   it('Indexate tree', () => {
     let index = _.index(children, { childrenPath: 'children' });
-    let names = _(index)
-      .values()
-      .map('name')
-      .value();
+    let names = _.values(index);
+    names = _.map(names, 'name');
     // console.log(names);
     expect(names).to.deep.equal([
       'grand 1',

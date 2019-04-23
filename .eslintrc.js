@@ -5,7 +5,10 @@ module.exports = {
     node: true,
     es6: true
   },
-  plugins: ['import', 'prettier'],
+  "parserOptions": {
+    "sourceType": "module",
+  },
+  plugins: ['prettier'],
   rules: {
     // 'no-undef':1,
     'quotes': ["error", "single", { "avoidEscape": true }],

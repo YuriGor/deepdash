@@ -3,14 +3,13 @@
 const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
-  assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 var { demo, circular } = require('./object');
-var { validateIteration } = require('./common.js');
+var { validateIteration, forLodashes } = require('./common.js');
 
-describe('eachDeep', () => {
+forLodashes(['eachDeep', 'forEachDeep', 'pathToString', 'obtain'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
@@ -32,19 +31,21 @@ describe('eachDeep', () => {
       '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","s","b","n","u","nl"]'
     );
   });
-  it('Chaining', () => {
-    let keys = [];
-    _(demo)
-      .eachDeep((value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx);
-        keys.push(key);
-        if (key == 'skip') return false;
-      })
-      .value();
-    expect(JSON.stringify(keys)).equal(
-      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","s","b","n","u","nl"]'
-    );
-  });
+  if (!_.v) {
+    it('Chaining', () => {
+      let keys = [];
+      _(demo)
+        .eachDeep((value, key, parent, ctx) => {
+          validateIteration(value, key, parent, ctx);
+          keys.push(key);
+          if (key == 'skip') return false;
+        })
+        .value();
+      expect(JSON.stringify(keys)).equal(
+        '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","s","b","n","u","nl"]'
+      );
+    });
+  }
   it('alias forEachDeep', () => {
     let keys = [];
     _.forEachDeep(demo, (value, key, parent, ctx) => {
@@ -64,10 +65,12 @@ describe('eachDeep', () => {
   it('no callback', () => {
     let c = _.forEachDeep(demo);
     expect(c).equal(demo);
-    c = _(demo)
-      .forEachDeep()
-      .value();
-    expect(c).equal(demo);
+    if (!_.v) {
+      c = _(demo)
+        .forEachDeep()
+        .value();
+      expect(c).equal(demo);
+    }
   });
 
   it('circular', () => {
@@ -166,7 +169,7 @@ describe('eachDeep', () => {
     _.eachDeep(demo, function(value, key, parent, ctx) {
       validateIteration(value, key, parent, ctx);
       if (parent) {
-        assert(_.exists(demo, ctx.path), 'Incorrect path: ' + ctx.path);
+        assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
       }
     });
   });

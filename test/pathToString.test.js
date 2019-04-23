@@ -4,12 +4,13 @@ const chai = require('chai'),
   // should = chai.should(),
   expect = chai.expect,
   // assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-describe('pathToString', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['pathToString'], (_) => {
   it('a.b.c.defg[0][1]["2.3"]', () => {
     expect(_.pathToString(['a', 'b', 'c', 'defg', 0, '1', 2.3])).to.equal(
       'a.b.c.defg[0][1]["2.3"]'

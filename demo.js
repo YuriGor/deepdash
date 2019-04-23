@@ -1,7 +1,7 @@
 'use strict';
 
 //inject new method into lodash object
-const _ = require('./deepdash')(require('lodash'));
+const _ = require('./dist/cjs/deepdash')(require('lodash'));
 //in browser just load script after lodash
 //<script src="lodash.js"></script>
 //<script src="deepdash.js"></script>

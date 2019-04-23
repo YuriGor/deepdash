@@ -4,10 +4,11 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert'),
-  _ = require('../deepdash')(require('lodash'));
+  _ = require('../dist/cjs/deepdash')(require('lodash'));
 var { demo, circular } = require('./object');
 
-describe('stackoverflow', () => {
+var { forLodashes } = require('./common.js');
+forLodashes(['eachDeep', 'filterDeep'], (_) => {
   // https://stackoverflow.com/questions/41610948/lodash-find-deep-in-array-of-object
   it('lodash-find-deep-in-array-of-object', () => {
     let obj = [

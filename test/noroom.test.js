@@ -5,7 +5,7 @@ const chai = require('chai'),
   expect = chai.expect;
 // assert = require('assert'),
 var _ = require('lodash'),
-  deep = require('../deepdash');
+  deep = require('../dist/cjs/deepdash');
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);

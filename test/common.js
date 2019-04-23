@@ -1,6 +1,34 @@
-const _ = require('../deepdash')(require('lodash'));
+const lodash = require('lodash');
+const deepdash = require('../dist/cjs/deepdash');
+const _ = deepdash(lodash.runInContext());
+let deepdashAsAnObj = lodash.runInContext();
+delete deepdashAsAnObj.mixin;
+delete deepdashAsAnObj.chain;
+deepdashAsAnObj.v = 'object';
 
 module.exports = {
+  forLodashes: (methods, test, title) => {
+    if (_.isString(methods)) {
+      methods = [methods];
+    }
+
+    const standalone = { v: 'standalone' };
+    methods.forEach((method) => {
+      standalone[method] = require('../dist/cjs/' + method);
+      require('../dist/cjs/' + _.camelCase('add ' + method))(deepdashAsAnObj);
+    });
+
+    const lodashes = [
+      _,
+      lodash.merge(lodash.runInContext(), standalone),
+      deepdashAsAnObj,
+    ];
+    lodashes.forEach(function(_) {
+      describe((_.v || '') + ' ' + (title || methods.join(' + ')), () => {
+        test(_);
+      });
+    });
+  },
   validateIteration: function(value, key, parentVal, context, options) {
     options = options || {};
     if (options.method === 'filterDeep') {
