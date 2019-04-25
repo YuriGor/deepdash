@@ -16,6 +16,7 @@ var omitDeep = require('./omitDeep.js');
 var pathMatches = require('./pathMatches.js');
 var pathToString = require('./pathToString.js');
 var pickDeep = require('./pickDeep.js');
+var reduceDeep = require('./reduceDeep.js');
 
 
 
@@ -33,3 +34,4 @@ exports.omitDeep = omitDeep;
 exports.pathMatches = pathMatches;
 exports.pathToString = pathToString;
 exports.pickDeep = pickDeep;
+exports.reduceDeep = reduceDeep;

@@ -5848,6 +5848,38 @@ var deepdash = (function (exports) {
 
   var pathMatches = getPathMatches(deps$b);
 
+  var deps$e = merge(
+    {
+      iteratee: iteratee,
+    },
+    deps$3
+  );
+
+  function getReduceDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function reduceDeep(obj, iteratee, accumulator, options) {
+      iteratee = _.iteratee(iteratee);
+      var accumulatorInited = accumulator !== undefined;
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          if (!accumulatorInited) {
+            accumulator = value;
+            accumulatorInited = true;
+          }
+          accumulator = iteratee(accumulator, value, key, parent, context);
+        },
+        options
+      );
+
+      return accumulator;
+    }
+    return reduceDeep;
+  }
+
+  var reduceDeep = getReduceDeep(deps$e);
+
   exports.condense = condense;
   exports.condenseDeep = condenseDeep;
   exports.eachDeep = eachDeep;
@@ -5862,6 +5894,7 @@ var deepdash = (function (exports) {
   exports.pathToString = pathToString;
   exports.paths = paths;
   exports.pickDeep = pickDeep;
+  exports.reduceDeep = reduceDeep;
 
   return exports;
 

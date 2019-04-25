@@ -14,6 +14,7 @@ var addPathMatches = require('./addPathMatches.js');
 var addPathToString = require('./addPathToString.js');
 var addPaths = require('./addPaths.js');
 var addPickDeep = require('./addPickDeep.js');
+var addReduceDeep = require('./addReduceDeep.js');
 
 function apply(_) {
   addPathToString(_);
@@ -30,6 +31,7 @@ function apply(_) {
   addPickDeep(_);
   addObtain(_);
   addPathMatches(_);
+  addReduceDeep(_);
   return _;
 }
 
