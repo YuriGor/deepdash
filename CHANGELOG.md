@@ -1,7 +1,7 @@
 # Change Log
 
 ## v4-0-0
-*(unreleased)*
+*(2019-04-05)*
 
 **Breaking Changes**
 - in the browser deepdash doesn't try to patch existing global `_` variable. It now exposes global `deepdash` function and user should pass a lodash instance to this function manually.
