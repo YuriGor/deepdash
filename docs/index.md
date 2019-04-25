@@ -1,6 +1,6 @@
 # Deepdash
 
-> unreleased - [see changes](/changelog#unreleased)
+> v4.0.0 - [see changes](/changelog#v4-0-0)
 
 Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree traversal extension for Lodash.
 
@@ -18,32 +18,70 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 - [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
 
 ### Installation
-In a browser load [script](https://cdn.jsdelivr.net/npm/deepdash/deepdash.min.js) after Lodash:
+#### In a browser
+Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) after Lodash, then pass a lodash instanced to the deepdash function:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.min.js"></script>
+<script>
+  deepdash(_);
+  console.log(_.eachDeep); // --> new methods mixed into Lodash
+</script>
 ```
 
-Using npm:
+If you don't use Lodash - there is a standalone version:
+```html
+<script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.standalone.min.js"></script>
+<script>
+  console.log(deepdash.eachDeep); // --> all the methods just work
+</script>
+```
+Standalone Deepdash weigh more then "dry" version, because it includes some of cherry-picked Lodash methods it depends on.
+But it's better to use Standalone version, than include full Lodash just as dependency.
 
+
+####Using npm:
 ```
 npm i --save deepdash
 ```
-
-In Node.js (same for the Angular component):
-
+In Node.js:
 ```js
-//mixin new methods into Lodash object
-const _ = require('deepdash')(require('lodash'));
+// load Lodash if you need it
+const _ = require('lodash');
+//mixin all the methods into Lodash object
+require('deepdash')(_);
+// or cherry-pick method you only need and mix it into Lodash
+require('deepdash/addFilterDeep')(_);
+// or cherry-pick method separately if you don't want to mutate Lodash instantne
+const filterDeep = require('deepdash/getFilterDeep')(_);
+// If you don't need Lodash - there is standalone version
+const deepdash = require('deepdash/standalone')(_); // full
+const filterDeep = require('deepdash/filterDeep')(_); // or separate standalone methods
 ```
 
-Or as [ECMAScript Module](https://nodejs.org/api/esm.html#esm_ecmascript_modules):
-
+There is also deepdash as ES6 module
+```
+npm i --save deepdash-es
+```
 ```js
-import lodash from "lodash";
-import deepdash from "deepdash";
+import lodash from 'lodash-es';
+import deepdash from 'deepdash-es';
 const _ = deepdash(lodash);
+```
+in the ES package there are same cherry-pick and/or standalone methods as in the main package.
+```js
+import filterDeep from 'deepdash-es/filterDeep';
+```
+or
+```js
+import { filterDeep } from 'deepdash-es/standalone';
+```
+or
+```js
+import _ from 'lodash-es';
+import getFilterDeep from 'deepdash-es/getFilterDeep';
+const filterDeep = getFilterDeep(_);
 ```
 
 # Usage
@@ -212,9 +250,13 @@ Invokes given callback for each field and element of given object or array, nest
 
 ```js
 _.eachDeep( obj, iteratee=_.identity, options={
+    callbackAfterIterate: false,
     checkCircular: false,
+    childrenPath: undefined,
+    includeRoot: !_.isArray(obj),
+    leavesOnly: false,
     pathFormat: 'string',
-    tree: false,// true → { rootIsChildren: true, children: 'children' }
+    rootIsChildren: !includeRoot && _.isArray(obj)
   }) => object
 ```
 
@@ -223,19 +265,20 @@ _.eachDeep( obj, iteratee=_.identity, options={
 * `options`
     - `callbackAfterIterate` (false) - invoke `iteratee` twice, before and after iteration over children. On second run `context` iteratee's argument will have `afterIterate` flag set to the `true`. By default, `iteratee` invoked before it's children only.
     - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
+    - `leavesOnly` (false) - Call iteratee for childless values only.
     - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
-    - `tree` (false) - treat the `obj` as a "tree" of nodes with `children` collections. Can be boolean or object.
-        - `children` ('children') - children collection's field name, path, path's regex or array of any of this. Only elements of such collections will be passed into iteratee.
-        - `rootIsChildren` (true) - treat `obj` as top-level children collection, so its elements will be passed into iteratee without parent path check (so you don't need to specify empty path as `tree.children` option)
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into iteratee, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into iteratee without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - source object
 
 ### iteratee
-callback function which will be invoked for each child of object.
+a callback function which will be invoked for each child of the object.
 ```js
 (value, key, parentValue, context) => boolean
 ```
 **iteratee arguments**
-* `value` - current field or element
+* `value` - current field or element (or child only, if childrenPath specified)
 * `key|index` - field name or array index of the value
 * `parentValue` - an object or an array which contains current value
 * `context` - an object with fields:
@@ -245,11 +288,9 @@ callback function which will be invoked for each child of object.
         - `key` - parent key|index
         - `path` - parent path
         - `parent` - grandparent with the same structure.
-    - next `parent` fields are available if `tree` option was activated:
-        - `isTreeChildren` - true if this parent is `children` collection.
-        - `childrenPath` - contains matched `children` path (specific one from `tree.children` option array)
-        - `isTreeNode` - true if `parent` is an element of some `children` collection. Only this values will be passed into iteratee.
-    - `parents` - an array with all parent objects starting from the root level. `parent` object listed above is just the last element of this array
+        - `childrenPath` - contains matched `childrenPath` path of this parent node, chosen from `childrenPath` array, if it was specified.
+    - `childrenPath` - contains matched `childrenPath` path of current value, chosen from `childrenPath` array, if it was specified.
+    - `parents` - an array with all parent objects starting from the root level. `parent` object described above is just the last element of this array
     - `obj` - source object
     - `depth` - current value's nesting level
     - `afterIterate` - this flag will be true if it's a second invokation of the `iteratee`. See `options.callbackAfterIterate` for details.
@@ -265,12 +306,12 @@ callback function which will be invoked for each child of object.
   circular.a.b.c = circular;
   _.eachDeep(circular, (value, key, parent, ctx) => {
     if (ctx.isCircular) {
-      log.push(
+      console.log(
         "Circular reference to "+ctx.circularParent.path+" skipped at " + ctx.path
       );
-      return false;
+      return false; // explicit `false` will skip children of current value
     }
-    //do your things
+    //do your job here
   },{ checkCircular: true });
 ```
 Console:
@@ -313,7 +354,7 @@ Console:
       console.log(_.repeat('  ', ctx.depth) + child.name);
       total++;
     },
-    { tree: true }
+    { childrenPath: 'children' }
   );
   console.log('total nodes: ' + total);
 ```
@@ -362,57 +403,59 @@ Returns an object with childs of your choice only
 ```js
 _.filterDeep( obj, predicate, options={
     checkCircular: false,
-    keepCircular: true,
-    // replaceCircularBy: <value>,
-    condense: true,
     cloneDeep: _.cloneDeep,
+    condense: true,
+    keepCircular: true,
+    leavesOnly: childrenPath!==undefined,
     pathFormat: 'string',
-    leavesOnly: !options.tree,
-    tree: false, // true → { rootIsChildren: true, children: 'children' }
+    // replaceCircularBy: <value>,
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
     onTrue: {
-      skipChildren: true,   // false if options.tree
-      cloneDeep: true,
+      skipChildren: true,   // false if childrenPath
+      cloneDeep: true,      // true if childrenPath
       keepIfEmpty: true },
     onUndefined: {
-      skipChildren: false,  // false if options.tree
-      cloneDeep: false,     // true if options.tree
+      skipChildren: false,  // false if childrenPath
+      cloneDeep: false,     // true if childrenPath
       keepIfEmpty: false },
     onFalse: {
-      skipChildren: true,   // false if options.tree
-      cloneDeep: false,     // true if options.tree
+      skipChildren: true,   // false if childrenPath
+      cloneDeep: false,     // true if childrenPath
       keepIfEmpty: false },
   }) => object
 ```
 * `obj` - The object/array to iterate over.
 * `predicate` - The predicate is invoked with same arguments as described in [iteratee subsection](#iteratee)
-    - If returns `true` - current value will be deeply cloned to the result object, iteration over children of this value will skipped if no `tree` option set. This behavior can be adjusted in `options.onTrue`
-    - If returns `undefined` - current path will only appear in the result object if some child elements will pass the filter during subsequent iterations. In the 'tree' mode, all the node will be cloned, but again, only if some children passed the filter. This default behavior can be changed in `options.onUndefined`
-    - If returns `false` - current value will be completely excluded from the result object, iteration over children of this value will be skipped. In the 'tree' mode default action of the `false` case is the same as for `undefined`. See `options.onFalse` option.
+    - If returns `true` - it means this is good value and you want it in the result object. See `onTrue` option for detailed behaviour description.
+    - If returns `undefined` - it means you don't know yet if you need this and will see if some children are good. See `options.onUndefined` for details.
+    - If returns `false` - current value will be completely excluded from the result object, iteration over children of this value will be skipped. See `options.onFalse` option.
     - You can also return an object with `skipChildren`, `cloneDeep` and `keepIfEmpty` boolean fields to control the filtering process directly.
 * `options`
     - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
     - `keepCircular` (true) - The result object will contain circular references, if they passed the filter.
-    - `replaceCircularBy` (not defaults) - Specify the value to replace circular references by.
-    - `condense` (true) - Condense the result object (excluding some paths may produce sparse arrays)
+    - `replaceCircularBy` (no defaults) - Specify the value to replace circular references by. Can be `undefined` too.
+    - `condense` (true) - excluding some paths from the object may produce sparse arrays. By default result object will be deeply condensed, but if you need consistent source and result paths - you can switch it off.
     - `cloneDeep` (_.cloneDeep)- Method to use for deep cloning values, Lodash cloneDeep by default.
     - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
-    - `leavesOnly` (!options.tree) - Call predicate for childless values only. Incompatible with `options.tree`.
-    - `tree` (false) - treat the `obj` as a "tree" of nodes with `children` collections. Can be boolean or object.
-        - `children` ('children') - children collection's field name, path, path's regex or array of any of this. Only elements of such collections will be passed into `iteratee`.
-        - `rootIsChildren` (true) - treat `obj` as top-level children collection, so its elements will be passed into iteratee without parent path check (so you don't need to specify empty path as `tree.children` option)
-    - `onTrue` (object) - Describes how current value should be prcoessed if iteratee returns `true`
-        - `skipChildren` (!options.tree) - skip or iterate over value's children
-        - `cloneDeep` (true) - deeply clone current value into result or copy primitives only and create empty array/object without nested data.
+    - `leavesOnly` (options.childrenPath === undefined) - Call predicate for childless values only.
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into predicate, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+    - `onTrue` (object) - Describes how current value should be processed if predicate returns `true`
+        - `skipChildren` (childrenPath===undefined) - if 'true' - skip iteration over value's children. By default true for 'object' mode and false in the 'tree' mode.
+        - `cloneDeep` (childrenPath!==undefined) - deeply clone current value into result or copy primitives only and create empty array/object without nested data. In the 'tree' mode whole child will be deeply cloned to the result.
         - `keepIfEmpty` (true) - keep empty array/object in the result, if all the children were filtered out/not exist.
-    - `onUndefined` (object) - Describes how current value should be prcoessed if iteratee returns `undefined`
-        - `skipChildren` (false)
-        - `cloneDeep` (!!options.tree)
-        - `keepIfEmpty` (false)
-    - `onFalse` (object) - Describes how current value should be prcoessed if iteratee returns `true`
-        - `skipChildren` (!options.tree)
-        - `cloneDeep` (!!options.tree)
-        - `keepIfEmpty` (false)
-* `returns` - deeply filtered object/array
+    - `onUndefined` (object) - Describes how current value should be processed if iteratee returns `undefined`
+        - `skipChildren` (false) - on undefined answer children will be still checked by default
+        - `cloneDeep` (childrenPath!==undefined) - copy only primitives for 'object' mode and cloneDeep for 'tree' mode. In the tree mode only children count considered to decide if value empty or not, other cloned fields doesn't matter.
+        - `keepIfEmpty` (false) - remove such value from result if no children passed the filter by default.
+    - `onFalse` (object) - Describes how current value should be processed if iteratee returns `false`
+        - `skipChildren` (childrenPath===undefined) - by default reject value completely in the 'object' mode, but give children a chance in the 'tree' mode
+        - `cloneDeep` (childrenPath!==undefined) - no need to clone if we rejected value in 'object' mode, but in the 'tree' mode we will possibly need other fields of the value, if some children will be welcome.
+        - `keepIfEmpty` (false) - remove from result if no children passed the filter by default.
+* `returns` - deeply filtered object/array/any type of given source obj or null if everything was rejected.
 
 **Example(fields iteration):**
 ```js
@@ -486,7 +529,7 @@ let badChildren = [
   },
   ];
 
-let reallyBad = _.filterDeep(badChildren, 'bad', { tree: true });
+let reallyBad = _.filterDeep(badChildren, 'bad', { childrenPath: 'children' });
 console.log(reallyBad);
 ```
 
@@ -535,7 +578,9 @@ _.index( obj, options={
     checkCircular: false,
     includeCircularPath: true,
     leavesOnly: true,
-    tree: false // true → { rootIsChildren: true, children: 'children' }
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
   }) => object
 ```
 
@@ -544,9 +589,9 @@ _.index( obj, options={
     - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
     - `includeCircularPath` (true) - If found some circular reference - include a path to it into the result or skip it. Option ignored if `checkCircular=false`
     - `leavesOnly` (true) - Return paths to childless values only.
-    - `tree` (false) - treat the `obj` as a "tree" of nodes with `children` collections. Can be boolean or object.
-        - `children` ('children') - children collection's field name, path, path's regex or array of any of this. Only elements of such collections will be listed.
-        - `rootIsChildren` (true) - treat `obj` as top-level children collection, so its elements will listed in the result without parent path check (so you don't need to specify empty path as `tree.children` option)
+    - `includeRoot` (!_.isArray(obj)) - in the `index` method this option affects only `rootIsChildren` default value.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be listed in the index object, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be listed as children too. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - 'index' object
 
 **Example:**
@@ -577,7 +622,7 @@ Console:
 
 ## paths (keysDeep)
 
-Creates an array of the paths of object or array.
+Creates an array with all the paths to each nested value.
 
 ```js
 _.paths( obj, options={
@@ -585,7 +630,9 @@ _.paths( obj, options={
     includeCircularPath: true,
     pathFormat: 'string',
     leavesOnly: true,
-    tree: false // true → { rootIsChildren: true, children: 'children' }
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj)
   }) => array
 ```
 
@@ -595,10 +642,10 @@ _.paths( obj, options={
     - `includeCircularPath` (true) - If found some circular reference - include a path to it into the result or skip it. Option ignored if `checkCircular:false`
     - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
     - `leavesOnly` (true) - Return paths to childless values only.
-    - `tree` (false) - treat the `obj` as a "tree" of nodes with `children` collections. Can be boolean or object.
-        - `children` ('children') - children collection's field name, path, path's regex or array of any of this. Only elements of such collections will be listed.
-        - `rootIsChildren` (true) - treat `obj` as top-level children collection, so its elements will listed in the result without parent path check (so you don't need to specify empty path as `tree.children` option)
-* `returns` - array with paths of the object, formatted as strings or as array
+    - `includeRoot` (!_.isArray(obj)) - in the `paths` method this option affects only `rootIsChildren` default value.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only paths to elements of such collections will be listed in the result array, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be listed as children too. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+* `returns` - array with paths of the object, formatted as strings or as arrays
 
 **Example:**
 

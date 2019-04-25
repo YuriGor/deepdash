@@ -4311,8 +4311,9 @@ var deepdash = (function (exports) {
       var eachDeepOptions = {
         pathFormat: 'string',
         checkCircular: options.checkCircular,
-        childrenPath: options.childrenPath,
         includeRoot: options.includeRoot,
+        childrenPath: options.childrenPath,
+        rootIsChildren: options.rootIsChildren,
         leavesOnly: options.leavesOnly,
       };
       var res = {};
@@ -4359,8 +4360,9 @@ var deepdash = (function (exports) {
       var eachDeepOptions = {
         pathFormat: options.pathFormat,
         checkCircular: options.checkCircular,
-        childrenPath: options.childrenPath,
         includeRoot: options.includeRoot,
+        childrenPath: options.childrenPath,
+        rootIsChildren: options.rootIsChildren,
         leavesOnly: options.leavesOnly,
       };
       var res = [];
@@ -5804,20 +5806,18 @@ var deepdash = (function (exports) {
       );
       options.leavesOnly = false;
       options.childrenPath = undefined;
+      options.includeRoot = undefined;
       options.pathFormat = 'array';
       options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
       options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
 
       var test = function(value, key, parent, context) {
         if (pathMatches(context.path, paths) !== false) {
-          // console.log('path match, return ', options.invert);
           return options.invert;
         } else {
-          // console.log('path not match, return ', !options.invert);
           return !options.invert;
         }
       };
-      // console.log(options);
       return filterDeep(obj, test, options);
     }
     return omitDeep;

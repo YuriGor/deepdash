@@ -18,8 +18,9 @@ export default function getPaths(_) {
     var eachDeepOptions = {
       pathFormat: options.pathFormat,
       checkCircular: options.checkCircular,
-      childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
+      childrenPath: options.childrenPath,
+      rootIsChildren: options.rootIsChildren,
       leavesOnly: options.leavesOnly,
     };
     var res = [];

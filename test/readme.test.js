@@ -123,16 +123,33 @@ forLodashes(
         },
       ];
       let total = 0;
+      let log = [];
       _.eachDeep(
         children,
         (child, i, parent, ctx) => {
-          // console.log(_.repeat('  ', ctx.depth) + child.name);
+          log.push(_.repeat('  ', ctx.depth) + child.name);
           total++;
         },
         { childrenPath: 'children' }
       );
-      // console.log('total nodes: ' + total);
+      // console.log(log);
       expect(total).equal(14);
+      expect(log).deep.equal([
+        '  grand 1',
+        '    parent 1.1',
+        '      child 1.1.1',
+        '      child 1.1.2',
+        '    parent 1.2',
+        '      child 1.2.1',
+        '      child 1.2.2',
+        '  grand 2',
+        '    parent 2.1',
+        '      child 2.1.1',
+        '      child 2.1.2',
+        '    parent 2.2',
+        '      child 2.2.1',
+        '      child 2.2.2',
+      ]);
     });
     it('index', () => {
       let index = _.index(
@@ -226,7 +243,7 @@ forLodashes(
         { leavesOnly: true }
       );
       // console.log(filtrate);
-      filtrate.should.to.deep.equal({
+      filtrate.should.deep.equal({
         things: [
           {
             name: 'another thing',

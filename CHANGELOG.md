@@ -4,6 +4,7 @@
 *(unreleased)*
 
 **Breaking Changes**
+- in the browser deepdash doesn't try to patch existing global `_` variable. It now exposes global `deepdash` function and the user should pass a lodash instance to this function manually.
 - source object/array (root) passed to the iteratee/predicate too, as a very first value with undefined key/path/parent
 - `indexate` renamed to [index](/#index).
 - in case of completely rejected object [filterDeep](/#filterdeep) returns null instead of empty {}/[]
@@ -14,6 +15,9 @@
 - `tree` sub-object option deprecated, `tree.children` renamed to `childrenPath`, `tree.rootIsChildren` renamed to `rootIsChildren`
 
 **Features added**
+- cherry-pick separate methods now available as standalone functions or as a lodash mixins.
+- standalone version now available
+- `deepdash-es` package created for importing as es6 module. It's just a content of `es` folder from main repo.
 - `includeRoot` option added to [eachDeep](/#eachdeep-foreachdeep), [index](/#index), [paths (keysDeep)](/#paths-keysdeep) and [filterDeep](/#filterdeep) methods.
 - leavesOnly implemented for tree mode. eachDeep now also has leavesOnly option.
 
