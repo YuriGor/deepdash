@@ -1,8 +1,11 @@
 .github
+.directory
+rollup.config.js
 .nyc_output
 coverage
 examples
 node_modules
+es
 test
 txt
 .coverals.yml

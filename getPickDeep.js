@@ -1,13 +1,5 @@
 'use strict';
 
-require('./getCondense.js');
-require('./getPathToString.js');
-require('./getEachDeep.js');
-require('./getCondenseDeep.js');
-require('./getExists.js');
-require('./getObtain.js');
-require('./getFilterDeep.js');
-require('./getPathMatches.js');
 var getOmitDeep = require('./getOmitDeep.js');
 
 function getPickDeep(_) {

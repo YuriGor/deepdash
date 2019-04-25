@@ -1,6 +1,5 @@
 'use strict';
 
-require('./getCondense.js');
 var getPathToString = require('./getPathToString.js');
 var getEachDeep = require('./getEachDeep.js');
 var getCondenseDeep = require('./getCondenseDeep.js');

@@ -1,13 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./chunk-27bec025.js');
-require('./getCondense.js');
-require('./getPathToString.js');
-require('./getEachDeep.js');
+var __chunk_1 = require('./private/getMixOrPatchIn.js');
 var getCondenseDeep = require('./getCondenseDeep.js');
 
 function addCondenseDeep(_) {
-  var mixOrPatchIn = __chunk_1.getMixOrPatchIn(_);
+  var mixOrPatchIn = __chunk_1.default(_);
   return mixOrPatchIn('condenseDeep', getCondenseDeep(_));
 }
 
