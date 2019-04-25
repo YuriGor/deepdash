@@ -4,13 +4,13 @@
 *(unreleased)*
 
 **Breaking Changes**
-- in the browser deepdash doesn't try to patch existing global `_` variable. It now exposes global `deepdash` function and the user should pass a lodash instance to this function manually.
-- source object/array (root) passed to the iteratee/predicate too, as a very first value with undefined key/path/parent
+- in the browser deepdash doesn't try to patch existing global `_` variable. It now exposes global `deepdash` function and user should pass a lodash instance to this function manually.
+- source object will be passed to the iteratee/predicate as a very first value with undefined key/path/parent (see includeRoot option)
 - `indexate` renamed to [index](/#index).
 - in case of completely rejected object [filterDeep](/#filterdeep) returns null instead of empty {}/[]
 - if not an object passed as a source to [filterDeep](/#filterdeep) source will be returned if it passes the filter, otherwise null.
-- treeChildrenPath renamed to childrenPath.
-- isTreeChildren, isTreeNode iteratee sub-parameters deprecated.
+- context.treeChildrenPath renamed to childrenPath.
+- isTreeChildren, isTreeNode iteratee sub-parameters deprecated (since they are always true in 'tree' mode and false in the 'object'  mode)
 - regexp children path support dropped to optimise tree walking
 - `tree` sub-object option deprecated, `tree.children` renamed to `childrenPath`, `tree.rootIsChildren` renamed to `rootIsChildren`
 
