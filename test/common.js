@@ -1,11 +1,11 @@
 const lodash = require('lodash').runInContext();
 
 let standalone = require('../standalone');
-if (standalone.eachDeep) {
-  console.log('standalone has eachDeep!!!');
-} else {
-  console.log('standalone has NO eachDeep!!!');
-}
+// if (standalone.eachDeep) {
+//   console.log('standalone has eachDeep!!!');
+// } else {
+//   console.log('standalone has NO eachDeep!!!');
+// }
 
 standalone = lodash.merge({}, lodash.runInContext(), standalone);
 standalone.v = 'standalone';

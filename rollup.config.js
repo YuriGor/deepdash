@@ -7,12 +7,12 @@ import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import fs from 'fs';
 import path from 'path';
-var es = fs.readdirSync('./es').filter((fn) => fn.indexOf('.js') > -1);
+var es = fs.readdirSync('./es').filter((fn) => _.endsWith(fn,'.js'));
 var input = es.reduce((res, fn) => {
   res[path.basename(fn, '.js')] = './es/' + fn;
   return res;
 }, {});
-es = fs.readdirSync('./es/deps/own/').filter((fn) => fn.indexOf('.js') > -1);
+es = fs.readdirSync('./es/deps/own/').filter((fn) => _.endsWith(fn,'.js'));
 var ownDeps = es.reduce((res, fn) => {
   res[path.basename(fn, '.js')] = './es/deps/own/' + fn;
   return res;
