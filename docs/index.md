@@ -835,14 +835,13 @@ _.reduceDeep( obj, iteratee, accumulator, options) => object
 ```
 
 * `obj` - The object/array to iterate over.
-* `iteratee` (_.identity) - The function invoked per iteration with four arguments:
+* `iteratee` (_.identity) - The function invoked per iteration with four arguments (see [iteratee subsection](#iteratee) for details)
     - `accumulator` - recent return iteratee result or initial value or first value
     - `value`
     - `key|index`
     - `parentValue`
     - `context`
-    see [iteratee subsection](#iteratee) for details
-* `options`
+* `options` - (see [eachDeep options](#eachdeep) for details)
     - `callbackAfterIterate` (false)
     - `checkCircular` (false)
     - `leavesOnly` (false)
@@ -850,7 +849,6 @@ _.reduceDeep( obj, iteratee, accumulator, options) => object
     - `includeRoot` (!_.isArray(obj))
     - `childrenPath` (undefined)
     - `rootIsChildren` (!includeRoot && _.isArray(obj))
-    see [eachDeep options](#eachdeep) for details
 * `returns` - final `accumulator` value
 
 **Example:**
