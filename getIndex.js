@@ -21,8 +21,9 @@ function getIndex(_) {
     var eachDeepOptions = {
       pathFormat: 'string',
       checkCircular: options.checkCircular,
-      childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
+      childrenPath: options.childrenPath,
+      rootIsChildren: options.rootIsChildren,
       leavesOnly: options.leavesOnly,
     };
     var res = {};

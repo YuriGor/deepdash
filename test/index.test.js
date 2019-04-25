@@ -69,13 +69,13 @@ forLodashes(['index'], (_) => {
     index = _.index(/.*/);
     expect(index).to.deep.equal({});
   });
-  it('Leafs only', () => {
+  it('leavesOnly only', () => {
     let index = _.index(demo, { leavesOnly: true });
     // console.log(index);
     expect(_.size(index)).equal(14);
   });
 
-  it('Leafs only circular', () => {
+  it('leavesOnly only circular', () => {
     let index = _.index(circular, { checkCircular: true, leavesOnly: true });
     expect(_.size(index)).equal(12);
     index = _.index(circular, {
@@ -98,16 +98,7 @@ forLodashes(['index'], (_) => {
     index = _.index(slots);
     expect(_.size(index)).equal(3);
   });
-  it('No leavesOnly in tree', () => {
-    try {
-      _.index(children, { childrenPath: 'children', leavesOnly: true });
-    } catch (exc) {
-      expect(exc.message).equal(
-        '"leavesOnly" option cannot be true in the "tree" mode.'
-      );
-    }
-  });
-  it('Indexate tree', () => {
+  it('tree', () => {
     let index = _.index(children, { childrenPath: 'children' });
     let names = _.values(index);
     names = _.map(names, 'name');
@@ -128,5 +119,31 @@ forLodashes(['index'], (_) => {
       'child 2.2.1',
       'child 2.2.2',
     ]);
+  });
+  it('tree leavesOnly', () => {
+    let index = _.index(children, {
+      childrenPath: 'children',
+      leavesOnly: true,
+    });
+    let names = _.values(index);
+    names = _.map(names, 'name');
+    // console.log(names);
+    expect(names).to.deep.equal([
+      'child 1.1.1',
+      'child 1.1.2',
+      'child 1.2.1',
+      'child 1.2.2',
+      'child 2.1.1',
+      'child 2.1.2',
+      'child 2.2.1',
+      'child 2.2.2',
+    ]);
+  });
+  it('not rootIsChildren', () => {
+    let index = _.index(children, {
+      childrenPath: 'children',
+      rootIsChildren: false,
+    });
+    expect(index).to.deep.equal({});
   });
 });

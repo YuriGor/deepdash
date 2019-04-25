@@ -7,28 +7,74 @@ Looking for eachDeep, filterDeep, omitDeep, keysDeep etc? Tree traversal extensi
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
 
 ### Installation
-In a browser load [script](https://cdn.jsdelivr.net/npm/deepdash/deepdash.min.js) after Lodash:
+#### In a browser
+Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) after Lodash, then pass a lodash instanced to the deepdash function:
+
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.min.js"></script>
+<script>
+  deepdash(_);
+  console.log(_.eachDeep); // --> new methods mixed into Lodash
+</script>
 ```
-Using npm:
+
+If you don't use Lodash - there is a standalone version:
+```html
+<script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.standalone.min.js"></script>
+<script>
+  console.log(deepdash.eachDeep); // --> all the methods just work
+</script>
+```
+Standalone Deepdash weigh more then "dry" version, because it includes some of cherry-picked Lodash methods it depends on.
+But it's better to use Standalone version, than include full Lodash just as dependency.
+
+
+####Using npm:
 ```
 npm i --save deepdash
 ```
-In Node.js (same for the Angular component):
+In Node.js:
 ```js
-//mixin new methods into Lodash object
-const _ = require('deepdash')(require('lodash'));
+// load Lodash if you need it
+const _ = require('lodash');
+//mixin all the methods into Lodash object
+require('deepdash')(_);
+// or cherry-pick method you only need and mix it into lodash
+require('deepdash/addFilterDeep')(_);
+// or cherry-pick method separately if you don't want to mutate Lodash instantne
+const filterDeep = require('deepdash/getFilterDeep')(_);
+// If you don't need Lodash - there is standalone version
+const deepdash = require('deepdash/standalone')(_); // full
+const filterDeep = require('deepdash/filterDeep')(_); // or separate standalone methods
 ```
-Or as [ECMAScript Module](https://nodejs.org/api/esm.html#esm_ecmascript_modules):
+
+There is also deepdash as ES6 module
+```
+npm i --save deepdash-es
+```
 ```js
-import lodash from "lodash";
-import deepdash from "deepdash";
+import lodash from 'lodash-es';
+import deepdash from 'deepdash-es';
 const _ = deepdash(lodash);
 ```
-## Demo
+in the ES package there are same cherry-pick and/or standalone methods as in the main package.
+```js
+import filterDeep from 'deepdash-es/filterDeep';
+```
+or
+```js
+import { filterDeep } from 'deepdash-es/standalone';
+```
+or
+```js
+import _ from 'lodash-es';
+import getFilterDeep from 'deepdash-es/getFilterDeep';
+const filterDeep = getFilterDeep(_);
+```
 
+## Demo
+(not updated to v4 yet)
 [Example react+redux app](https://kw0zox7r.codesandbox.io/) with nested comments filtered by Deepdash.([play with code here](https://codesandbox.io/s/kw0zox7r))
 
 ## Methods
@@ -59,7 +105,7 @@ const _ = deepdash(lodash);
 
     console.log('\n = Iterate over tree (each child object) = \n');
 
-    _.eachDeep(children, displayField, { tree: true });
+    _.eachDeep(children, displayField, { childrenPath: 'children' });
 
     console.log('\n = Iterate over object (each field) = \n');
 
@@ -178,7 +224,7 @@ Console:
   console.log('\n = Filter tree (good children) = \n');
 
   console.log(
-    _.filterDeep(children, 'good', { tree: true })
+    _.filterDeep(children, 'good', { childrenPath: 'children' })
   );
 
   console.log('\n = Filter object (names of good children) = \n');
