@@ -483,6 +483,21 @@ Console:
 ```
 </details>
 
+### reduceDeep - like reduce, but deep (📚 [docs](https://deepdash.io/#reduceDeep))
+<details>
+  <summary>Example</summary>
+
+```js
+  let max = _.reduceDeep({ a: 2, b: 3, c: { d: 6, e: [1, 5, 8] } },
+    (acc, value, key, parent, ctx) => {
+      if (typeof value == 'number' && (typeof acc != 'number' || value > acc))
+        return value;
+      return undefined;
+    }
+  );
+  // max == 8
+```
+</details>
 
 ### index - get an object with all the paths as keys and corresponding values (📚 [docs](https://deepdash.io/#index))
 <details>

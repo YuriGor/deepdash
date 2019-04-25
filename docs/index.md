@@ -1,6 +1,6 @@
 # Deepdash
 
-> v4.0.0 - [see changes](/changelog#v4-0-0)
+> v4.1.0 - [see changes](/changelog#v4-1-0)
 
 Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree traversal extension for Lodash.
 
@@ -15,6 +15,7 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
 - [pickDeep](#pickdeep) - get object only with keys specified by names or regexes
 - [omitDeep](#omitdeep) - get object without keys specified by names or regexes
+- [reduceDeep](#reducedeep) - like reduce but deep
 - [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
 
 ### Installation
@@ -820,6 +821,48 @@ Console:
   good2: { good3: true },
   bad2: { good: true },
   good4: [{ good5: true }] }
+```
+## reduceDeep
+
+Reduces object to a value which is the accumulated result of running each nested property/element in the object thru iteratee, where each invocation is supplied the return value of the previous.
+If accumulator is not given, the first value will be used as the initial value and will not be passed into ieratee.
+The iteratee is invoked with four arguments:
+(accumulator, value, key, parentValue, context).[iteratee subsection](#iteratee)
+
+
+```js
+_.reduceDeep( obj, iteratee, accumulator, options) => object
+```
+
+* `obj` - The object/array to iterate over.
+* `iteratee` (_.identity) - The function invoked per iteration with four arguments:
+    - `accumulator` - recent return iteratee result or initial value or first value
+    - `value`
+    - `key|index`
+    - `parentValue`
+    - `context`
+    see [iteratee subsection](#iteratee) for details
+* `options`
+    - `callbackAfterIterate` (false)
+    - `checkCircular` (false)
+    - `leavesOnly` (false)
+    - `pathFormat` ('string')
+    - `includeRoot` (!_.isArray(obj))
+    - `childrenPath` (undefined)
+    - `rootIsChildren` (!includeRoot && _.isArray(obj))
+    see [eachDeep options](#eachdeep) for details
+* `returns` - final `accumulator` value
+
+**Example:**
+```js
+  let max = _.reduceDeep({ a: 2, b: 3, c: { d: 6, e: [1, 5, 8] } },
+    (acc, value, key, parent, ctx) => {
+      if (typeof value == 'number' && (typeof acc != 'number' || value > acc))
+        return value;
+      return undefined;
+    }
+  );
+  // max == 8
 ```
 
 ## pathToString

@@ -1,5 +1,11 @@
 # Change Log
 
+## v4-1-0
+*(2019-04-05)*
+
+**Features added**
+- reduceDeep implemented
+
 ## v4-0-0
 *(2019-04-05)*
 
