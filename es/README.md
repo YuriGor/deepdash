@@ -1,0 +1,1 @@
+ES6 module version of [deepdash](https://www.npmjs.com/package/deepdash)
