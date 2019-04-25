@@ -19,7 +19,7 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 
 ### Installation
 #### In a browser
-Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) after Lodash, then pass a lodash instanced to the deepdash function:
+Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) after Lodash, then pass a lodash instance to the deepdash function:
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js"></script>
