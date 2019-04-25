@@ -12,6 +12,7 @@ import addOmitDeep from './addOmitDeep';
 import addPickDeep from './addPickDeep';
 import addObtain from './addObtain';
 import addPathMatches from './addPathMatches';
+import addReduceDeep from './addReduceDeep';
 
 export default function apply(_) {
   addPathToString(_);
@@ -28,5 +29,6 @@ export default function apply(_) {
   addPickDeep(_);
   addObtain(_);
   addPathMatches(_);
+  addReduceDeep(_);
   return _;
 }

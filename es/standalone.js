@@ -12,3 +12,4 @@ export { default as omitDeep } from './omitDeep';
 export { default as pickDeep } from './pickDeep';
 export { default as obtain } from './obtain';
 export { default as pathMatches } from './pathMatches';
+export { default as reduceDeep } from './reduceDeep';

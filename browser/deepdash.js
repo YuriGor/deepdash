@@ -798,6 +798,34 @@ var deepdash = (function () {
     return mixOrPatchIn('pathMatches', getPathMatches(_), false);
   }
 
+  function getReduceDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function reduceDeep(obj, iteratee, accumulator, options) {
+      iteratee = _.iteratee(iteratee);
+      var accumulatorInited = accumulator !== undefined;
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          if (!accumulatorInited) {
+            accumulator = value;
+            accumulatorInited = true;
+          }
+          accumulator = iteratee(accumulator, value, key, parent, context);
+        },
+        options
+      );
+
+      return accumulator;
+    }
+    return reduceDeep;
+  }
+
+  function addCondense$1(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('reduceDeep', getReduceDeep(_));
+  }
+
   function apply(_) {
     addPathToString(_);
     addEachDeep(_);
@@ -813,6 +841,7 @@ var deepdash = (function () {
     addPickDeep(_);
     addObtain(_);
     addPathMatches(_);
+    addCondense$1(_);
     return _;
   }
 
