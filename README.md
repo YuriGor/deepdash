@@ -44,8 +44,8 @@ require('deepdash/addFilterDeep')(_);
 // or cherry-pick method separately if you don't want to mutate Lodash instance
 const filterDeep = require('deepdash/getFilterDeep')(_);
 // If you don't need Lodash - there is standalone version
-const deepdash = require('deepdash/standalone')(_); // full
-const filterDeep = require('deepdash/filterDeep')(_); // or separate standalone methods
+const deepdash = require('deepdash/standalone'); // full
+const filterDeep = require('deepdash/filterDeep'); // or separate standalone methods
 ```
 
 There is also deepdash as ES6 module
