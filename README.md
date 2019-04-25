@@ -9,10 +9,9 @@ Looking for eachDeep, filterDeep, omitDeep, keysDeep etc? Tree traversal extensi
 ### Installation
 #### In a browser
 Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) after Lodash, then pass a lodash instanced to the deepdash function:
-
 ```html
 <script src="https://cdn.jsdelivr.net/npm/lodash/lodash.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js"></script>
 <script>
   deepdash(_);
   console.log(_.eachDeep); // --> new methods mixed into Lodash
@@ -21,16 +20,16 @@ Load [script](https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.min.js) aft
 
 If you don't use Lodash - there is a standalone version:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/deepdash/deepdash.standalone.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/deepdash/browser/deepdash.standalone.min.js"></script>
 <script>
   console.log(deepdash.eachDeep); // --> all the methods just work
 </script>
 ```
 Standalone Deepdash weigh more then "dry" version, because it includes some of cherry-picked Lodash methods it depends on.
-But it's better to use Standalone version, than include full Lodash just as dependency.
+But it's better to use Standalone version, than include full Lodash just as dependency, if you don't need Lodash.
 
 
-####Using npm:
+#### Using npm:
 ```
 npm i --save deepdash
 ```
@@ -42,7 +41,7 @@ const _ = require('lodash');
 require('deepdash')(_);
 // or cherry-pick method you only need and mix it into lodash
 require('deepdash/addFilterDeep')(_);
-// or cherry-pick method separately if you don't want to mutate Lodash instantne
+// or cherry-pick method separately if you don't want to mutate Lodash instance
 const filterDeep = require('deepdash/getFilterDeep')(_);
 // If you don't need Lodash - there is standalone version
 const deepdash = require('deepdash/standalone')(_); // full
@@ -50,9 +49,7 @@ const filterDeep = require('deepdash/filterDeep')(_); // or separate standalone 
 ```
 
 There is also deepdash as ES6 module
-```
-npm i --save deepdash-es
-```
+`npm i --save deepdash-es`
 ```js
 import lodash from 'lodash-es';
 import deepdash from 'deepdash-es';
@@ -72,10 +69,16 @@ import _ from 'lodash-es';
 import getFilterDeep from 'deepdash-es/getFilterDeep';
 const filterDeep = getFilterDeep(_);
 ```
+or
+```js
+import _ from 'lodash-es';
+import addFilterDeep from 'deepdash-es/addFilterDeep';
+addFilterDeep(_);// --> _.filterDeep
+```
 
 ## Demo
-(not updated to v4 yet)
 [Example react+redux app](https://kw0zox7r.codesandbox.io/) with nested comments filtered by Deepdash.([play with code here](https://codesandbox.io/s/kw0zox7r))
+(not updated to v4 yet)
 
 ## Methods
 
