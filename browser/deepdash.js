@@ -810,12 +810,12 @@ var deepdash = (function () {
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;
+          } else {
+            accumulator = iteratee(accumulator, value, key, parent, context);
           }
-          accumulator = iteratee(accumulator, value, key, parent, context);
         },
         options
       );
-
       return accumulator;
     }
     return reduceDeep;
