@@ -1,7 +1,5 @@
 'use strict';
 
-require('./getPathToString.js');
-require('./getEachDeep.js');
 var getPaths = require('./getPaths.js');
 
 function getKeysDeep(_) {

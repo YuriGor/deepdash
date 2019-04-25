@@ -4,7 +4,7 @@ const chai = require('chai'),
   assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-const forArray = require('../forArray');
+const forArray = require('../deps/own/forArray');
 describe('self-inplemented dependency fulfillment', () => {
   it('forArray', () => {
     let arr = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];

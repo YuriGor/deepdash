@@ -1,10 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./chunk-27bec025.js');
+var __chunk_1 = require('./private/getMixOrPatchIn.js');
 var getPathToString = require('./getPathToString.js');
 
 function addPathToString(_) {
-  var mixOrPatchIn = __chunk_1.getMixOrPatchIn(_);
+  var mixOrPatchIn = __chunk_1.default(_);
   return mixOrPatchIn('pathToString', getPathToString(_), false);
 }
 

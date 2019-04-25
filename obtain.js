@@ -1,9 +1,8 @@
 'use strict';
 
 var getObtain = require('./getObtain.js');
-require('lodash/get');
-var __chunk_7 = require('./chunk-11aabef8.js');
+var __chunk_11 = require('./deps/obtain.js');
 
-var obtain = getObtain(__chunk_7.deps);
+var obtain = getObtain(__chunk_11.default);
 
 module.exports = obtain;

@@ -1,11 +1,8 @@
 'use strict';
 
 var getPathToString = require('./getPathToString.js');
-require('./isArray.js');
-require('lodash/isString');
-require('lodash/reduce');
-var __chunk_4 = require('./chunk-66c92009.js');
+var __chunk_6 = require('./deps/pathToString.js');
 
-var pathToString = getPathToString(__chunk_4.deps);
+var pathToString = getPathToString(__chunk_6.default);
 
 module.exports = pathToString;

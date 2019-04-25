@@ -1,11 +1,5 @@
 'use strict';
 
-require('./getCondense.js');
-require('./getPathToString.js');
-require('./getEachDeep.js');
-require('./getCondenseDeep.js');
-require('./getExists.js');
-require('./getObtain.js');
 var getFilterDeep = require('./getFilterDeep.js');
 var getPathMatches = require('./getPathMatches.js');
 

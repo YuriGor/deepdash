@@ -1,11 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./chunk-27bec025.js');
-require('./getPathToString.js');
+var __chunk_1 = require('./private/getMixOrPatchIn.js');
 var getPathMatches = require('./getPathMatches.js');
 
 function addPathMatches(_) {
-  var mixOrPatchIn = __chunk_1.getMixOrPatchIn(_);
+  var mixOrPatchIn = __chunk_1.default(_);
   return mixOrPatchIn('pathMatches', getPathMatches(_), false);
 }
 
