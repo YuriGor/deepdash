@@ -483,7 +483,7 @@ Console:
 ```
 </details>
 
-### reduceDeep - like reduce, but deep (📚 [docs](https://deepdash.io/#reduceDeep))
+### reduceDeep - like reduce, but deep (📚 [docs](https://deepdash.io/#reducedeep))
 <details>
   <summary>Example</summary>
 
