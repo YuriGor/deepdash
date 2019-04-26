@@ -826,8 +826,8 @@ Console:
 
 Reduces object to a value which is the accumulated result of running each nested property/element in the object thru iteratee, where each invocation is supplied the return value of the previous.
 If accumulator is not given, the first value will be used as the initial value and will not be passed into ieratee.
-The iteratee is invoked with four arguments:
-(accumulator, value, key, parentValue, context).[iteratee subsection](#iteratee)
+The iteratee is invoked with five arguments:
+(accumulator, value, key, parentValue, context).
 
 
 ```js
@@ -835,8 +835,8 @@ _.reduceDeep( obj, iteratee, accumulator, options) => object
 ```
 
 * `obj` - The object/array to iterate over.
-* `iteratee` (_.identity) - The function invoked per iteration with four arguments (see [iteratee subsection](#iteratee) for details)
-    - `accumulator` - recent return iteratee result or initial value or first value
+* `iteratee` (_.identity) - The function invoked per iteration with five arguments (see [iteratee subsection](#iteratee) for details)
+    - `accumulator` - most recent returned iteratee result or initial value or first value
     - `value`
     - `key|index`
     - `parentValue`
