@@ -821,9 +821,37 @@ var deepdash = (function () {
     return reduceDeep;
   }
 
-  function addCondense$1(_) {
+  function addReduceDeep(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
     return mixOrPatchIn('reduceDeep', getReduceDeep(_));
+  }
+
+  function getMapDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function mapDeep(obj, iteratee, options) {
+      iteratee = _.iteratee(iteratee);
+      var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : _.clone(obj);
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          var r = iteratee(value, key, parent, context);
+          if (key === undefined) {
+            res = r;
+          } else {
+            _.set(res, context.path, r);
+          }
+        },
+        options
+      );
+      return res;
+    }
+    return mapDeep;
+  }
+
+  function addMapDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('mapDeep', getMapDeep(_));
   }
 
   function apply(_) {
@@ -841,7 +869,8 @@ var deepdash = (function () {
     addPickDeep(_);
     addObtain(_);
     addPathMatches(_);
-    addCondense$1(_);
+    addReduceDeep(_);
+    addMapDeep(_);
     return _;
   }
 

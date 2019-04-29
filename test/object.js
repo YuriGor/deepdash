@@ -490,3 +490,112 @@ module.exports.singleRoot = {
   name: 'progenitor',
   children: module.exports.children,
 };
+
+module.exports.social = [
+  {
+    "_id": "5cc4bc4b015742a0d80c8b1a",
+    "name": "Dalton Hull",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Hillary Perry"
+      },
+      {
+        "id": 1,
+        "name": "Cote Kim"
+      },
+      {
+        "id": 2,
+        "name": "Dolly Curtis"
+      }
+    ],
+    "children": [
+      {
+        "id": 0,
+        "name": "Nicole Mcdaniel"
+      }
+    ],
+    "parents": [
+      {
+        "id": 0,
+        "name": "Francis Landry"
+      },
+      {
+        "id": 1,
+        "name": "Alexandra Byrd"
+      }
+    ]
+  },
+  {
+    "_id": "5cc4bc4bfd19ec41acfe1a43",
+    "name": "Dale Booth",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Mcdowell Reyes"
+      },
+      {
+        "id": 1,
+        "name": "Moses Mcguire"
+      },
+      {
+        "id": 2,
+        "name": "Selena Phelps"
+      }
+    ],
+    "children": [
+      {
+        "id": 0,
+        "name": "Golden Vasquez"
+      }
+    ],
+    "parents": [
+      {
+        "id": 0,
+        "name": "Peck Herman"
+      },
+      {
+        "id": 1,
+        "name": "Ada Crosby"
+      }
+    ]
+  },
+  {
+    "_id": "5cc4bc4b598e629b835fc2ff",
+    "name": "Cameron Stout",
+    "friends": [
+      {
+        "id": 0,
+        "name": "Burgess York"
+      },
+      {
+        "id": 1,
+        "name": "Martina Valentine"
+      },
+      {
+        "id": 2,
+        "name": "Anita Browning"
+      }
+    ],
+    "children": [
+      {
+        "id": 0,
+        "name": "Young Marshall"
+      },
+      {
+        "id": 1,
+        "name": "Bryant Bright"
+      }
+    ],
+    "parents": [
+      {
+        "id": 0,
+        "name": "Stewart Hays"
+      },
+      {
+        "id": 1,
+        "name": "Saunders Craig"
+      }
+    ]
+  }
+];

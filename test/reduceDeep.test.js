@@ -6,7 +6,7 @@ const chai = require('chai'),
   assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { demo, circular } = require('./object');
+var { demo, circular, social } = require('./object');
 var { validateIteration, forLodashes } = require('./common.js');
 
 forLodashes(['reduceDeep'], (_) => {
@@ -37,5 +37,52 @@ forLodashes(['reduceDeep'], (_) => {
       }
     );
     expect(res).equal(8);
+  });
+
+  it('Get specific children', () => {
+    let names = _.reduceDeep(
+      social,
+      (res, v, k, p, c) => {
+        res.push(v.name);
+        return res;
+      },
+      [],
+      { childrenPath: ['parents', 'children'] }
+    );
+    expect(names).to.deep.equal([
+      'Dalton Hull',
+      'Francis Landry',
+      'Alexandra Byrd',
+      'Nicole Mcdaniel',
+      'Dale Booth',
+      'Peck Herman',
+      'Ada Crosby',
+      'Golden Vasquez',
+      'Cameron Stout',
+      'Stewart Hays',
+      'Saunders Craig',
+      'Young Marshall',
+      'Bryant Bright',
+    ]);
+  });
+
+  it('Get first from specific children', () => {
+    let names = _.reduceDeep(
+      social,
+      (res, v, k, p, c) => {
+        if (c.childrenPath == 'friends' && k == 0) {
+          //console.log(c);
+          res.push(v.name);
+        }
+        return res;
+      },
+      [],
+      { childrenPath: 'friends' }
+    );
+    expect(names).to.deep.equal([
+      'Hillary Perry',
+      'Mcdowell Reyes',
+      'Burgess York',
+    ]);
   });
 });
