@@ -13,10 +13,10 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 - [filterDeep](#filterdeep) - deep filter object
 - [index](#index) - get an object with all the paths as keys and corresponding values
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
-- [mapDeep](#pickdeep) - produce an object with the same structure but with values trasformed thru iteratee.
+- [mapDeep](#mapdeep) - produce an object with the same structure but with values trasformed thru iteratee.
+- [reduceDeep](#reducedeep) - like reduce but deep
 - [pickDeep](#pickdeep) - get object only with keys specified by names or regexes
 - [omitDeep](#omitdeep) - get object without keys specified by names or regexes
-- [reduceDeep](#reducedeep) - like reduce but deep
 - [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
 
 ### Installation
