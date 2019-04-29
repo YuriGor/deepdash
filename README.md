@@ -1,7 +1,8 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
 
 ## Deepdash
-Looking for eachDeep, filterDeep, omitDeep, keysDeep etc? Tree traversal extension for Lodash.
+Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
+Object/tree traversal extension for Lodash.
 
 [![Known Vulnerabilities](https://snyk.io/test/npm/deepdash/badge.svg)](https://snyk.io/test/npm/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
@@ -482,6 +483,21 @@ Console:
 ]
 ```
 </details>
+
+### mapDeep - get the same object, but different. (📚 [docs](https://deepdash.io/#mapdeep))
+<details>
+  <summary>Example</summary>
+
+```js
+  let res = _.mapDeep(
+    { hello: { from: { the: 'deep world' } } },
+    (v) => v.toUpperCase(),
+    { leavesOnly: true }
+  );
+  // res -> { hello: { from: { the: 'DEEP WORLD' } } }
+```
+</details>
+
 
 ### reduceDeep - like reduce, but deep (📚 [docs](https://deepdash.io/#reducedeep))
 <details>
