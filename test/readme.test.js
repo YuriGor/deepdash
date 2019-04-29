@@ -19,6 +19,7 @@ forLodashes(
     'omitDeep',
     'pickDeep',
     'omitDeep',
+    'mapDeep',
   ],
   (_) => {
     it('usage', () => {
@@ -858,6 +859,13 @@ forLodashes(
           ],
         },
       ]);
+      expect(
+        _.mapDeep(
+          { hello: { from: { the: 'deep word' } } },
+          (v) => v.toUpperCase(),
+          { leavesOnly: true }
+        )
+      ).to.deep.equal({ hello: { from: { the: 'DEEP WORD' } } });
     });
   }
 );
