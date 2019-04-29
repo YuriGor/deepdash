@@ -1,5 +1,11 @@
 # Change Log
 
+## v4-2-0
+*(2019-04-19)*
+
+**Features added**
+- mapDeep implemented
+
 ## v4-1-0
 *(2019-04-05)*
 
