@@ -83,9 +83,10 @@ addFilterDeep(_);// --> _.filterDeep
 
 ## Methods
 
-### eachDeep(forEachDeep) -  iterate over all the children and sub-children (📚 [docs](https://deepdash.io/#eachdeep-foreachdeep))
+### eachDeep (forEachDeep)
+› iterate over all the children and sub-children [📚 see docs](https://deepdash.io/#eachdeep-foreachdeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 [children example collection is here](#example-collection)
 ```js
@@ -218,9 +219,10 @@ Console:
 ```
 </details>
 
-### filterDeep - deep filter object (📚 [docs](https://deepdash.io/#filterdeep))
+### filterDeep
+› deep filter object [📚 see docs](https://deepdash.io/#filterdeep))
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 [children example collection is here](#example-collection)
 ```js
@@ -327,9 +329,10 @@ Console:
 ```
 </details>
 
-### pickDeep - get object only with keys specified by names or regexes (📚 [docs](https://deepdash.io/#pickdeep))
+### pickDeep
+› get object only with keys specified by names or regexes [📚 see docs](https://deepdash.io/#pickdeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 [children example collection is here](#example-collection)
 ```js
@@ -406,9 +409,10 @@ Console:
 </details>
 
 
-### omitDeep - get object without keys specified by names or regexes (📚 [docs](https://deepdash.io/#omitdeep))
+### omitDeep
+› get object without keys specified by names or regexes [📚 see docs](https://deepdash.io/#omitdeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 [children example collection is here](#example-collection)
 ```js
@@ -484,9 +488,10 @@ Console:
 ```
 </details>
 
-### mapDeep - get the same object, but different. (📚 [docs](https://deepdash.io/#mapdeep))
+### mapDeep
+› get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let res = _.mapDeep(
@@ -499,9 +504,10 @@ Console:
 </details>
 
 
-### reduceDeep - like reduce, but deep (📚 [docs](https://deepdash.io/#reducedeep))
+### reduceDeep
+› like reduce, but deep [📚 see docs](https://deepdash.io/#reducedeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let max = _.reduceDeep({ a: 2, b: 3, c: { d: 6, e: [1, 5, 8] } },
@@ -515,9 +521,10 @@ Console:
 ```
 </details>
 
-### index - get an object with all the paths as keys and corresponding values (📚 [docs](https://deepdash.io/#index))
+### index
+› get an object with all the paths as keys and corresponding values [📚 see docs](https://deepdash.io/#index)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let index = _.index(
@@ -544,9 +551,10 @@ Console:
 ```
 </details>
 
-### paths(keysDeep) - get an array of paths (📚 [docs](https://deepdash.io/#paths-keysdeep))
+### paths
+› ysDeep) - get an array of paths [📚 see docs](https://deepdash.io/#paths-keysdeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let paths = _.paths(
@@ -576,9 +584,10 @@ Console:
 ```
 </details>
 
-### condense - condense sparse array (📚 [docs](https://deepdash.io/#condense))
+### condense
+› condense sparse array [📚 see docs](https://deepdash.io/#condense)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let arr = ['a', 'b', 'c', 'd', 'e'];
@@ -599,9 +608,10 @@ Console:
 ```
 </details>
 
-### condenseDeep - condense all the nested arrays (📚 [docs](https://deepdash.io/#condensedeep))
+### condenseDeep
+› condense all the nested arrays [📚 see docs](https://deepdash.io/#condensedeep)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   let obj = { arr: ['a', 'b', { c: [1, , 2, , 3] }, 'd', 'e'] };
@@ -619,9 +629,10 @@ Console:
 </details>
 
 
-### exists - like a `_.has` but returns `false` for empty array slots (📚 [docs](https://deepdash.io/#exists))
+### exists
+› like a `_.has` but returns `false` for empty array slots [📚 see docs](https://deepdash.io/#exists)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   var obj = [, { a: [, 'b'] }];
@@ -632,9 +643,10 @@ Console:
 ```
 </details>
 
-### pathToString - convert an array to string path (opposite to _.toPath) (📚 [docs](https://deepdash.io/#pathtostring))
+### pathToString
+› convert an array to string path (opposite to _.toPath) [📚 see docs](https://deepdash.io/#pathtostring)
 <details>
-  <summary>Example</summary>
+  <summary>expand example</summary>
 
 ```js
   console.log(_.pathToString(['a', 'b', 'c', 'defg', 0, '1', 2.3]));
