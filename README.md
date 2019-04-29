@@ -329,6 +329,39 @@ Console:
 ```
 </details>
 
+### mapDeep
+› get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
+<details>
+  <summary>expand example</summary>
+
+```js
+  let res = _.mapDeep(
+    { hello: { from: { the: 'deep world' } } },
+    (v) => v.toUpperCase(),
+    { leavesOnly: true }
+  );
+  // res -> { hello: { from: { the: 'DEEP WORLD' } } }
+```
+</details>
+
+
+### reduceDeep
+› like reduce, but deep [📚 see docs](https://deepdash.io/#reducedeep)
+<details>
+  <summary>expand example</summary>
+
+```js
+  let max = _.reduceDeep({ a: 2, b: 3, c: { d: 6, e: [1, 5, 8] } },
+    (acc, value, key, parent, ctx) => {
+      if (typeof value == 'number' && (typeof acc != 'number' || value > acc))
+        return value;
+      return undefined;
+    }
+  );
+  // max == 8
+```
+</details>
+
 ### pickDeep
 › get object only with keys specified by names or regexes [📚 see docs](https://deepdash.io/#pickdeep)
 <details>
@@ -485,39 +518,6 @@ Console:
     ]
   }
 ]
-```
-</details>
-
-### mapDeep
-› get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
-<details>
-  <summary>expand example</summary>
-
-```js
-  let res = _.mapDeep(
-    { hello: { from: { the: 'deep world' } } },
-    (v) => v.toUpperCase(),
-    { leavesOnly: true }
-  );
-  // res -> { hello: { from: { the: 'DEEP WORLD' } } }
-```
-</details>
-
-
-### reduceDeep
-› like reduce, but deep [📚 see docs](https://deepdash.io/#reducedeep)
-<details>
-  <summary>expand example</summary>
-
-```js
-  let max = _.reduceDeep({ a: 2, b: 3, c: { d: 6, e: [1, 5, 8] } },
-    (acc, value, key, parent, ctx) => {
-      if (typeof value == 'number' && (typeof acc != 'number' || value > acc))
-        return value;
-      return undefined;
-    }
-  );
-  // max == 8
 ```
 </details>
 
