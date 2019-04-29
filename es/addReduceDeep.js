@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
 import getReduceDeep from './getReduceDeep';
 
-export default function addCondense(_) {
+export default function addReduceDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
   return mixOrPatchIn('reduceDeep', getReduceDeep(_));
 }
