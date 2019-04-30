@@ -26,7 +26,7 @@ If you don't use Lodash - there is a standalone version:
   console.log(deepdash.eachDeep); // --> all the methods just work
 </script>
 ```
-Standalone Deepdash weigh more then "dry" version, because it includes some of cherry-picked Lodash methods it depends on.
+Standalone Deepdash weighs more then "dry" version, because it includes some of cherry-picked Lodash methods it depends on.
 But it's better to use Standalone version, than include full Lodash just as dependency, if you don't need Lodash.
 
 
