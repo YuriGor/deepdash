@@ -62,7 +62,9 @@ const filterDeep = require('deepdash/filterDeep'); // or separate standalone met
 ```
 
 There is also deepdash as ES6 module
-`npm i --save deepdash-es`
+```
+npm i --save deepdash-es
+```
 ```js
 import lodash from 'lodash-es';
 import deepdash from 'deepdash-es';
