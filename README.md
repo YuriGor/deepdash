@@ -80,7 +80,7 @@ addFilterDeep(_);// --> _.filterDeep
 ```
 
 ## Demo
-[Example react+redux app](https://github.com/YuriGor/deepdash-example-comments/tree/master/) with nested comments filtered by Deepdash.([play with code here](https://codesandbox.io/s/github/YuriGor/deepdash-example-comments/))
+[Example react+redux app](https://codesandbox.io/s/github/YuriGor/deepdash-example-comments/) with nested comments filtered by Deepdash.([source is here](https://github.com/YuriGor/deepdash-example-comments/tree/master/))
 
 ## Methods
 
