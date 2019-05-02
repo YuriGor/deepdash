@@ -191,6 +191,8 @@ Chaining works too:
   _(obj).eachDeep((value, key, parent, context) => {/* do */}).value();
 ```
 
+[Example react+redux app](https://codesandbox.io/s/github/YuriGor/deepdash-example-comments/) with nested comments filtered by Deepdash.([source is here](https://github.com/YuriGor/deepdash-example-comments/tree/master/))
+
 # Methods
 
 ## condense
