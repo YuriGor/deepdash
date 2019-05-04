@@ -94,7 +94,7 @@ addFilterDeep(_);// --> _.filterDeep
 # Usage
 
 <details>
-  <summary><i>let obj = {/* ... */};</i></summary>
+  <summary><i>let obj = {/* expand to see */};</i></summary>
 
 ```js
 let obj = {
@@ -144,7 +144,7 @@ _.eachDeep(obj, (value, key, parent, context) => {
       key +
       ':' +
       (value === null ? 'null' : typeof value),
-    context.parent.path && ' @' + context.parent.path
+    context.parent && context.parent.path && ' @' + context.parent.path
   );
   if (key == 'skip') {
     return false; // return false explicitly to skip iteration over current value's children
@@ -184,6 +184,7 @@ nl:null
 ```
 </details>
 
+[Try it yourself ›››](https://codepen.io/yurigor/pen/OGKRNv?editors=0010)
 
 Chaining works too:
 
@@ -225,6 +226,8 @@ Console:
   [ 'a', 'c', 'e' ]
 ```
 
+[Try it yourself ›››](https://codepen.io/yurigor/pen/oOKGXE?editors=0010)
+
 ## condenseDeep
 
 Makes all the arrays in the object non-sparse.
@@ -253,6 +256,8 @@ Console:
 ```
   { arr: [ 'a', { c: [ 1, 2, 3 ] }, 'e' ] }
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/mgNBOa?editors=0010)
 
 ## eachDeep (forEachDeep)
 
@@ -313,7 +318,7 @@ a callback function which will be invoked for each child of the object.
 **Example:**
 ```js
   let circular = { a: { b: { c: {} } } };
-  circular.a.b.c = circular;
+  circular.a.b.c = circular.a;
   _.eachDeep(circular, (value, key, parent, ctx) => {
     if (ctx.isCircular) {
       console.log(
@@ -328,6 +333,7 @@ Console:
 ```
   Circular reference to a skipped at a.b.c
 ```
+
 ```js
   let children = [
     {
@@ -386,6 +392,9 @@ Console:
           child 2.2.2
   total nodes: 14
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/MRNEEJ?editors=0010)
+
 ## exists
 
 Check if path exists in the object considering sparse arrays.
@@ -406,6 +415,8 @@ _.exists( obj, path ) => boolean
   _.exists(obj, '[1].a[0]'); // false
   _.exists(obj, '[1].a[1]'); // true
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/MRNOQB?editors=0010)
 
 ## filterDeep
 
@@ -508,7 +519,10 @@ Console:
        good: true,
        subItem2: { name: 'sub-item-2', good: true } } ] }
 ```
-**Example(tree iteration)**
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/GaKvNm?editors=0010)
+
+**Example (tree mode)**
 ```js
 let badChildren = [
   {
@@ -578,6 +592,7 @@ Console:
   }
 ]
 ```
+[Try it yourself ›››](https://codepen.io/yurigor/pen/wbwoqL?editors=0010)
 
 ## index
 
@@ -629,6 +644,8 @@ Console:
     'a.b.c[2]': 3,
     'a.b["hello world"]': {} }
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/rgBzdB?editors=0010)
 
 ## paths (keysDeep)
 
@@ -697,9 +714,12 @@ Console:
     'a.b.c[2]',
     'a.b["hello world"]' ]
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/mYbByL?editors=0010)
+
 ## mapDeep
 
-returns an object with the same structure by values trasformed thru iteratee.
+returns an object with the same structure with values trasformed thru iteratee.
 
 ```js
 _.mapDeep( obj, iteratee, options) => object
@@ -711,6 +731,7 @@ _.mapDeep( obj, iteratee, options) => object
     - `key|index`
     - `parentValue`
     - `context`
+    - `returns` - desired value instead of initial to be set at the same path
 * `options` - (see [eachDeep options](#eachdeep) for details)
     - `callbackAfterIterate` (false)
     - `checkCircular` (false)
@@ -719,7 +740,7 @@ _.mapDeep( obj, iteratee, options) => object
     - `includeRoot` (!_.isArray(obj))
     - `childrenPath` (undefined)
     - `rootIsChildren` (!includeRoot && _.isArray(obj))
-* `returns` - desired value instead initial to be set at the same path
+* `returns` - object or array with the same paths, but transformed values.
 
 **Example:**
 ```js
@@ -731,12 +752,14 @@ _.mapDeep( obj, iteratee, options) => object
   // res -> { hello: { from: { the: 'DEEP WORLD' } } }
 ```
 
+[Try it yourself ›››](https://codepen.io/yurigor/pen/yWBzGV?editors=0010)
+
 ## pickDeep
 
-returns an object only with keys specified by names or regexes
+returns an object only with given path endings or regexes
 
 ```js
-_.pickDeep( obj, keys, options={
+_.pickDeep( obj, paths, options={
     checkCircular: false,
     keepCircular: true,
     // replaceCircularBy: <value>,
@@ -783,11 +806,11 @@ _.pickDeep( obj, keys, options={
   };
   let clean = _.pickDeep(obj, ['good', 'good1', 'good2', 'good3', 'good4', 'good5']);
   console.log(clean);
-  clean = _.pickDeep(obj, /^good.*$/);
+  clean = _.pickDeep(obj, /\.?good\d*$/);
   console.log(clean);
 ```
 
-Console:
+Console(x2):
 
 ```
 { good1: true,
@@ -795,6 +818,8 @@ Console:
   bad2: { good: true },
   good4: [ { good5: true } ] }
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/MdgqmL?editors=0010)
 
 ## omitDeep
 
@@ -849,7 +874,7 @@ _.omitDeep( obj, keys, options={
   };
   var clean = _.omitDeep(obj, ['bad1', 'bad2', 'bad3', 'bad4', 'bad5']);
   console.log(clean);
-  clean = _.omitDeep(obj, /^bad.*$/);
+  clean = _.omitDeep(obj, /\.?bad\d*$/);
   console.log(clean);
 ```
 
@@ -861,6 +886,9 @@ Console:
   bad2: { good: true },
   good4: [{ good5: true }] }
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/zQOMNj?editors=0010)
+
 ## reduceDeep
 
 Reduces object to a value which is the accumulated result of running each nested property/element in the object thru iteratee, where each invocation is supplied the return value of the previous.
@@ -903,6 +931,8 @@ _.reduceDeep( obj, iteratee, accumulator, options) => object
   // max == 8
 ```
 
+[Try it yourself ›››](https://codepen.io/yurigor/pen/ZNzmmR?editors=0010)
+
 ## pathToString
 
 Converts given path from array to string format.
@@ -924,6 +954,8 @@ Console:
 ```
   a.b.c.defg[0][1]["2.3"]
 ```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/joNXGv?editors=0010)
 
 ## Other traversal methods
 Feel free [to request](https://github.com/YuriGor/deepdash/issues/new) other methods implementation.
