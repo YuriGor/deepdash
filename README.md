@@ -539,7 +539,7 @@ let children = [
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/eaOaQg?editors=0010)
 
-### https://codepen.io/yurigor/pen/eaOaQg?editors=0010
+### mapDeep
 › get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
 <details>
   <summary>expand example</summary>
