@@ -65,7 +65,7 @@ forLodashes(
         //     key +
         //     ':' +
         //     (value === null ? 'null' : typeof value),
-        //   context.parent.path && ' @' + context.parent.path
+        //   context.parent && context.parent.path && ' @' + context.parent.path
         // );
         if (key == 'skip') {
           return false; // return false explicitly to skip iteration over current value's children

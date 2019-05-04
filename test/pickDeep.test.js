@@ -80,16 +80,19 @@ forLodashes(['pickDeep'], (_) => {
       good4: [{ good5: true, bad5: true }],
       bad4: [],
     };
-    let clean = _.pickDeep(
-      obj,
-      ['good1', 'good2', 'good3', 'good', 'good4', 'good5'],
-      { onMatch: { cloneDeep: true, skipChildren: true } }
-    );
+    let clean = _.pickDeep(obj, [
+      'good',
+      'good1',
+      'good2',
+      'good3',
+      'good4',
+      'good5',
+    ]);
     expect(clean).to.deep.equal({
       good1: true,
-      good2: { good3: true, bad3: true },
+      good2: { good3: true },
       bad2: { good: true },
-      good4: [{ good5: true, bad5: true }],
+      good4: [{ good5: true }],
     });
   });
   it('regex', () => {
@@ -101,12 +104,12 @@ forLodashes(['pickDeep'], (_) => {
       good4: [{ good5: true, bad5: true }],
       bad4: [],
     };
-    let clean = _.pickDeep(obj, /\.?good.*$/);
+    let clean = _.pickDeep(obj, /\.?good\d*$/);
     expect(clean).to.deep.equal({
       good1: true,
-      good2: { good3: true, bad3: true },
+      good2: { good3: true },
       bad2: { good: true },
-      good4: [{ good5: true, bad5: true }],
+      good4: [{ good5: true }],
     });
   });
 });
