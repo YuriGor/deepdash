@@ -760,7 +760,7 @@ let children = [
 [Try it yourself ›››](https://codepen.io/yurigor/pen/zQOVBR?editors=0010)
 
 ### omitDeep
-› get object without keys specified by names or regexes [📚 see docs](https://deepdash.io/#omitdeep)
+› get object without paths specified by endings or regexes [📚 see docs](https://deepdash.io/#omitdeep)
 <details>
   <summary>expand example</summary>
 
