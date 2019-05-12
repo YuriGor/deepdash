@@ -395,6 +395,24 @@ Console:
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/MRNEEJ?editors=0010)
 
+`eachDeep` method has no builtin way to stop the iteration.
+When you return `false` - only children of the current value will be skipped.
+To stop iteration as fast as possible you will need to continuously return `false` from the rest of callbacks.
+
+```js
+let breakLoop = false;
+_.eachDeep({ id: 1, children: [ {id: 2, children: [ { id: 3, children: []}]}]},
+  (v,k, parent, context) => {
+  if(breakLoop || v == 2) {
+    breakLoop = true;
+    return false;
+  }
+  console.log(k);
+});
+```
+
+[Try it yourself ›››](https://codepen.io/yurigor/pen/NVrjRx?editors=0010)
+
 ## exists
 
 Check if path exists in the object considering sparse arrays.
