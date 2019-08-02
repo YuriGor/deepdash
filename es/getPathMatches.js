@@ -12,6 +12,8 @@ export default function getPathMatches(_) {
     }
     if (!_.isArray(paths)) {
       paths = [paths];
+    } else {
+      paths = _.cloneDeep(paths);
     }
     for (var i = 0; i < paths.length; i++) {
       if (_.isString(paths[i])) {

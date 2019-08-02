@@ -10,17 +10,17 @@ chai.use(asserttype);
 var { validateIteration, forLodashes } = require('./common.js');
 
 var { demo, circular } = require('./object');
-function isNS(options = {}) {
-  return (value, key, parent, ctx) => {
-    // console.log(`@${ctx.path}`);
-    options.method = 'filterDeep';
-    validateIteration(value, key, parent, ctx, options);
-    let t = typeof value;
-    return t == 'number' || t == 'string';
-  };
-}
 
 forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
+  function isNS(options = {}) {
+    return (value, key, parent, ctx) => {
+      // console.log(`@${ctx.path}`);
+      options = _.merge({ method: 'filterDeep' }, options);
+      validateIteration(value, key, parent, ctx, options);
+      let t = typeof value;
+      return t == 'number' || t == 'string';
+    };
+  }
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);

@@ -14,11 +14,13 @@ export default function getFilterDeep(_) {
 
   function filterDeep(obj, predicate, options) {
     predicate = _.iteratee(predicate);
-    if (options && options.leafsOnly !== undefined) {
-      options.leavesOnly = options.leafsOnly;
-    }
     if (!options) {
       options = {};
+    } else {
+      options = _.cloneDeep(options);
+      if (options.leafsOnly !== undefined) {
+        options.leavesOnly = options.leafsOnly;
+      }
     }
     if (!options.onTrue) {
       options.onTrue = {};
