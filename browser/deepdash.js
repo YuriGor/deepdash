@@ -25,8 +25,8 @@ var deepdash = (function () {
 
   function getPathToString(_) {
     function pathToString(path) {
-      if (_.isString(path)) return path;
-      if (!_.isArray(path)) return undefined;
+      if (_.isString(path)) { return path; }
+      if (!_.isArray(path)) { return undefined; }
       return _.reduce(
         path,
         function(accumulator, value) {
@@ -53,7 +53,7 @@ var deepdash = (function () {
 
   function getHasChildren(_) {
     function hasChildren(obj, childrenPath) {
-      return _.some(childrenPath, (cp) => {
+      return _.some(childrenPath, function (cp) {
         var children = _.get(obj, cp);
         return !_.isEmpty(children);
       });
@@ -197,7 +197,7 @@ var deepdash = (function () {
     var iterate = getIterate(_);
 
     function eachDeep(obj, callback, options) {
-      if (callback === undefined) callback = _.identity;
+      if (callback === undefined) { callback = _.identity; }
       options = _.merge(
         {
           includeRoot: !_.isArray(obj),
@@ -382,12 +382,12 @@ var deepdash = (function () {
 
   function addCondense(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('condense', getCondense(_));
+    return mixOrPatchIn('condense', getCondense());
   }
 
   function getCondenseDeep(_) {
     var eachDeep = getEachDeep(_);
-    var condense = getCondense(_);
+    var condense = getCondense();
     var _each = _.each || _.forArray;
     function condenseDeep(obj, options) {
       options = _.merge(
@@ -404,11 +404,11 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          if (!context.isCircular && _.isArray(value)) arrays.push(value);
+          if (!context.isCircular && _.isArray(value)) { arrays.push(value); }
         },
         eachDeepOptions
       );
-      if (_.isArray(obj)) arrays.push(obj);
+      if (_.isArray(obj)) { arrays.push(obj); }
       _each(arrays, condense);
       return obj;
     }
@@ -635,7 +635,7 @@ var deepdash = (function () {
       if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
         res = null;
       } else {
-        _.each(replies, (reply, path) => {
+        _.each(replies, function (reply, path) {
           if (reply.empty && !reply.keepIfEmpty) {
             _.unset(res, path);
           }
@@ -644,7 +644,7 @@ var deepdash = (function () {
       _.each(foundCircular, function(c) {
         var cv;
         var found = c[1] === undefined || exists(res, c[1]);
-        if (!found) return;
+        if (!found) { return; }
         // console.log('circular: ', c[0], c[1]);
         if (_.has(options, 'replaceCircularBy')) {
           cv = options.replaceCircularBy;
@@ -658,7 +658,7 @@ var deepdash = (function () {
         res = condenseDeep(res, { checkCircular: options.checkCircular });
       }
       if (_.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
-        return null;
+        { return null; }
       return res;
     }
     return filterDeep;

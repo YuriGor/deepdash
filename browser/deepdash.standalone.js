@@ -2832,7 +2832,7 @@ var deepdash = (function (exports) {
     var func = isArray(collection) ? arrayReduce : baseReduce,
         initAccum = arguments.length < 3;
 
-    return func(collection, baseIteratee(iteratee, 4), accumulator, initAccum, baseEach);
+    return func(collection, baseIteratee(iteratee), accumulator, initAccum, baseEach);
   }
 
   var deps = {
@@ -2846,8 +2846,8 @@ var deepdash = (function (exports) {
 
   function getPathToString(_) {
     function pathToString(path) {
-      if (_.isString(path)) return path;
-      if (!_.isArray(path)) return undefined;
+      if (_.isString(path)) { return path; }
+      if (!_.isArray(path)) { return undefined; }
       return _.reduce(
         path,
         function(accumulator, value) {
@@ -3122,7 +3122,7 @@ var deepdash = (function (exports) {
   }
 
   /**
-   * Gets the value at `key`, unless `key` is "__proto__".
+   * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
    *
    * @private
    * @param {Object} object The object to query.
@@ -3130,6 +3130,10 @@ var deepdash = (function (exports) {
    * @returns {*} Returns the property value.
    */
   function safeGet(object, key) {
+    if (key === 'constructor' && typeof object[key] === 'function') {
+      return;
+    }
+
     if (key == '__proto__') {
       return;
     }
@@ -3392,8 +3396,8 @@ var deepdash = (function (exports) {
       return;
     }
     baseFor(source, function(srcValue, key) {
+      stack || (stack = new Stack);
       if (isObject(srcValue)) {
-        stack || (stack = new Stack);
         baseMergeDeep(object, source, key, srcIndex, baseMerge, customizer, stack);
       }
       else {
@@ -3949,7 +3953,7 @@ var deepdash = (function (exports) {
     if (index < 0) {
       index = nativeMax$1(length + index, 0);
     }
-    return baseFindIndex(array, baseIteratee(predicate, 3), index);
+    return baseFindIndex(array, baseIteratee(predicate), index);
   }
 
   /**
@@ -3997,7 +4001,7 @@ var deepdash = (function (exports) {
 
   function forArray(arr, iteratee) {
     for (var i = 0; i < arr.length; i++) {
-      if (iteratee(arr[i], i, arr) === false) break;
+      if (iteratee(arr[i], i, arr) === false) { break; }
     }
     return arr;
   }
@@ -4062,7 +4066,7 @@ var deepdash = (function (exports) {
     if (guard && isIterateeCall(collection, predicate, guard)) {
       predicate = undefined;
     }
-    return func(collection, baseIteratee(predicate, 3));
+    return func(collection, baseIteratee(predicate));
   }
 
   var deps$1 = {
@@ -4098,7 +4102,7 @@ var deepdash = (function (exports) {
 
   function getHasChildren(_) {
     function hasChildren(obj, childrenPath) {
-      return _.some(childrenPath, (cp) => {
+      return _.some(childrenPath, function (cp) {
         var children = _.get(obj, cp);
         return !_.isEmpty(children);
       });
@@ -4242,7 +4246,7 @@ var deepdash = (function (exports) {
     var iterate = getIterate(_);
 
     function eachDeep(obj, callback, options) {
-      if (callback === undefined) callback = _.identity;
+      if (callback === undefined) { callback = _.identity; }
       options = _.merge(
         {
           includeRoot: !_.isArray(obj),
@@ -4288,7 +4292,7 @@ var deepdash = (function (exports) {
 
   var eachDeep = getEachDeep(deps$3);
 
-  const forEachDeep = eachDeep;
+  var forEachDeep = eachDeep;
 
   var deps$4 = merge({ merge: merge }, deps$3);
 
@@ -4384,7 +4388,7 @@ var deepdash = (function (exports) {
 
   var paths = getPaths(deps$5);
 
-  const keysDeep = paths;
+  var keysDeep = paths;
 
   /**
    * A specialized version of `_.forEach` for arrays without support for
@@ -4819,16 +4823,10 @@ var deepdash = (function (exports) {
       value.forEach(function(subValue) {
         result.add(baseClone(subValue, bitmask, customizer, subValue, value, stack));
       });
-
-      return result;
-    }
-
-    if (isMap(value)) {
+    } else if (isMap(value)) {
       value.forEach(function(subValue, key) {
         result.set(key, baseClone(subValue, bitmask, customizer, key, value, stack));
       });
-
-      return result;
     }
 
     var keysFunc = isFull
@@ -4919,7 +4917,7 @@ var deepdash = (function (exports) {
     return condense;
   }
 
-  var condense = getCondense(deps$7);
+  var condense = getCondense();
 
   var deps$8 = merge(
     {
@@ -4933,7 +4931,7 @@ var deepdash = (function (exports) {
 
   function getCondenseDeep(_) {
     var eachDeep = getEachDeep(_);
-    var condense = getCondense(_);
+    var condense = getCondense();
     var _each = _.each || _.forArray;
     function condenseDeep(obj, options) {
       options = _.merge(
@@ -4950,11 +4948,11 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          if (!context.isCircular && _.isArray(value)) arrays.push(value);
+          if (!context.isCircular && _.isArray(value)) { arrays.push(value); }
         },
         eachDeepOptions
       );
-      if (_.isArray(obj)) arrays.push(obj);
+      if (_.isArray(obj)) { arrays.push(obj); }
       _each(arrays, condense);
       return obj;
     }
@@ -5618,7 +5616,7 @@ var deepdash = (function (exports) {
       if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
         res = null;
       } else {
-        _.each(replies, (reply, path) => {
+        _.each(replies, function (reply, path) {
           if (reply.empty && !reply.keepIfEmpty) {
             _.unset(res, path);
           }
@@ -5627,7 +5625,7 @@ var deepdash = (function (exports) {
       _.each(foundCircular, function(c) {
         var cv;
         var found = c[1] === undefined || exists(res, c[1]);
-        if (!found) return;
+        if (!found) { return; }
         // console.log('circular: ', c[0], c[1]);
         if (_.has(options, 'replaceCircularBy')) {
           cv = options.replaceCircularBy;
@@ -5641,7 +5639,7 @@ var deepdash = (function (exports) {
         res = condenseDeep(res, { checkCircular: options.checkCircular });
       }
       if (_.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
-        return null;
+        { return null; }
       return res;
     }
     return filterDeep;

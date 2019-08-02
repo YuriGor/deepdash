@@ -7,12 +7,13 @@ import commonjs from 'rollup-plugin-commonjs';
 import pkg from './package.json';
 import fs from 'fs';
 import path from 'path';
-var es = fs.readdirSync('./es').filter((fn) => _.endsWith(fn,'.js'));
+import buble from 'rollup-plugin-buble';
+var es = fs.readdirSync('./es').filter((fn) => _.endsWith(fn, '.js'));
 var input = es.reduce((res, fn) => {
   res[path.basename(fn, '.js')] = './es/' + fn;
   return res;
 }, {});
-es = fs.readdirSync('./es/deps/own/').filter((fn) => _.endsWith(fn,'.js'));
+es = fs.readdirSync('./es/deps/own/').filter((fn) => _.endsWith(fn, '.js'));
 var ownDeps = es.reduce((res, fn) => {
   res[path.basename(fn, '.js')] = './es/deps/own/' + fn;
   return res;
@@ -31,7 +32,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), terser()],
+    plugins: [resolve(), commonjs(), buble(), terser()],
   },
   {
     input: 'es/deepdash.js',
@@ -43,7 +44,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs()],
+    plugins: [resolve(), commonjs(), buble()],
   },
   {
     input: 'es/standalone.js',
@@ -55,7 +56,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs()],
+    plugins: [resolve(), commonjs(), buble()],
   },
   {
     input: 'es/standalone.js',
@@ -67,7 +68,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), terser()],
+    plugins: [resolve(), commonjs(), buble(), terser()],
   },
   {
     input,
