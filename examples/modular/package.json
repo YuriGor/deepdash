@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "deepdash": "github:YuriGor/deepdash",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "lodash-es": "^4.17.14",
     "rollup": "^1.10.1",
     "rollup-plugin-commonjs": "^9.3.4",
