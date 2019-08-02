@@ -6,10 +6,6 @@ function getIndex(_) {
   var eachDeep = getEachDeep(_);
 
   function index(obj, options) {
-    if (options && options.leafsOnly !== undefined) {
-      options.leavesOnly = options.leafsOnly;
-    }
-
     options = _.merge(
       {
         checkCircular: false,
@@ -18,6 +14,9 @@ function getIndex(_) {
       },
       options || {}
     );
+    if (options && options.leafsOnly !== undefined) {
+      options.leavesOnly = options.leafsOnly;
+    }
     var eachDeepOptions = {
       pathFormat: 'string',
       checkCircular: options.checkCircular,

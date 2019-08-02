@@ -4300,10 +4300,6 @@ var deepdash = (function (exports) {
     var eachDeep = getEachDeep(_);
 
     function index(obj, options) {
-      if (options && options.leafsOnly !== undefined) {
-        options.leavesOnly = options.leafsOnly;
-      }
-
       options = _.merge(
         {
           checkCircular: false,
@@ -4312,6 +4308,9 @@ var deepdash = (function (exports) {
         },
         options || {}
       );
+      if (options && options.leafsOnly !== undefined) {
+        options.leavesOnly = options.leafsOnly;
+      }
       var eachDeepOptions = {
         pathFormat: 'string',
         checkCircular: options.checkCircular,
@@ -5421,11 +5420,13 @@ var deepdash = (function (exports) {
 
     function filterDeep(obj, predicate, options) {
       predicate = _.iteratee(predicate);
-      if (options && options.leafsOnly !== undefined) {
-        options.leavesOnly = options.leafsOnly;
-      }
       if (!options) {
         options = {};
+      } else {
+        options = _.cloneDeep(options);
+        if (options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
       }
       if (!options.onTrue) {
         options.onTrue = {};
@@ -5721,6 +5722,7 @@ var deepdash = (function (exports) {
       toPath: toPath,
       isEqual: isEqual,
       takeRight: takeRight,
+      cloneDeep: cloneDeep,
     },
     deps
   );
@@ -5739,6 +5741,8 @@ var deepdash = (function (exports) {
       }
       if (!_.isArray(paths)) {
         paths = [paths];
+      } else {
+        paths = _.cloneDeep(paths);
       }
       for (var i = 0; i < paths.length; i++) {
         if (_.isString(paths[i])) {

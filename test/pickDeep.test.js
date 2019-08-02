@@ -14,7 +14,9 @@ forLodashes(['pickDeep'], (_) => {
   it('pickDeep no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
-    let clean = _.pickDeep(obj, 'skip', {
+    let oPaths = ['skip'];
+    let paths = _.cloneDeep(oPaths);
+    let clean = _.pickDeep(obj, paths, {
       onMatch: { cloneDeep: true, skipChildren: true },
     });
     expect(clean).to.deep.equal({
@@ -41,6 +43,7 @@ forLodashes(['pickDeep'], (_) => {
       },
     });
     expect(obj).to.deep.equal(orig);
+    expect(paths).to.deep.equal(oPaths);
   });
   it('demo skip', () => {
     let clean = _.pickDeep(demo, 'skip', {

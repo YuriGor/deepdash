@@ -20,7 +20,8 @@ forLodashes('eachDeep', (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(comments);
     let obj = _.cloneDeep(comments);
-    let options = { childrenPath: ['replies'] };
+    let oOptions = { childrenPath: ['replies'] };
+    let options = _.cloneDeep(oOptions);
     _.eachDeep(
       obj,
       (value, key, parentVal, ctx) => {
@@ -30,6 +31,7 @@ forLodashes('eachDeep', (_) => {
       options
     );
     expect(obj).to.deep.equal(orig);
+    expect(options).to.deep.equal(oOptions);
   });
   it('no more regexp or boolean', () => {
     let err;

@@ -45,7 +45,7 @@ module.exports = {
     });
   },
   validateIteration: function(value, key, parentVal, context, options) {
-    options = options || {};
+    options = _.merge({}, options || {});
     if (options.method === 'filterDeep') {
       options.callbackAfterIterate = true;
     }
@@ -88,9 +88,7 @@ module.exports = {
           var children = _.obtain(parentVal, context.childrenPath);
           if (!children) {
             throw new Error(
-              `no children collection found by children path ${
-                context.childrenPath
-              }`
+              `no children collection found by children path ${context.childrenPath}`
             );
           }
           if (!_.exists(children, key)) {
