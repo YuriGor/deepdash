@@ -2,7 +2,7 @@
 
 function getHasChildren(_) {
   function hasChildren(obj, childrenPath) {
-    return _.some(childrenPath, (cp) => {
+    return _.some(childrenPath, function(cp) {
       var children = _.get(obj, cp);
       return !_.isEmpty(children);
     });
