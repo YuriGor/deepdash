@@ -83,6 +83,7 @@ export default [
           'lodash-es': 'lodash',
         },
       }),
+      buble(),
       postprocess([
         [
           /function\s_interopDefault.+$/gm,

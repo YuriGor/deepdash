@@ -5,8 +5,8 @@ var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 
 function getPathToString(_) {
   function pathToString(path) {
-    if (_.isString(path)) return path;
-    if (!_.isArray(path)) return undefined;
+    if (_.isString(path)) { return path; }
+    if (!_.isArray(path)) { return undefined; }
     return _.reduce(
       path,
       function(accumulator, value) {

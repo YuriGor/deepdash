@@ -2,6 +2,6 @@
 
 var paths = require('./paths.js');
 
-const keysDeep = paths;
+var keysDeep = paths;
 
 module.exports = keysDeep;

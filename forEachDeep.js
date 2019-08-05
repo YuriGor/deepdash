@@ -2,6 +2,6 @@
 
 var eachDeep = require('./eachDeep.js');
 
-const forEachDeep = eachDeep;
+var forEachDeep = eachDeep;
 
 module.exports = forEachDeep;
