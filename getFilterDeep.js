@@ -213,7 +213,7 @@ function getFilterDeep(_) {
     if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
       res = null;
     } else {
-      _.each(replies, (reply, path) => {
+      _.each(replies, function (reply, path) {
         if (reply.empty && !reply.keepIfEmpty) {
           _.unset(res, path);
         }
@@ -222,7 +222,7 @@ function getFilterDeep(_) {
     _.each(foundCircular, function(c) {
       var cv;
       var found = c[1] === undefined || exists(res, c[1]);
-      if (!found) return;
+      if (!found) { return; }
       // console.log('circular: ', c[0], c[1]);
       if (_.has(options, 'replaceCircularBy')) {
         cv = options.replaceCircularBy;
@@ -236,7 +236,7 @@ function getFilterDeep(_) {
       res = condenseDeep(res, { checkCircular: options.checkCircular });
     }
     if (_.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
-      return null;
+      { return null; }
     return res;
   }
   return filterDeep;

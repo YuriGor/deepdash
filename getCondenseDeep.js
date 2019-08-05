@@ -22,11 +22,11 @@ function getCondenseDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        if (!context.isCircular && _.isArray(value)) arrays.push(value);
+        if (!context.isCircular && _.isArray(value)) { arrays.push(value); }
       },
       eachDeepOptions
     );
-    if (_.isArray(obj)) arrays.push(obj);
+    if (_.isArray(obj)) { arrays.push(obj); }
     _each(arrays, condense);
     return obj;
   }

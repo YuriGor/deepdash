@@ -6,7 +6,7 @@ function getEachDeep(_) {
   var iterate = __chunk_3.default(_);
 
   function eachDeep(obj, callback, options) {
-    if (callback === undefined) callback = _.identity;
+    if (callback === undefined) { callback = _.identity; }
     options = _.merge(
       {
         includeRoot: !_.isArray(obj),
