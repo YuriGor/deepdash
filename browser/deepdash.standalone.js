@@ -4133,7 +4133,7 @@ var deepdash = (function (exports) {
         parent: parent,
       };
 
-      var currentParents = parents.concat(currentObj);
+      var currentParents = parents.concat( [currentObj]);
 
       var isCircular = undefined;
       var circularParentIndex = undefined;
@@ -4183,7 +4183,7 @@ var deepdash = (function (exports) {
       function forChildren(children, cp) {
         if (children && _.isObject(children)) {
           _.forOwn(children, function(childValue, childKey) {
-            var childPath = (path || []).concat(cp || [], [childKey]);
+            var childPath = (path || []).concat( (cp || []), [childKey]);
 
             iterate(
               childValue,
@@ -4218,7 +4218,7 @@ var deepdash = (function (exports) {
               }
             }
 
-            var childPath = (path || []).concat([childKey]);
+            var childPath = (path || []).concat( [childKey]);
 
             iterate(
               childValue,
