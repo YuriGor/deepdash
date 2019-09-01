@@ -1,8 +1,8 @@
 'use strict';
 
 var getObtain = require('./getObtain.js');
-var __chunk_11 = require('./deps/obtain.js');
+var obtain$1 = require('./deps/obtain.js');
 
-var obtain = getObtain(__chunk_11.default);
+var obtain = getObtain(obtain$1.default);
 
 module.exports = obtain;
