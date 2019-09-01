@@ -26,7 +26,7 @@ function getIterate(_) {
       parent: parent,
     };
 
-    var currentParents = parents.concat(currentObj);
+    var currentParents = parents.concat( [currentObj]);
 
     var isCircular = undefined;
     var circularParentIndex = undefined;
@@ -76,7 +76,7 @@ function getIterate(_) {
     function forChildren(children, cp) {
       if (children && _.isObject(children)) {
         _.forOwn(children, function(childValue, childKey) {
-          var childPath = (path || []).concat(cp || [], [childKey]);
+          var childPath = (path || []).concat( (cp || []), [childKey]);
 
           iterate(
             childValue,
@@ -111,7 +111,7 @@ function getIterate(_) {
             }
           }
 
-          var childPath = (path || []).concat([childKey]);
+          var childPath = (path || []).concat( [childKey]);
 
           iterate(
             childValue,
