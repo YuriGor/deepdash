@@ -27,6 +27,7 @@
     "keysDeep esm",
     "paths esm"
   ],
+  "type": "module",
   "author": "Yuri Gor",
   "license": "MIT",
   "bugs": {
@@ -34,6 +35,6 @@
   },
   "homepage": "https://deepdash.io/",
   "dependencies": {
-    "lodash-es": "^4.17.11"
+    "lodash-es": "^4.17.15"
   }
 }
