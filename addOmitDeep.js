@@ -1,10 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./private/getMixOrPatchIn.js');
+var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getOmitDeep = require('./getOmitDeep.js');
 
 function addOmitDeep(_) {
-  var mixOrPatchIn = __chunk_1.default(_);
+  var mixOrPatchIn = getMixOrPatchIn.default(_);
   return mixOrPatchIn('omitDeep', getOmitDeep(_));
 }
 

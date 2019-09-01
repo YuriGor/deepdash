@@ -1,11 +1,11 @@
 'use strict';
 
 var getPathToString = require('../getPathToString.js');
-var __chunk_2 = require('./getHasChildren.js');
+var getHasChildren = require('./getHasChildren.js');
 
 function getIterate(_) {
   var pathToString = getPathToString(_);
-  var hasChildren = __chunk_2.default(_);
+  var hasChildren = getHasChildren.default(_);
   var _each = _.each || _.forArray;
   function iterate(
     value,

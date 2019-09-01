@@ -1,8 +1,8 @@
 'use strict';
 
 var getEachDeep = require('./getEachDeep.js');
-var __chunk_8 = require('./deps/eachDeep.js');
+var eachDeep$1 = require('./deps/eachDeep.js');
 
-var eachDeep = getEachDeep(__chunk_8.default);
+var eachDeep = getEachDeep(eachDeep$1.default);
 
 module.exports = eachDeep;

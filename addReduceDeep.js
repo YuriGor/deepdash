@@ -1,10 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./private/getMixOrPatchIn.js');
+var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getReduceDeep = require('./getReduceDeep.js');
 
 function addReduceDeep(_) {
-  var mixOrPatchIn = __chunk_1.default(_);
+  var mixOrPatchIn = getMixOrPatchIn.default(_);
   return mixOrPatchIn('reduceDeep', getReduceDeep(_));
 }
 

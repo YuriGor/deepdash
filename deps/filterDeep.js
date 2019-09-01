@@ -3,11 +3,11 @@
 var _merge = require('lodash/merge');
 var isArray = require('./own/isArray.js');
 var _isObject = require('lodash/isObject');
-var __chunk_6 = require('./pathToString.js');
-var __chunk_8 = require('./eachDeep.js');
-var __chunk_9 = require('./condenseDeep.js');
+var pathToString = require('./pathToString.js');
+var eachDeep$1 = require('./eachDeep.js');
+var condenseDeep$1 = require('./condenseDeep.js');
 var _clone = require('lodash/clone');
-var __chunk_10 = require('./exists.js');
+var exists$1 = require('./exists.js');
 var _cloneDeep = require('lodash/cloneDeep');
 var _each = require('lodash/each');
 var _eachRight = require('lodash/eachRight');
@@ -16,7 +16,7 @@ var _set = require('lodash/set');
 var _unset = require('lodash/unset');
 var _isPlainObject = require('lodash/isPlainObject');
 var _iteratee = require('lodash/iteratee');
-var __chunk_11 = require('./obtain.js');
+var obtain = require('./obtain.js');
 
 var deps = _merge(
   {
@@ -33,11 +33,11 @@ var deps = _merge(
     isPlainObject: _isPlainObject,
     iteratee: _iteratee,
   },
-  __chunk_8.default,
-  __chunk_6.default,
-  __chunk_11.default,
-  __chunk_9.default,
-  __chunk_10.default
+  eachDeep$1.default,
+  pathToString.default,
+  obtain.default,
+  condenseDeep$1.default,
+  exists$1.default
 );
 
 exports.default = deps;

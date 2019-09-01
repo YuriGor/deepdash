@@ -1,8 +1,8 @@
 'use strict';
 
 var getReduceDeep = require('./getReduceDeep.js');
-var __chunk_19 = require('./deps/reduceDeep.js');
+var reduceDeep$1 = require('./deps/reduceDeep.js');
 
-var reduceDeep = getReduceDeep(__chunk_19.default);
+var reduceDeep = getReduceDeep(reduceDeep$1.default);
 
 module.exports = reduceDeep;

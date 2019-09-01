@@ -8,8 +8,8 @@ var _isEmpty = require('lodash/isEmpty');
 var _findIndex = require('lodash/findIndex');
 var _forOwn = require('lodash/forOwn');
 var _get = require('lodash/get');
-var __chunk_5 = require('./hasChildren.js');
-var __chunk_6 = require('./pathToString.js');
+var hasChildren = require('./hasChildren.js');
+var pathToString = require('./pathToString.js');
 
 var deps = _merge(
   {
@@ -21,8 +21,8 @@ var deps = _merge(
     get: _get,
     isArray: isArray,
   },
-  __chunk_6.default,
-  __chunk_5.default
+  pathToString.default,
+  hasChildren.default
 );
 
 exports.default = deps;
