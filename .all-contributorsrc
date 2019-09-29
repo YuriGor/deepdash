@@ -86,6 +86,17 @@
       "contributions": [
         "infra"
       ]
+    },
+    {
+      "login": "ArSn",
+      "name": "Kolja Zuelsdorf",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2803693?v=4",
+      "profile": "https://github.com/ArSn",
+      "contributions": [
+        "bug",
+        "userTesting",
+        "example"
+      ]
     }
   ],
   "contributorsPerLine": 7
