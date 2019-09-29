@@ -1,5 +1,5 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
-[![All Contributors](https://img.shields.io/badge/all_contributors-7-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
 
 ## Deepdash
 Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
@@ -1110,6 +1110,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/simlu"><img src="https://avatars1.githubusercontent.com/u/1539747?v=4" width="100px;" alt="Lukas Siemon"/><br /><sub><b>Lukas Siemon</b></sub></a><br /><a href="#ideas-simlu" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-simlu" title="User Testing">📓</a></td>
     <td align="center"><a href="https://github.com/crapthings"><img src="https://avatars2.githubusercontent.com/u/1147704?v=4" width="100px;" alt="crapthings"/><br /><sub><b>crapthings</b></sub></a><br /><a href="#ideas-crapthings" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://masciugo.github.io/"><img src="https://avatars2.githubusercontent.com/u/454321?v=4" width="100px;" alt="Corrado Masciullo"/><br /><sub><b>Corrado Masciullo</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Amasciugo" title="Bug reports">🐛</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/jedrichards"><img src="https://avatars0.githubusercontent.com/u/1078571?v=4" width="100px;" alt="Jed Richards"/><br /><sub><b>Jed Richards</b></sub></a><br /><a href="#infra-jedrichards" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
 
