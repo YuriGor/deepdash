@@ -1,0 +1,26 @@
+{
+  "projectName": "Deepdash",
+  "projectOwner": "YuriGor",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "raz-sinay",
+      "name": "Raz Sinay",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15093043?v=4",
+      "profile": "https://github.com/raz-sinay",
+      "contributions": [
+        "code",
+        "userTesting",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}
