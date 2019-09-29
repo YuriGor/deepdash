@@ -59,6 +59,15 @@
         "ideas",
         "userTesting"
       ]
+    },
+    {
+      "login": "crapthings",
+      "name": "crapthings",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1147704?v=4",
+      "profile": "https://github.com/crapthings",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
