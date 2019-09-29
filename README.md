@@ -1,5 +1,5 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
-[![All Contributors](https://img.shields.io/badge/all_contributors-8-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-9-orange.svg?style=flat-square)](#contributors-)
 
 ## Deepdash
 Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
@@ -1113,6 +1113,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/jedrichards"><img src="https://avatars0.githubusercontent.com/u/1078571?v=4" width="100px;" alt="Jed Richards"/><br /><sub><b>Jed Richards</b></sub></a><br /><a href="#infra-jedrichards" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/ArSn"><img src="https://avatars3.githubusercontent.com/u/2803693?v=4" width="100px;" alt="Kolja Zuelsdorf"/><br /><sub><b>Kolja Zuelsdorf</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3AArSn" title="Bug reports">🐛</a> <a href="#userTesting-ArSn" title="User Testing">📓</a> <a href="#example-ArSn" title="Examples">💡</a></td>
   </tr>
 </table>
 
