@@ -20,6 +20,16 @@
         "userTesting",
         "ideas"
       ]
+    },
+    {
+      "login": "fgrandval",
+      "name": "Florent",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5641890?v=4",
+      "profile": "http://www.florent-grandval.fr",
+      "contributions": [
+        "bug",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7
