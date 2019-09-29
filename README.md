@@ -1,4 +1,5 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
 
 ## Deepdash
 Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
@@ -1092,3 +1093,22 @@ Console:
 [Try it yourself ›››](https://codepen.io/yurigor/pen/joNXGv?editors=0010)
 
 ### See [full docs](https://deepdash.io) for details.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/raz-sinay"><img src="https://avatars3.githubusercontent.com/u/15093043?v=4" width="100px;" alt="Raz Sinay"/><br /><sub><b>Raz Sinay</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/commits?author=raz-sinay" title="Code">💻</a> <a href="#userTesting-raz-sinay" title="User Testing">📓</a> <a href="#ideas-raz-sinay" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
