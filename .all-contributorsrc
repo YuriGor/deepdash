@@ -98,6 +98,15 @@
         "userTesting",
         "example"
       ]
+    },
+    {
+      "login": "novalagung",
+      "name": "Noval Agung Prayogo",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/982868?v=4",
+      "profile": "https://stackoverflow.com/users/1467988",
+      "contributions": [
+        "question"
+      ]
     }
   ],
   "contributorsPerLine": 7
