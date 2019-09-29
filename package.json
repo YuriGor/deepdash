@@ -19,7 +19,9 @@
     "dev": "nodemon ./node_modules/.bin/mocha -g 'pickDeep no mutation' --reporter min --no-deprecation",
     "debug": "node --inspect-brk test/debugDeep.js",
     "demo": "serve",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "repository": {
     "type": "git",
@@ -61,6 +63,7 @@
   "devDependencies": {
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-conventional": "^8.1.0",
+    "all-contributors-cli": "^6.9.1",
     "chai": "*",
     "chai-asserttype": "*",
     "coveralls": "^3.0.6",
