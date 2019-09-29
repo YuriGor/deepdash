@@ -40,6 +40,15 @@
         "ideas",
         "userTesting"
       ]
+    },
+    {
+      "login": "mattblackdev",
+      "name": "Matt Black",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5210361?v=4",
+      "profile": "https://github.com/mattblackdev",
+      "contributions": [
+        "ideas"
+      ]
     }
   ],
   "contributorsPerLine": 7
