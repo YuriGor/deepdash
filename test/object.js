@@ -493,109 +493,109 @@ module.exports.singleRoot = {
 
 module.exports.social = [
   {
-    "_id": "5cc4bc4b015742a0d80c8b1a",
-    "name": "Dalton Hull",
-    "friends": [
+    _id: '5cc4bc4b015742a0d80c8b1a',
+    name: 'Dalton Hull',
+    friends: [
       {
-        "id": 0,
-        "name": "Hillary Perry"
+        id: 0,
+        name: 'Hillary Perry',
       },
       {
-        "id": 1,
-        "name": "Cote Kim"
+        id: 1,
+        name: 'Cote Kim',
       },
       {
-        "id": 2,
-        "name": "Dolly Curtis"
-      }
+        id: 2,
+        name: 'Dolly Curtis',
+      },
     ],
-    "children": [
+    children: [
       {
-        "id": 0,
-        "name": "Nicole Mcdaniel"
-      }
+        id: 0,
+        name: 'Nicole Mcdaniel',
+      },
     ],
-    "parents": [
+    parents: [
       {
-        "id": 0,
-        "name": "Francis Landry"
+        id: 0,
+        name: 'Francis Landry',
       },
       {
-        "id": 1,
-        "name": "Alexandra Byrd"
-      }
-    ]
+        id: 1,
+        name: 'Alexandra Byrd',
+      },
+    ],
   },
   {
-    "_id": "5cc4bc4bfd19ec41acfe1a43",
-    "name": "Dale Booth",
-    "friends": [
+    _id: '5cc4bc4bfd19ec41acfe1a43',
+    name: 'Dale Booth',
+    friends: [
       {
-        "id": 0,
-        "name": "Mcdowell Reyes"
+        id: 0,
+        name: 'Mcdowell Reyes',
       },
       {
-        "id": 1,
-        "name": "Moses Mcguire"
+        id: 1,
+        name: 'Moses Mcguire',
       },
       {
-        "id": 2,
-        "name": "Selena Phelps"
-      }
+        id: 2,
+        name: 'Selena Phelps',
+      },
     ],
-    "children": [
+    children: [
       {
-        "id": 0,
-        "name": "Golden Vasquez"
-      }
+        id: 0,
+        name: 'Golden Vasquez',
+      },
     ],
-    "parents": [
+    parents: [
       {
-        "id": 0,
-        "name": "Peck Herman"
+        id: 0,
+        name: 'Peck Herman',
       },
       {
-        "id": 1,
-        "name": "Ada Crosby"
-      }
-    ]
+        id: 1,
+        name: 'Ada Crosby',
+      },
+    ],
   },
   {
-    "_id": "5cc4bc4b598e629b835fc2ff",
-    "name": "Cameron Stout",
-    "friends": [
+    _id: '5cc4bc4b598e629b835fc2ff',
+    name: 'Cameron Stout',
+    friends: [
       {
-        "id": 0,
-        "name": "Burgess York"
+        id: 0,
+        name: 'Burgess York',
       },
       {
-        "id": 1,
-        "name": "Martina Valentine"
+        id: 1,
+        name: 'Martina Valentine',
       },
       {
-        "id": 2,
-        "name": "Anita Browning"
-      }
+        id: 2,
+        name: 'Anita Browning',
+      },
     ],
-    "children": [
+    children: [
       {
-        "id": 0,
-        "name": "Young Marshall"
+        id: 0,
+        name: 'Young Marshall',
       },
       {
-        "id": 1,
-        "name": "Bryant Bright"
-      }
+        id: 1,
+        name: 'Bryant Bright',
+      },
     ],
-    "parents": [
+    parents: [
       {
-        "id": 0,
-        "name": "Stewart Hays"
+        id: 0,
+        name: 'Stewart Hays',
       },
       {
-        "id": 1,
-        "name": "Saunders Craig"
-      }
-    ]
-  }
+        id: 1,
+        name: 'Saunders Craig',
+      },
+    ],
+  },
 ];
