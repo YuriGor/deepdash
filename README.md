@@ -1117,7 +1117,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://stackoverflow.com/users/1467988"><img src="https://avatars3.githubusercontent.com/u/982868?v=4" width="100px;" alt="Noval Agung Prayogo"/><br /><sub><b>Noval Agung Prayogo</b></sub></a><br /><a href="#question-novalagung" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/MrKumaPants"><img src="https://avatars3.githubusercontent.com/u/39394314?v=4" width="100px;" alt="Nathan Tomsic"/><br /><sub><b>Nathan Tomsic</b></sub></a><br /><a href="#ideas-MrKumaPants" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/madflow"><img src="https://avatars0.githubusercontent.com/u/183248?v=4" width="100px;" alt="madflow"/><br /><sub><b>madflow</b></sub></a><br /><a href="#question-madflow" title="Answering Questions">💬</a></td>
-    <td align="center"><a href="https://github.com/ventralnet"><img src="https://avatars3.githubusercontent.com/u/686309?v=4" width="100px;" alt="Matthew Kirkley"/><br /><sub><b>Matthew Kirkley</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Aventralnet" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/ventralnet"><img src="https://avatars3.githubusercontent.com/u/686309?v=4" width="100px;" alt="Matthew Kirkley"/><br /><sub><b>Matthew Kirkley</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Aventralnet" title="Bug reports">🐛</a> <a href="#ideas-ventralnet" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
