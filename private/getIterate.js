@@ -44,14 +44,14 @@ function getIterate(_) {
       isCircular = circularParentIndex !== -1;
     }
     var res;
+    var isLeaf =
+      !_.isObject(value) ||
+      _.isEmpty(value) ||
+      isCircular ||
+      (options.childrenPath !== undefined &&
+        !hasChildren(value, options.childrenPath));
     var needCallback =
-      (depth || options.includeRoot) &&
-      (!options.leavesOnly ||
-        !_.isObject(value) ||
-        _.isEmpty(value) ||
-        isCircular ||
-        (options.childrenPath !== undefined &&
-          !hasChildren(value, options.childrenPath)));
+      (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
     // console.log('needCallback?', needCallback);
     if (needCallback) {
       var context = {
@@ -63,6 +63,7 @@ function getIterate(_) {
         isCircular: isCircular,
         circularParent: circularParent,
         circularParentIndex: circularParentIndex,
+        isLeaf: isLeaf,
       };
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
