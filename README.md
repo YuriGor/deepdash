@@ -4,7 +4,7 @@
 Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
 Object/tree traversal extension for Lodash.
 
-[![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 [![Known Vulnerabilities](https://snyk.io/test/npm/deepdash/badge.svg)](https://snyk.io/test/npm/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
 
@@ -1117,6 +1117,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://stackoverflow.com/users/1467988"><img src="https://avatars3.githubusercontent.com/u/982868?v=4" width="100px;" alt="Noval Agung Prayogo"/><br /><sub><b>Noval Agung Prayogo</b></sub></a><br /><a href="#question-novalagung" title="Answering Questions">💬</a></td>
     <td align="center"><a href="https://github.com/MrKumaPants"><img src="https://avatars3.githubusercontent.com/u/39394314?v=4" width="100px;" alt="Nathan Tomsic"/><br /><sub><b>Nathan Tomsic</b></sub></a><br /><a href="#ideas-MrKumaPants" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/madflow"><img src="https://avatars0.githubusercontent.com/u/183248?v=4" width="100px;" alt="madflow"/><br /><sub><b>madflow</b></sub></a><br /><a href="#question-madflow" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/ventralnet"><img src="https://avatars3.githubusercontent.com/u/686309?v=4" width="100px;" alt="Matthew Kirkley"/><br /><sub><b>Matthew Kirkley</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Aventralnet" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
