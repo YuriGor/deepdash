@@ -19,6 +19,7 @@ function getIterate(_) {
     obj,
     childrenPath
   ) {
+    if (options.break) { return; }
     var currentObj = {
       value: value,
       key: key,
@@ -64,6 +65,10 @@ function getIterate(_) {
         circularParent: circularParent,
         circularParentIndex: circularParentIndex,
         isLeaf: isLeaf,
+        "break": function () {
+          options.break = true;
+          return false;
+        },
       };
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
@@ -74,28 +79,29 @@ function getIterate(_) {
       }
       res = callback(value, key, parent && parent.value, context);
     }
-    function forChildren(children, cp) {
-      if (children && _.isObject(children)) {
-        _.forOwn(children, function(childValue, childKey) {
-          var childPath = (path || []).concat( (cp || []), [childKey]);
-
-          iterate(
-            childValue,
-            callback,
-            options,
-            childKey,
-            childPath,
-            depth + 1,
-            currentObj,
-            currentParents,
-            obj,
-            cp
-          );
-        });
-      }
-    }
-    if (res !== false && !isCircular && _.isObject(value)) {
+    if (!options.break && res !== false && !isCircular && _.isObject(value)) {
       if (options.childrenPath !== undefined) {
+        function forChildren(children, cp) {
+          if (children && _.isObject(children)) {
+            _.forOwn(children, function(childValue, childKey) {
+              var childPath = (path || []).concat( (cp || []), [childKey]);
+
+              iterate(
+                childValue,
+                callback,
+                options,
+                childKey,
+                childPath,
+                depth + 1,
+                currentObj,
+                currentParents,
+                obj,
+                cp
+              );
+            });
+          }
+        }
+
         if (!depth && options.rootIsChildren) {
           forChildren(value, undefined);
         } else {

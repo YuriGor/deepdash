@@ -31,6 +31,35 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString', 'obtain'], (_) => {
       '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","s","b","n","u","nl"]'
     );
   });
+  it('eachDeep break', () => {
+    let keys = [];
+    _.eachDeep(demo, (value, key, parent, ctx) => {
+      validateIteration(value, key, parent, ctx);
+      keys.push(key);
+      if (key == 'skip') return ctx.break();
+    });
+
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip"]'
+    );
+  });
+
+  it('eachDeep break for childs', () => {
+    let keys = [];
+    _.eachDeep(
+      demo,
+      (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx);
+        keys.push(key);
+        if (value.i == 3) return ctx.break();
+      },
+      { leavesOnly: false }
+    );
+
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3"]'
+    );
+  });
   if (!_.v) {
     it('Chaining', () => {
       let keys = [];

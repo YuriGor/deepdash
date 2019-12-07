@@ -93,6 +93,7 @@ export default function getFilterDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
+        delete context.break;
         var curPath = pathToString(context.path);
         if (!context.afterIterate) {
           if (!context.isCircular) {
@@ -200,12 +201,6 @@ export default function getFilterDeep(_) {
             });
             rootReply.empty = false;
           }
-          if (curPath !== undefined) {
-            //delete replies[curPath];
-          } else {
-            //delete rootReply;
-          }
-
           // console.log('←', replies);
           return;
         } else {
@@ -217,24 +212,6 @@ export default function getFilterDeep(_) {
     if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
       res = null;
     }
-    // else {
-    //   // console.log(replies);
-    //   // console.log(res);
-    //   _.each(replies, (reply, path) => {
-    //     if (reply.empty) {
-    //       if (!reply.keepIfEmpty) {
-    //         if (exists(res, path)) {
-    //           console.log('del empty', path);
-    //         }
-    //         // console.log('remove ' + path);
-    //         _.unset(res, path);
-    //       }
-    //       // else if (!_.has(res, path)) {
-    //       //   console.log('miss empty', path);
-    //       // }
-    //     }
-    //   });
-    // }
     _.each(foundCircular, function(c) {
       var cv;
       var found = c[1] === undefined || exists(res, c[1]);

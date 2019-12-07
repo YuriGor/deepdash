@@ -1,5 +1,14 @@
 # Change Log
 
+## v4-3-0
+*(2019-12-7)*
+
+**Features added**
+- [eachDeep](/#eachdeep-foreachdeep) now supports break.(as context.break function passed into iteratee)
+
+**Bugs fixed**
+- [filterDeep](/#filterdeep) didn't use onUndefined options for parents skipped due leavesOnly mode.
+
 ## v4-2-0
 *(2019-04-19)*
 

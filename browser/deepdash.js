@@ -77,6 +77,7 @@ var deepdash = (function () {
       obj,
       childrenPath
     ) {
+      if (options.break) { return; }
       var currentObj = {
         value: value,
         key: key,
@@ -122,6 +123,10 @@ var deepdash = (function () {
           circularParent: circularParent,
           circularParentIndex: circularParentIndex,
           isLeaf: isLeaf,
+          "break": function () {
+            options.break = true;
+            return false;
+          },
         };
         if (options.childrenPath !== undefined) {
           currentObj.childrenPath =
@@ -132,28 +137,29 @@ var deepdash = (function () {
         }
         res = callback(value, key, parent && parent.value, context);
       }
-      function forChildren(children, cp) {
-        if (children && _.isObject(children)) {
-          _.forOwn(children, function(childValue, childKey) {
-            var childPath = (path || []).concat( (cp || []), [childKey]);
-
-            iterate(
-              childValue,
-              callback,
-              options,
-              childKey,
-              childPath,
-              depth + 1,
-              currentObj,
-              currentParents,
-              obj,
-              cp
-            );
-          });
-        }
-      }
-      if (res !== false && !isCircular && _.isObject(value)) {
+      if (!options.break && res !== false && !isCircular && _.isObject(value)) {
         if (options.childrenPath !== undefined) {
+          function forChildren(children, cp) {
+            if (children && _.isObject(children)) {
+              _.forOwn(children, function(childValue, childKey) {
+                var childPath = (path || []).concat( (cp || []), [childKey]);
+
+                iterate(
+                  childValue,
+                  callback,
+                  options,
+                  childKey,
+                  childPath,
+                  depth + 1,
+                  currentObj,
+                  currentParents,
+                  obj,
+                  cp
+                );
+              });
+            }
+          }
+
           if (!depth && options.rootIsChildren) {
             forChildren(value, undefined);
           } else {
@@ -519,6 +525,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context.break;
           var curPath = pathToString(context.path);
           if (!context.afterIterate) {
             if (!context.isCircular) {
@@ -626,7 +633,6 @@ var deepdash = (function () {
               });
               rootReply.empty = false;
             }
-
             // console.log('←', replies);
             return;
           }
@@ -636,24 +642,6 @@ var deepdash = (function () {
       if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
         res = null;
       }
-      // else {
-      //   // console.log(replies);
-      //   // console.log(res);
-      //   _.each(replies, (reply, path) => {
-      //     if (reply.empty) {
-      //       if (!reply.keepIfEmpty) {
-      //         if (exists(res, path)) {
-      //           console.log('del empty', path);
-      //         }
-      //         // console.log('remove ' + path);
-      //         _.unset(res, path);
-      //       }
-      //       // else if (!_.has(res, path)) {
-      //       //   console.log('miss empty', path);
-      //       // }
-      //     }
-      //   });
-      // }
       _.each(foundCircular, function(c) {
         var cv;
         var found = c[1] === undefined || exists(res, c[1]);
@@ -822,6 +810,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context.break;
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;
@@ -850,6 +839,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context.break;
           var r = iteratee(value, key, parent, context);
           if (key === undefined) {
             res = r;
