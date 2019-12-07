@@ -1,6 +1,6 @@
 # Deepdash
 
-> v4.2.0 - [see changes](/changelog#v4-2-0)
+> v4.3.0 - [see changes](/changelog#v4-3-0)
 
 Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree traversal extension for Lodash.
 
@@ -309,6 +309,7 @@ a callback function which will be invoked for each child of the object.
     - `obj` - source object
     - `depth` - current value's nesting level
     - `afterIterate` - this flag will be true if it's a second invocation of the `iteratee`. See `options.callbackAfterIterate` for details.
+    - `break` - method to abort the iteration, no matter how deep is process currently. Works in eachDeep/forEachDeep only, not supported by filterDeep etc.
 * next three fields are available if `options.checkCircular` was `true`, otherwise they will be `undefined`
     - `isCircular` - true if the current value is a circular reference.
     - `circularParent` - parent object from `parents` array referenced by current value or null if not `isCircular`.

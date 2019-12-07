@@ -93,6 +93,40 @@ forLodashes('eachDeep', (_) => {
     ]);
   });
 
+  it('children array - break', () => {
+    let visited = [];
+    let options = { childrenPath: 'children' };
+    _.eachDeep(
+      children,
+      (value, key, parent, ctx) => {
+        // console.log('@' + ctx.path);
+        validateIteration(value, key, parent, ctx, options);
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
+        }
+        if (ctx.parent) {
+          expect(ctx.path).to.be.a.string();
+        }
+        visited.push(ctx.path);
+        if (ctx.path == '[1].children[0].children[0]') return ctx.break();
+      },
+      options
+    );
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+  });
+
   it('children array - include root', () => {
     let visited = [];
     let options = { childrenPath: 'children', includeRoot: true };
