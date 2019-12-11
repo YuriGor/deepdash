@@ -21,8 +21,8 @@ var deps = _merge(
     get: _get,
     isArray: isArray,
   },
-  pathToString.default,
-  hasChildren.default
+  pathToString,
+  hasChildren
 );
 
-exports.default = deps;
+module.exports = deps;

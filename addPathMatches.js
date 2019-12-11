@@ -4,7 +4,7 @@ var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getPathMatches = require('./getPathMatches.js');
 
 function addPathMatches(_) {
-  var mixOrPatchIn = getMixOrPatchIn.default(_);
+  var mixOrPatchIn = getMixOrPatchIn(_);
   return mixOrPatchIn('pathMatches', getPathMatches(_), false);
 }
 
