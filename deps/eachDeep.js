@@ -15,7 +15,7 @@ var deps = _merge(
     isString: _isString,
     toPath: _toPath,
   },
-  iterate.default
+  iterate
 );
 
-exports.default = deps;
+module.exports = deps;

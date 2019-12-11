@@ -3,6 +3,6 @@
 var _merge = require('lodash/merge');
 var eachDeep$1 = require('./eachDeep.js');
 
-var deps = _merge({ merge: _merge }, eachDeep$1.default);
+var deps = _merge({ merge: _merge }, eachDeep$1);
 
-exports.default = deps;
+module.exports = deps;

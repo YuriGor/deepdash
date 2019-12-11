@@ -19,4 +19,4 @@ function getMixOrPatchIn(_) {
   return mixOrPatchIn;
 }
 
-exports.default = getMixOrPatchIn;
+module.exports = getMixOrPatchIn;

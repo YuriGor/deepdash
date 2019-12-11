@@ -33,11 +33,11 @@ var deps = _merge(
     isPlainObject: _isPlainObject,
     iteratee: _iteratee,
   },
-  eachDeep$1.default,
-  pathToString.default,
-  obtain.default,
-  condenseDeep$1.default,
-  exists$1.default
+  eachDeep$1,
+  pathToString,
+  obtain,
+  condenseDeep$1,
+  exists$1
 );
 
-exports.default = deps;
+module.exports = deps;

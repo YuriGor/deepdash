@@ -16,7 +16,7 @@ var deps = _merge(
     clone: _clone,
     set: _set,
   },
-  eachDeep$1.default
+  eachDeep$1
 );
 
-exports.default = deps;
+module.exports = deps;

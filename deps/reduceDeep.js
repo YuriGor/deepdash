@@ -8,7 +8,7 @@ var deps = _merge(
   {
     iteratee: _iteratee,
   },
-  eachDeep$1.default
+  eachDeep$1
 );
 
-exports.default = deps;
+module.exports = deps;

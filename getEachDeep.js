@@ -3,7 +3,7 @@
 var getIterate = require('./private/getIterate.js');
 
 function getEachDeep(_) {
-  var iterate = getIterate.default(_);
+  var iterate = getIterate(_);
 
   function eachDeep(obj, callback, options) {
     if (callback === undefined) { callback = _.identity; }

@@ -4,6 +4,6 @@ var _merge = require('lodash/merge');
 var filterDeep$1 = require('./filterDeep.js');
 var pathMatches = require('./pathMatches.js');
 
-var deps = _merge({ merge: _merge }, pathMatches.default, filterDeep$1.default);
+var deps = _merge({ merge: _merge }, pathMatches, filterDeep$1);
 
-exports.default = deps;
+module.exports = deps;

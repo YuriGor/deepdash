@@ -12,8 +12,8 @@ var deps = _merge(
     isArray: isArray,
     forArray: forArray,
   },
-  condense$1.default,
-  eachDeep.default
+  condense$1,
+  eachDeep
 );
 
-exports.default = deps;
+module.exports = deps;

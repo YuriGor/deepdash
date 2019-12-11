@@ -5,7 +5,7 @@ var getHasChildren = require('./getHasChildren.js');
 
 function getIterate(_) {
   var pathToString = getPathToString(_);
-  var hasChildren = getHasChildren.default(_);
+  var hasChildren = getHasChildren(_);
   var _each = _.each || _.forArray;
   function iterate(
     value,
@@ -142,4 +142,4 @@ function getIterate(_) {
   return iterate;
 }
 
-exports.default = getIterate;
+module.exports = getIterate;

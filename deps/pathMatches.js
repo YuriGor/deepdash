@@ -18,7 +18,7 @@ var deps = _merge(
     takeRight: _takeRight,
     cloneDeep: _cloneDeep,
   },
-  pathToString.default
+  pathToString
 );
 
-exports.default = deps;
+module.exports = deps;

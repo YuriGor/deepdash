@@ -10,4 +10,4 @@ var deps = {
   reduce: _reduce,
 };
 
-exports.default = deps;
+module.exports = deps;

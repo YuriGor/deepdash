@@ -10,4 +10,4 @@ var deps = {
   isEmpty: _isEmpty,
 };
 
-exports.default = deps;
+module.exports = deps;
