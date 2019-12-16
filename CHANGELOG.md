@@ -1,5 +1,10 @@
 # Change Log
 
+## v4-4-0
+*(2019-12-16)*
+**Features added**
+- `message` field (if exists) of error thrown by iteratee will be appended by current path, to speed up debug.
+
 ## v4-3-0
 *(2019-12-7)*
 
