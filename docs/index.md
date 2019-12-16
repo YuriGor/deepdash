@@ -1,6 +1,6 @@
 # Deepdash
 
-> v4.3.0 - [see changes](/changelog#v4-3-0)
+> v4.4.0 - [see changes](/changelog#v4-4-0)
 
 Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree traversal extension for Lodash.
 
