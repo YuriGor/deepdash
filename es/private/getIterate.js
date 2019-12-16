@@ -75,7 +75,16 @@ export default function getIterate(_) {
             : pathToString(childrenPath);
         context.childrenPath = currentObj.childrenPath;
       }
-      res = callback(value, key, parent && parent.value, context);
+      try {
+        res = callback(value, key, parent && parent.value, context);
+      } catch (err) {
+        if (err.message) {
+          err.message += `
+callback failed before deep iterate at:
+${context.path}`;
+        }
+        throw err;
+      }
     }
     if (!options.break && res !== false && !isCircular && _.isObject(value)) {
       if (options.childrenPath !== undefined) {
@@ -134,7 +143,16 @@ export default function getIterate(_) {
     }
     if (options.callbackAfterIterate && needCallback) {
       context.afterIterate = true;
-      callback(value, key, parent && parent.value, context);
+      try {
+        callback(value, key, parent && parent.value, context);
+      } catch (err) {
+        if (err.message) {
+          err.message += `
+callback failed after deep iterate at:
+${context.path}`;
+        }
+        throw err;
+      }
     }
   }
   return iterate;

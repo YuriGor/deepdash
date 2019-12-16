@@ -135,7 +135,14 @@ var deepdash = (function () {
               : pathToString(childrenPath);
           context.childrenPath = currentObj.childrenPath;
         }
-        res = callback(value, key, parent && parent.value, context);
+        try {
+          res = callback(value, key, parent && parent.value, context);
+        } catch (err) {
+          if (err.message) {
+            err.message += "\ncallback failed before deep iterate at:\n" + (context.path);
+          }
+          throw err;
+        }
       }
       if (!options.break && res !== false && !isCircular && _.isObject(value)) {
         if (options.childrenPath !== undefined) {
@@ -194,7 +201,14 @@ var deepdash = (function () {
       }
       if (options.callbackAfterIterate && needCallback) {
         context.afterIterate = true;
-        callback(value, key, parent && parent.value, context);
+        try {
+          callback(value, key, parent && parent.value, context);
+        } catch (err) {
+          if (err.message) {
+            err.message += "\ncallback failed after deep iterate at:\n" + (context.path);
+          }
+          throw err;
+        }
       }
     }
     return iterate;
