@@ -77,7 +77,7 @@ var deepdash = (function () {
       obj,
       childrenPath
     ) {
-      if (options.break) { return; }
+      if (options['break']) { return; }
       var currentObj = {
         value: value,
         key: key,
@@ -124,7 +124,7 @@ var deepdash = (function () {
           circularParentIndex: circularParentIndex,
           isLeaf: isLeaf,
           "break": function () {
-            options.break = true;
+            options['break'] = true;
             return false;
           },
         };
@@ -144,7 +144,12 @@ var deepdash = (function () {
           throw err;
         }
       }
-      if (!options.break && res !== false && !isCircular && _.isObject(value)) {
+      if (
+        !options['break'] &&
+        res !== false &&
+        !isCircular &&
+        _.isObject(value)
+      ) {
         if (options.childrenPath !== undefined) {
           function forChildren(children, cp) {
             if (children && _.isObject(children)) {
