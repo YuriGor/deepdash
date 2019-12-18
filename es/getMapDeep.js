@@ -9,7 +9,7 @@ export default function getMapDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        delete context.break;
+        delete context['break'];
         var r = iteratee(value, key, parent, context);
         if (key === undefined) {
           res = r;

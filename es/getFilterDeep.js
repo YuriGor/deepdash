@@ -93,7 +93,7 @@ export default function getFilterDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        delete context.break;
+        delete context['break'];
         var curPath = pathToString(context.path);
         if (!context.afterIterate) {
           if (!context.isCircular) {

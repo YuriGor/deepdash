@@ -544,7 +544,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context.break;
+          delete context['break'];
           var curPath = pathToString(context.path);
           if (!context.afterIterate) {
             if (!context.isCircular) {
@@ -829,7 +829,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context.break;
+          delete context['break'];
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;
@@ -858,7 +858,7 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context.break;
+          delete context['break'];
           var r = iteratee(value, key, parent, context);
           if (key === undefined) {
             res = r;
