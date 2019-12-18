@@ -19,7 +19,7 @@ function getIterate(_) {
     obj,
     childrenPath
   ) {
-    if (options.break) { return; }
+    if (options['break']) { return; }
     var currentObj = {
       value: value,
       key: key,
@@ -66,7 +66,7 @@ function getIterate(_) {
         circularParentIndex: circularParentIndex,
         isLeaf: isLeaf,
         "break": function () {
-          options.break = true;
+          options['break'] = true;
           return false;
         },
       };
@@ -86,7 +86,12 @@ function getIterate(_) {
         throw err;
       }
     }
-    if (!options.break && res !== false && !isCircular && _.isObject(value)) {
+    if (
+      !options['break'] &&
+      res !== false &&
+      !isCircular &&
+      _.isObject(value)
+    ) {
       if (options.childrenPath !== undefined) {
         function forChildren(children, cp) {
           if (children && _.isObject(children)) {
