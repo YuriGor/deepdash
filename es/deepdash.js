@@ -8,11 +8,15 @@ import addExists from './addExists';
 import addCondense from './addCondense';
 import addCondenseDeep from './addCondenseDeep';
 import addFilterDeep from './addFilterDeep';
+import addFindDeep from './addFindDeep';
+import addFindPathDeep from './addFindPathDeep';
+import addFindValueDeep from './addFindValueDeep';
 import addOmitDeep from './addOmitDeep';
 import addPickDeep from './addPickDeep';
 import addObtain from './addObtain';
 import addPathMatches from './addPathMatches';
 import addReduceDeep from './addReduceDeep';
+import addSomeDeep from './addSomeDeep';
 import addMapDeep from './addMapDeep';
 
 export default function apply(_) {
@@ -26,11 +30,15 @@ export default function apply(_) {
   addCondense(_);
   addCondenseDeep(_);
   addFilterDeep(_);
+  addFindPathDeep(_);
+  addFindValueDeep(_);
+  addFindDeep(_);
   addOmitDeep(_);
   addPickDeep(_);
   addObtain(_);
   addPathMatches(_);
   addReduceDeep(_);
+  addSomeDeep(_);
   addMapDeep(_);
   return _;
 }

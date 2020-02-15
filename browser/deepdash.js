@@ -689,6 +689,88 @@ var deepdash = (function () {
     return mixOrPatchIn('filterDeep', getFilterDeep(_));
   }
 
+  function getFindDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function findDeep(obj, predicate, options) {
+      predicate = _.iteratee(predicate);
+      if (!options) {
+        options = {};
+      } else {
+        options = _.cloneDeep(options);
+        if (options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
+      }
+
+      options = _.merge(
+        {
+          checkCircular: false,
+          leavesOnly: options.childrenPath === undefined,
+          pathFormat: 'string',
+        },
+        options
+      );
+
+      var eachDeepOptions = {
+        pathFormat: options.pathFormat,
+        checkCircular: options.checkCircular,
+        childrenPath: options.childrenPath,
+        includeRoot: options.includeRoot,
+        callbackAfterIterate: false,
+        leavesOnly: options.leavesOnly,
+      };
+
+      var res;
+
+      eachDeep(
+        obj,
+        function (value, key, parent, context) {
+          if (predicate(value, key, parent, context)) {
+            res = { value: value, key: key, parent: parent, context: context };
+            return context.break();
+          }
+        },
+        eachDeepOptions
+      );
+      return res;
+    }
+    return findDeep;
+  }
+
+  function addFindDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findDeep', getFindDeep(_));
+  }
+
+  function getFindPathDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findPathDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.context.path;
+    }
+    return findPathDeep;
+  }
+
+  function addFindDeep$1(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findPathDeep', getFindPathDeep(_));
+  }
+
+  function getFindValueDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findValueDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.value;
+    }
+    return findValueDeep;
+  }
+
+  function addFindDeep$2(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findValueDeep', getFindValueDeep(_));
+  }
+
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
     function pathMatches(path, paths) {
@@ -849,6 +931,19 @@ var deepdash = (function () {
     return mixOrPatchIn('reduceDeep', getReduceDeep(_));
   }
 
+  function getSomeDeep(_) {
+    var findDeep = getFindDeep(_);
+    function someDeep(obj, predicate, options) {
+      return !!findDeep(obj, predicate, options);
+    }
+    return someDeep;
+  }
+
+  function addFindDeep$3(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('someDeep', getSomeDeep(_));
+  }
+
   function getMapDeep(_) {
     var eachDeep = getEachDeep(_);
 
@@ -889,11 +984,15 @@ var deepdash = (function () {
     addCondense(_);
     addCondenseDeep(_);
     addFilterDeep(_);
+    addFindDeep$1(_);
+    addFindDeep$2(_);
+    addFindDeep(_);
     addOmitDeep(_);
     addPickDeep(_);
     addObtain(_);
     addPathMatches(_);
     addReduceDeep(_);
+    addFindDeep$3(_);
     addMapDeep(_);
     return _;
   }
