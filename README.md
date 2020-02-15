@@ -327,7 +327,7 @@ let children = [
 [Try it yourself ›››](https://codepen.io/yurigor/pen/BeBEqx?editors=0010)
 
 ### filterDeep
-› deep filter object [📚 see docs](https://deepdash.io/#filterdeep))
+› deep filter object [📚 see docs](https://deepdash.io/#filterdeep)
 <details>
   <summary>expand example</summary>
 
@@ -542,7 +542,7 @@ let children = [
 [Try it yourself ›››](https://codepen.io/yurigor/pen/eaOaQg?editors=0010)
 
 ### findDeep
-› find first matching deep meta-value [📚 see docs](https://deepdash.io/#finddeep))
+› find first matching deep meta-value [📚 see docs](https://deepdash.io/#finddeep)
 <details>
   <summary>example a bit later</summary>
 
@@ -571,7 +571,7 @@ let children = [
 [Try it yourself ›››](http://localhost/)
 
 ### findValueDeep
-› find first matching deep value [📚 see docs](https://deepdash.io/#findvaluedeep))
+› find first matching deep value [📚 see docs](https://deepdash.io/#findvaluedeep)
 <details>
   <summary>example a bit later</summary>
 
@@ -600,7 +600,7 @@ let children = [
 [Try it yourself ›››](http://localhost/)
 
 ### findPathDeep
-› find the path of the first matching deep value [📚 see docs](https://deepdash.io/#findpathdeep))
+› find the path of the first matching deep value [📚 see docs](https://deepdash.io/#findpathdeep)
 <details>
   <summary>example a bit later</summary>
 
@@ -665,7 +665,7 @@ let children = [
 [Try it yourself ›››](https://codepen.io/yurigor/pen/ZNzmmR?editors=0010)
 
 ### someDeep
-› returns true if some matching deep value found  [📚 see docs](https://deepdash.io/#somedeep))
+› returns true if some matching deep value found  [📚 see docs](https://deepdash.io/#somedeep)
 <details>
   <summary>example a bit later</summary>
 
