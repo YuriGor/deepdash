@@ -1,0 +1,1 @@
+export type Path = Array<string | number | undefined> | string | undefined;
