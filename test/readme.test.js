@@ -13,6 +13,7 @@ forLodashes(
     'paths',
     'keysDeep',
     'filterDeep',
+    'findDeep',
     'condense',
     'condenseDeep',
     'exists',

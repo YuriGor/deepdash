@@ -5012,6 +5012,137 @@ var deepdash = (function (exports) {
     return baseClone(value, CLONE_DEEP_FLAG$1 | CLONE_SYMBOLS_FLAG$2);
   }
 
+  /** Used to compose bitmasks for cloning. */
+  var CLONE_DEEP_FLAG$2 = 1;
+
+  /**
+   * Creates a function that invokes `func` with the arguments of the created
+   * function. If `func` is a property name, the created function returns the
+   * property value for a given element. If `func` is an array or object, the
+   * created function returns `true` for elements that contain the equivalent
+   * source properties, otherwise it returns `false`.
+   *
+   * @static
+   * @since 4.0.0
+   * @memberOf _
+   * @category Util
+   * @param {*} [func=_.identity] The value to convert to a callback.
+   * @returns {Function} Returns the callback.
+   * @example
+   *
+   * var users = [
+   *   { 'user': 'barney', 'age': 36, 'active': true },
+   *   { 'user': 'fred',   'age': 40, 'active': false }
+   * ];
+   *
+   * // The `_.matches` iteratee shorthand.
+   * _.filter(users, _.iteratee({ 'user': 'barney', 'active': true }));
+   * // => [{ 'user': 'barney', 'age': 36, 'active': true }]
+   *
+   * // The `_.matchesProperty` iteratee shorthand.
+   * _.filter(users, _.iteratee(['user', 'fred']));
+   * // => [{ 'user': 'fred', 'age': 40 }]
+   *
+   * // The `_.property` iteratee shorthand.
+   * _.map(users, _.iteratee('user'));
+   * // => ['barney', 'fred']
+   *
+   * // Create custom iteratee shorthands.
+   * _.iteratee = _.wrap(_.iteratee, function(iteratee, func) {
+   *   return !_.isRegExp(func) ? iteratee(func) : function(string) {
+   *     return func.test(string);
+   *   };
+   * });
+   *
+   * _.filter(['abc', 'def'], /ef/);
+   * // => ['def']
+   */
+  function iteratee(func) {
+    return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG$2));
+  }
+
+  var deps$9 = merge(
+    {
+      iteratee: iteratee,
+      cloneDeep: cloneDeep,
+      merge: merge,
+    },
+    deps$3
+  );
+
+  function getFindDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function findDeep(obj, predicate, options) {
+      predicate = _.iteratee(predicate);
+      if (!options) {
+        options = {};
+      } else {
+        options = _.cloneDeep(options);
+        if (options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
+      }
+
+      options = _.merge(
+        {
+          checkCircular: false,
+          leavesOnly: options.childrenPath === undefined,
+          pathFormat: 'string',
+        },
+        options
+      );
+
+      var eachDeepOptions = {
+        pathFormat: options.pathFormat,
+        checkCircular: options.checkCircular,
+        childrenPath: options.childrenPath,
+        includeRoot: options.includeRoot,
+        callbackAfterIterate: false,
+        leavesOnly: options.leavesOnly,
+      };
+
+      var res;
+
+      eachDeep(
+        obj,
+        function (value, key, parent, context) {
+          if (predicate(value, key, parent, context)) {
+            res = { value: value, key: key, parent: parent, context: context };
+            return context.break();
+          }
+        },
+        eachDeepOptions
+      );
+      return res;
+    }
+    return findDeep;
+  }
+
+  var findDeep = getFindDeep(deps$9);
+
+  function getFindPathDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findPathDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.context.path;
+    }
+    return findPathDeep;
+  }
+
+  var findPathDeep = getFindPathDeep(deps$9);
+
+  function getFindValueDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findValueDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.value;
+    }
+    return findValueDeep;
+  }
+
+  var findValueDeep = getFindValueDeep(deps$9);
+
   /**
    * Iterates over elements of `collection` and invokes `iteratee` for each element.
    * The iteratee is invoked with three arguments: (value, index|key, collection).
@@ -5353,58 +5484,9 @@ var deepdash = (function (exports) {
     return object == null ? true : baseUnset(object, path);
   }
 
-  /** Used to compose bitmasks for cloning. */
-  var CLONE_DEEP_FLAG$2 = 1;
+  var deps$a = { get: get };
 
-  /**
-   * Creates a function that invokes `func` with the arguments of the created
-   * function. If `func` is a property name, the created function returns the
-   * property value for a given element. If `func` is an array or object, the
-   * created function returns `true` for elements that contain the equivalent
-   * source properties, otherwise it returns `false`.
-   *
-   * @static
-   * @since 4.0.0
-   * @memberOf _
-   * @category Util
-   * @param {*} [func=_.identity] The value to convert to a callback.
-   * @returns {Function} Returns the callback.
-   * @example
-   *
-   * var users = [
-   *   { 'user': 'barney', 'age': 36, 'active': true },
-   *   { 'user': 'fred',   'age': 40, 'active': false }
-   * ];
-   *
-   * // The `_.matches` iteratee shorthand.
-   * _.filter(users, _.iteratee({ 'user': 'barney', 'active': true }));
-   * // => [{ 'user': 'barney', 'age': 36, 'active': true }]
-   *
-   * // The `_.matchesProperty` iteratee shorthand.
-   * _.filter(users, _.iteratee(['user', 'fred']));
-   * // => [{ 'user': 'fred', 'age': 40 }]
-   *
-   * // The `_.property` iteratee shorthand.
-   * _.map(users, _.iteratee('user'));
-   * // => ['barney', 'fred']
-   *
-   * // Create custom iteratee shorthands.
-   * _.iteratee = _.wrap(_.iteratee, function(iteratee, func) {
-   *   return !_.isRegExp(func) ? iteratee(func) : function(string) {
-   *     return func.test(string);
-   *   };
-   * });
-   *
-   * _.filter(['abc', 'def'], /ef/);
-   * // => ['def']
-   */
-  function iteratee(func) {
-    return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG$2));
-  }
-
-  var deps$9 = { get: get };
-
-  var deps$a = merge(
+  var deps$b = merge(
     {
       merge: merge,
       clone: clone,
@@ -5421,7 +5503,7 @@ var deepdash = (function (exports) {
     },
     deps$3,
     deps,
-    deps$9,
+    deps$a,
     deps$8,
     deps$6
   );
@@ -5665,7 +5747,7 @@ var deepdash = (function (exports) {
     return filterDeep;
   }
 
-  var filterDeep = getFilterDeep(deps$a);
+  var filterDeep = getFilterDeep(deps$b);
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -5734,7 +5816,7 @@ var deepdash = (function (exports) {
     return baseSlice(array, n < 0 ? 0 : n, length);
   }
 
-  var deps$b = merge(
+  var deps$c = merge(
     {
       isString: isString,
       isArray: _isArray,
@@ -5746,7 +5828,7 @@ var deepdash = (function (exports) {
     deps
   );
 
-  var deps$c = merge({ merge: merge }, deps$b, deps$a);
+  var deps$d = merge({ merge: merge }, deps$c, deps$b);
 
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
@@ -5844,9 +5926,9 @@ var deepdash = (function (exports) {
     return omitDeep;
   }
 
-  var omitDeep = getOmitDeep(deps$c);
+  var omitDeep = getOmitDeep(deps$d);
 
-  var deps$d = merge({ merge: merge }, deps$c);
+  var deps$e = merge({ merge: merge }, deps$d);
 
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
@@ -5863,13 +5945,13 @@ var deepdash = (function (exports) {
     return pickDeep;
   }
 
-  var pickDeep = getPickDeep(deps$d);
+  var pickDeep = getPickDeep(deps$e);
 
-  var obtain = getObtain(deps$9);
+  var obtain = getObtain(deps$a);
 
-  var pathMatches = getPathMatches(deps$b);
+  var pathMatches = getPathMatches(deps$c);
 
-  var deps$e = merge(
+  var deps$f = merge(
     {
       iteratee: iteratee,
     },
@@ -5900,9 +5982,19 @@ var deepdash = (function (exports) {
     return reduceDeep;
   }
 
-  var reduceDeep = getReduceDeep(deps$e);
+  var reduceDeep = getReduceDeep(deps$f);
 
-  var deps$f = merge(
+  function getSomeDeep(_) {
+    var findDeep = getFindDeep(_);
+    function someDeep(obj, predicate, options) {
+      return !!findDeep(obj, predicate, options);
+    }
+    return someDeep;
+  }
+
+  var someDeep = getSomeDeep(deps$9);
+
+  var deps$g = merge(
     {
       iteratee: iteratee,
       isArray: isArray,
@@ -5937,13 +6029,16 @@ var deepdash = (function (exports) {
     return mapDeep;
   }
 
-  var mapDeep = getMapDeep(deps$f);
+  var mapDeep = getMapDeep(deps$g);
 
   exports.condense = condense;
   exports.condenseDeep = condenseDeep;
   exports.eachDeep = eachDeep;
   exports.exists = exists;
   exports.filterDeep = filterDeep;
+  exports.findDeep = findDeep;
+  exports.findPathDeep = findPathDeep;
+  exports.findValueDeep = findValueDeep;
   exports.forEachDeep = forEachDeep;
   exports.index = index;
   exports.keysDeep = keysDeep;
@@ -5955,6 +6050,7 @@ var deepdash = (function (exports) {
   exports.paths = paths;
   exports.pickDeep = pickDeep;
   exports.reduceDeep = reduceDeep;
+  exports.someDeep = someDeep;
 
   return exports;
 
