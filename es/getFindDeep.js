@@ -39,7 +39,7 @@ export default function getFindDeep(_) {
       (value, key, parent, context) => {
         if (predicate(value, key, parent, context)) {
           res = { value, key, parent, context };
-          return context.break();
+          return context['break']();
         }
       },
       eachDeepOptions

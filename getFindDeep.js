@@ -41,7 +41,7 @@ function getFindDeep(_) {
       function (value, key, parent, context) {
         if (predicate(value, key, parent, context)) {
           res = { value: value, key: key, parent: parent, context: context };
-          return context.break();
+          return context['break']();
         }
       },
       eachDeepOptions
