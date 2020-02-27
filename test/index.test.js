@@ -7,6 +7,8 @@ const chai = require('chai'),
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
+chai.use(require('chai-string'));
+
 var { demo, circular, children } = require('./object');
 var { forLodashes } = require('./common.js');
 forLodashes(['index'], (_) => {

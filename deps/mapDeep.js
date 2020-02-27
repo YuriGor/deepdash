@@ -2,7 +2,7 @@
 
 var _merge = require('lodash/merge');
 var _isObject = require('lodash/isObject');
-var __chunk_8 = require('./eachDeep.js');
+var eachDeep$1 = require('./eachDeep.js');
 var _clone = require('lodash/clone');
 var _set = require('lodash/set');
 var _iteratee = require('lodash/iteratee');
@@ -16,7 +16,7 @@ var deps = _merge(
     clone: _clone,
     set: _set,
   },
-  __chunk_8.default
+  eachDeep$1
 );
 
-exports.default = deps;
+module.exports = deps;

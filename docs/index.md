@@ -1,8 +1,10 @@
 # Deepdash
 
-> v4.2.0 - [see changes](/changelog#v4-2-0)
+> v4.5.0 - [see changes](/changelog#v4-5-0)
 
-Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree traversal extension for Lodash.
+eachDeep, filterDeep, findDeep, someDeep, omitDeep, pickDeep, keysDeep etc..
+Tree traversal library written in Underscore/Lodash fashion.
+Standalone or as a Lodash mixin extension
 
 ## List of Methods
 
@@ -11,13 +13,18 @@ Looking for eachDeep, filterDeep, omitDeep, pickDeep, keysDeep etc? Tree travers
 - [eachDeep](#eachdeep-foreachdeep) - (forEachDeep) iterate over all the children and sub-children
 - [exists](#exists) - like a `_.has` but returns `false` for empty array slots
 - [filterDeep](#filterdeep) - deep filter object
+- [findDeep](/#finddeep) - returns first matching deep meta-value
+- [findValueDeep](/#findvaluedeep) - returns first matching deep value
+- [findPathDeep](/#findpathdeep) returns path of the first matching deep value
 - [index](#index) - get an object with all the paths as keys and corresponding values
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
 - [mapDeep](#mapdeep) - produce an object with the same structure but with values trasformed thru iteratee.
 - [reduceDeep](#reducedeep) - like reduce but deep
+- [someDeep](/#somedeep)  - returns true if found some matching deep value, otherwise false
 - [pickDeep](#pickdeep) - get object only with keys specified by names or regexes
 - [omitDeep](#omitdeep) - get object without keys specified by names or regexes
 - [pathToString](#pathtostring) - convert an array to string path (opposite to _.toPath)
+
 
 ### Installation
 #### In a browser
@@ -309,6 +316,7 @@ a callback function which will be invoked for each child of the object.
     - `obj` - source object
     - `depth` - current value's nesting level
     - `afterIterate` - this flag will be true if it's a second invocation of the `iteratee`. See `options.callbackAfterIterate` for details.
+    - `break` - method to abort the iteration, no matter how deep is process currently. Works in eachDeep/forEachDeep only, not supported by filterDeep etc.
 * next three fields are available if `options.checkCircular` was `true`, otherwise they will be `undefined`
     - `isCircular` - true if the current value is a circular reference.
     - `circularParent` - parent object from `parents` array referenced by current value or null if not `isCircular`.
@@ -611,6 +619,88 @@ Console:
 ]
 ```
 [Try it yourself ›››](https://codepen.io/yurigor/pen/wbwoqL?editors=0010)
+
+## findDeep
+
+Returns first matching deep meta-value
+```js
+_.findDeep( obj, predicate, options={
+    checkCircular: false,
+    leavesOnly: childrenPath!==undefined,
+    pathFormat: 'string',
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
+  }) => {value, key, parent, context}
+```
+* `obj` - The object/array to iterate over.
+* `predicate` - The predicate is invoked with same arguments as described in [iteratee subsection](#iteratee)
+    - If returns `true` - all the arguments passed into predicate will be returned as an object and search will be stopped.
+* `options`
+    - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
+    - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
+    - `leavesOnly` (options.childrenPath === undefined) - Call predicate for childless values only.
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into predicate, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+* `returns` - and object with found value, key, parent and context or undefined if nothing found
+
+*examples a bit later sorry*
+
+## findValueDeep
+
+Returns first matching deep value.
+```js
+_.findValueDeep( obj, predicate, options={
+    checkCircular: false,
+    leavesOnly: childrenPath!==undefined,
+    pathFormat: 'string',
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
+  }) => value | undefined
+```
+* `obj` - The object/array to iterate over.
+* `predicate` - The predicate is invoked with same arguments as described in [iteratee subsection](#iteratee)
+    - If returns `true` - the value passed into predicate will be returned and search will be stopped.
+* `options`
+    - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
+    - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
+    - `leavesOnly` (options.childrenPath === undefined) - Call predicate for childless values only.
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into predicate, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+* `returns` - found value or undefined if nothing found. Be carefull, deep value may also be undefined
+
+*examples a bit later sorry*
+
+## findPathDeep
+
+Returns the path of the first matching deep value.
+```js
+_.findPathDeep( obj, predicate, options={
+    checkCircular: false,
+    leavesOnly: childrenPath!==undefined,
+    pathFormat: 'string',
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
+  }) => path | undefined
+```
+* `obj` - The object/array to iterate over.
+* `predicate` - The predicate is invoked with same arguments as described in [iteratee subsection](#iteratee)
+    - If returns `true` - current path will be returned and search will be stopped.
+* `options`
+    - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
+    - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
+    - `leavesOnly` (options.childrenPath === undefined) - Call predicate for childless values only.
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into predicate, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+* `returns` - the path of the found value or undefined if nothing found. Be carefull, path may also be undefined for datasource object itself, if includeRoot == true
+
+*examples a bit later sorry*
+
 
 ## index
 
@@ -950,6 +1040,33 @@ _.reduceDeep( obj, iteratee, accumulator, options) => object
 ```
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/ZNzmmR?editors=0010)
+
+## someDeep
+
+Returns true if some matching deep value found otherwise returns false.
+```js
+_.someDeep( obj, predicate, options={
+    checkCircular: false,
+    leavesOnly: childrenPath!==undefined,
+    pathFormat: 'string',
+    includeRoot: !_.isArray(obj),
+    childrenPath: undefined,
+    rootIsChildren: !includeRoot && _.isArray(obj),
+  }) => boolean
+```
+* `obj` - The object/array to iterate over.
+* `predicate` - The predicate is invoked with same arguments as described in [iteratee subsection](#iteratee)
+    - If returns `true` for some deep value - true will be returned by someDeep and search will be stopped.
+* `options`
+    - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
+    - `pathFormat` ('string') - specifies `'string'` or `'array'` format of paths passed to the iteratee.
+    - `leavesOnly` (options.childrenPath === undefined) - Call predicate for childless values only.
+    - `includeRoot` (!_.isArray(obj)) - treat given object as a valid part of the tree, so it will be passed into iteratee with undefined key/path/parent. By default true if obj is not array.
+    - `childrenPath` (undefined) - children collection's field name, path or array of any of this. Only elements of such collections will be passed into predicate, if specified.
+    - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
+* `returns` - true if some deep value found or false if not.
+
+*examples a bit later sorry*
 
 ## pathToString
 

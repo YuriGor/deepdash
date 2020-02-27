@@ -4126,6 +4126,7 @@ var deepdash = (function (exports) {
       obj,
       childrenPath
     ) {
+      if (options['break']) { return; }
       var currentObj = {
         value: value,
         key: key,
@@ -4133,7 +4134,7 @@ var deepdash = (function (exports) {
         parent: parent,
       };
 
-      var currentParents = parents.concat(currentObj);
+      var currentParents = parents.concat( [currentObj]);
 
       var isCircular = undefined;
       var circularParentIndex = undefined;
@@ -4151,14 +4152,14 @@ var deepdash = (function (exports) {
         isCircular = circularParentIndex !== -1;
       }
       var res;
+      var isLeaf =
+        !_.isObject(value) ||
+        _.isEmpty(value) ||
+        isCircular ||
+        (options.childrenPath !== undefined &&
+          !hasChildren(value, options.childrenPath));
       var needCallback =
-        (depth || options.includeRoot) &&
-        (!options.leavesOnly ||
-          !_.isObject(value) ||
-          _.isEmpty(value) ||
-          isCircular ||
-          (options.childrenPath !== undefined &&
-            !hasChildren(value, options.childrenPath)));
+        (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
       // console.log('needCallback?', needCallback);
       if (needCallback) {
         var context = {
@@ -4170,6 +4171,11 @@ var deepdash = (function (exports) {
           isCircular: isCircular,
           circularParent: circularParent,
           circularParentIndex: circularParentIndex,
+          isLeaf: isLeaf,
+          "break": function () {
+            options['break'] = true;
+            return false;
+          },
         };
         if (options.childrenPath !== undefined) {
           currentObj.childrenPath =
@@ -4178,30 +4184,43 @@ var deepdash = (function (exports) {
               : pathToString(childrenPath);
           context.childrenPath = currentObj.childrenPath;
         }
-        res = callback(value, key, parent && parent.value, context);
-      }
-      function forChildren(children, cp) {
-        if (children && _.isObject(children)) {
-          _.forOwn(children, function(childValue, childKey) {
-            var childPath = (path || []).concat(cp || [], [childKey]);
-
-            iterate(
-              childValue,
-              callback,
-              options,
-              childKey,
-              childPath,
-              depth + 1,
-              currentObj,
-              currentParents,
-              obj,
-              cp
-            );
-          });
+        try {
+          res = callback(value, key, parent && parent.value, context);
+        } catch (err) {
+          if (err.message) {
+            err.message += "\ncallback failed before deep iterate at:\n" + (context.path);
+          }
+          throw err;
         }
       }
-      if (res !== false && !isCircular && _.isObject(value)) {
+      if (
+        !options['break'] &&
+        res !== false &&
+        !isCircular &&
+        _.isObject(value)
+      ) {
         if (options.childrenPath !== undefined) {
+          function forChildren(children, cp) {
+            if (children && _.isObject(children)) {
+              _.forOwn(children, function(childValue, childKey) {
+                var childPath = (path || []).concat( (cp || []), [childKey]);
+
+                iterate(
+                  childValue,
+                  callback,
+                  options,
+                  childKey,
+                  childPath,
+                  depth + 1,
+                  currentObj,
+                  currentParents,
+                  obj,
+                  cp
+                );
+              });
+            }
+          }
+
           if (!depth && options.rootIsChildren) {
             forChildren(value, undefined);
           } else {
@@ -4218,7 +4237,7 @@ var deepdash = (function (exports) {
               }
             }
 
-            var childPath = (path || []).concat([childKey]);
+            var childPath = (path || []).concat( [childKey]);
 
             iterate(
               childValue,
@@ -4236,7 +4255,14 @@ var deepdash = (function (exports) {
       }
       if (options.callbackAfterIterate && needCallback) {
         context.afterIterate = true;
-        callback(value, key, parent && parent.value, context);
+        try {
+          callback(value, key, parent && parent.value, context);
+        } catch (err) {
+          if (err.message) {
+            err.message += "\ncallback failed after deep iterate at:\n" + (context.path);
+          }
+          throw err;
+        }
       }
     }
     return iterate;
@@ -4986,6 +5012,137 @@ var deepdash = (function (exports) {
     return baseClone(value, CLONE_DEEP_FLAG$1 | CLONE_SYMBOLS_FLAG$2);
   }
 
+  /** Used to compose bitmasks for cloning. */
+  var CLONE_DEEP_FLAG$2 = 1;
+
+  /**
+   * Creates a function that invokes `func` with the arguments of the created
+   * function. If `func` is a property name, the created function returns the
+   * property value for a given element. If `func` is an array or object, the
+   * created function returns `true` for elements that contain the equivalent
+   * source properties, otherwise it returns `false`.
+   *
+   * @static
+   * @since 4.0.0
+   * @memberOf _
+   * @category Util
+   * @param {*} [func=_.identity] The value to convert to a callback.
+   * @returns {Function} Returns the callback.
+   * @example
+   *
+   * var users = [
+   *   { 'user': 'barney', 'age': 36, 'active': true },
+   *   { 'user': 'fred',   'age': 40, 'active': false }
+   * ];
+   *
+   * // The `_.matches` iteratee shorthand.
+   * _.filter(users, _.iteratee({ 'user': 'barney', 'active': true }));
+   * // => [{ 'user': 'barney', 'age': 36, 'active': true }]
+   *
+   * // The `_.matchesProperty` iteratee shorthand.
+   * _.filter(users, _.iteratee(['user', 'fred']));
+   * // => [{ 'user': 'fred', 'age': 40 }]
+   *
+   * // The `_.property` iteratee shorthand.
+   * _.map(users, _.iteratee('user'));
+   * // => ['barney', 'fred']
+   *
+   * // Create custom iteratee shorthands.
+   * _.iteratee = _.wrap(_.iteratee, function(iteratee, func) {
+   *   return !_.isRegExp(func) ? iteratee(func) : function(string) {
+   *     return func.test(string);
+   *   };
+   * });
+   *
+   * _.filter(['abc', 'def'], /ef/);
+   * // => ['def']
+   */
+  function iteratee(func) {
+    return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG$2));
+  }
+
+  var deps$9 = merge(
+    {
+      iteratee: iteratee,
+      cloneDeep: cloneDeep,
+      merge: merge,
+    },
+    deps$3
+  );
+
+  function getFindDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function findDeep(obj, predicate, options) {
+      predicate = _.iteratee(predicate);
+      if (!options) {
+        options = {};
+      } else {
+        options = _.cloneDeep(options);
+        if (options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
+      }
+
+      options = _.merge(
+        {
+          checkCircular: false,
+          leavesOnly: options.childrenPath === undefined,
+          pathFormat: 'string',
+        },
+        options
+      );
+
+      var eachDeepOptions = {
+        pathFormat: options.pathFormat,
+        checkCircular: options.checkCircular,
+        childrenPath: options.childrenPath,
+        includeRoot: options.includeRoot,
+        callbackAfterIterate: false,
+        leavesOnly: options.leavesOnly,
+      };
+
+      var res;
+
+      eachDeep(
+        obj,
+        function (value, key, parent, context) {
+          if (predicate(value, key, parent, context)) {
+            res = { value: value, key: key, parent: parent, context: context };
+            return context['break']();
+          }
+        },
+        eachDeepOptions
+      );
+      return res;
+    }
+    return findDeep;
+  }
+
+  var findDeep = getFindDeep(deps$9);
+
+  function getFindPathDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findPathDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.context.path;
+    }
+    return findPathDeep;
+  }
+
+  var findPathDeep = getFindPathDeep(deps$9);
+
+  function getFindValueDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findValueDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.value;
+    }
+    return findValueDeep;
+  }
+
+  var findValueDeep = getFindValueDeep(deps$9);
+
   /**
    * Iterates over elements of `collection` and invokes `iteratee` for each element.
    * The iteratee is invoked with three arguments: (value, index|key, collection).
@@ -5327,58 +5484,9 @@ var deepdash = (function (exports) {
     return object == null ? true : baseUnset(object, path);
   }
 
-  /** Used to compose bitmasks for cloning. */
-  var CLONE_DEEP_FLAG$2 = 1;
+  var deps$a = { get: get };
 
-  /**
-   * Creates a function that invokes `func` with the arguments of the created
-   * function. If `func` is a property name, the created function returns the
-   * property value for a given element. If `func` is an array or object, the
-   * created function returns `true` for elements that contain the equivalent
-   * source properties, otherwise it returns `false`.
-   *
-   * @static
-   * @since 4.0.0
-   * @memberOf _
-   * @category Util
-   * @param {*} [func=_.identity] The value to convert to a callback.
-   * @returns {Function} Returns the callback.
-   * @example
-   *
-   * var users = [
-   *   { 'user': 'barney', 'age': 36, 'active': true },
-   *   { 'user': 'fred',   'age': 40, 'active': false }
-   * ];
-   *
-   * // The `_.matches` iteratee shorthand.
-   * _.filter(users, _.iteratee({ 'user': 'barney', 'active': true }));
-   * // => [{ 'user': 'barney', 'age': 36, 'active': true }]
-   *
-   * // The `_.matchesProperty` iteratee shorthand.
-   * _.filter(users, _.iteratee(['user', 'fred']));
-   * // => [{ 'user': 'fred', 'age': 40 }]
-   *
-   * // The `_.property` iteratee shorthand.
-   * _.map(users, _.iteratee('user'));
-   * // => ['barney', 'fred']
-   *
-   * // Create custom iteratee shorthands.
-   * _.iteratee = _.wrap(_.iteratee, function(iteratee, func) {
-   *   return !_.isRegExp(func) ? iteratee(func) : function(string) {
-   *     return func.test(string);
-   *   };
-   * });
-   *
-   * _.filter(['abc', 'def'], /ef/);
-   * // => ['def']
-   */
-  function iteratee(func) {
-    return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG$2));
-  }
-
-  var deps$9 = { get: get };
-
-  var deps$a = merge(
+  var deps$b = merge(
     {
       merge: merge,
       clone: clone,
@@ -5395,7 +5503,7 @@ var deepdash = (function (exports) {
     },
     deps$3,
     deps,
-    deps$9,
+    deps$a,
     deps$8,
     deps$6
   );
@@ -5488,7 +5596,7 @@ var deepdash = (function (exports) {
         childrenPath: options.childrenPath,
         includeRoot: options.includeRoot,
         callbackAfterIterate: true,
-        leavesOnly: options.leavesOnly,
+        leavesOnly: false,
       };
 
       var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
@@ -5499,13 +5607,15 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context['break'];
           var curPath = pathToString(context.path);
           if (!context.afterIterate) {
             if (!context.isCircular) {
-              // console.log('fr: ', context.path);
-              var reply;
-              reply = predicate(value, key, parent, context);
-              // console.log(context.path + '?', reply);
+              // console.log(context.path, { leaf: context.isLeaf });
+              var reply =
+                !options.leavesOnly || context.isLeaf
+                  ? predicate(value, key, parent, context)
+                  : undefined;
 
               if (!_.isObject(reply)) {
                 if (reply === undefined) {
@@ -5519,22 +5629,19 @@ var deepdash = (function (exports) {
               if (reply.empty === undefined) {
                 reply.empty = true;
               }
+              // console.log(context.path + '?', reply);
               if (curPath !== undefined) {
                 replies[curPath] = reply;
 
-                _.eachRight(context.parents, function(parent) {
-                  var p = pathToString(parent.path);
-                  if (p !== undefined && !replies[p]) {
-                    replies[p] = {
-                      skipChildren: false,
-                      cloneDeep: false,
-                      keepIfEmpty: false,
-                      empty: reply.empty,
-                    };
-                  } else {
-                    return false;
-                  }
-                });
+                // _.eachRight(context.parents, function(parent) {
+                //   var p = pathToString(parent.path);
+                //   if (p !== undefined && !replies[p]) {
+                //     replies[p] = _.clone(options.onUndefined);
+                //     replies[p].empty = reply.empty;
+                //   } else {
+                //     return false;
+                //   }
+                // });
 
                 if (!rootReply) {
                   rootReply = {
@@ -5595,6 +5702,7 @@ var deepdash = (function (exports) {
               replies[curPath].empty &&
               !replies[curPath].keepIfEmpty
             ) {
+              // console.log('remove ' + context.path);
               _.unset(res, context.path);
             } else {
               _.eachRight(context.parents, function(parent) {
@@ -5607,7 +5715,6 @@ var deepdash = (function (exports) {
               });
               rootReply.empty = false;
             }
-
             // console.log('←', replies);
             return;
           }
@@ -5616,12 +5723,6 @@ var deepdash = (function (exports) {
       );
       if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
         res = null;
-      } else {
-        _.each(replies, function (reply, path) {
-          if (reply.empty && !reply.keepIfEmpty) {
-            _.unset(res, path);
-          }
-        });
       }
       _.each(foundCircular, function(c) {
         var cv;
@@ -5646,7 +5747,7 @@ var deepdash = (function (exports) {
     return filterDeep;
   }
 
-  var filterDeep = getFilterDeep(deps$a);
+  var filterDeep = getFilterDeep(deps$b);
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -5715,7 +5816,7 @@ var deepdash = (function (exports) {
     return baseSlice(array, n < 0 ? 0 : n, length);
   }
 
-  var deps$b = merge(
+  var deps$c = merge(
     {
       isString: isString,
       isArray: _isArray,
@@ -5727,7 +5828,7 @@ var deepdash = (function (exports) {
     deps
   );
 
-  var deps$c = merge({ merge: merge }, deps$b, deps$a);
+  var deps$d = merge({ merge: merge }, deps$c, deps$b);
 
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
@@ -5825,9 +5926,9 @@ var deepdash = (function (exports) {
     return omitDeep;
   }
 
-  var omitDeep = getOmitDeep(deps$c);
+  var omitDeep = getOmitDeep(deps$d);
 
-  var deps$d = merge({ merge: merge }, deps$c);
+  var deps$e = merge({ merge: merge }, deps$d);
 
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
@@ -5844,13 +5945,13 @@ var deepdash = (function (exports) {
     return pickDeep;
   }
 
-  var pickDeep = getPickDeep(deps$d);
+  var pickDeep = getPickDeep(deps$e);
 
-  var obtain = getObtain(deps$9);
+  var obtain = getObtain(deps$a);
 
-  var pathMatches = getPathMatches(deps$b);
+  var pathMatches = getPathMatches(deps$c);
 
-  var deps$e = merge(
+  var deps$f = merge(
     {
       iteratee: iteratee,
     },
@@ -5866,6 +5967,7 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context['break'];
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;
@@ -5880,9 +5982,19 @@ var deepdash = (function (exports) {
     return reduceDeep;
   }
 
-  var reduceDeep = getReduceDeep(deps$e);
+  var reduceDeep = getReduceDeep(deps$f);
 
-  var deps$f = merge(
+  function getSomeDeep(_) {
+    var findDeep = getFindDeep(_);
+    function someDeep(obj, predicate, options) {
+      return !!findDeep(obj, predicate, options);
+    }
+    return someDeep;
+  }
+
+  var someDeep = getSomeDeep(deps$9);
+
+  var deps$g = merge(
     {
       iteratee: iteratee,
       isArray: isArray,
@@ -5902,6 +6014,7 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
+          delete context['break'];
           var r = iteratee(value, key, parent, context);
           if (key === undefined) {
             res = r;
@@ -5916,13 +6029,16 @@ var deepdash = (function (exports) {
     return mapDeep;
   }
 
-  var mapDeep = getMapDeep(deps$f);
+  var mapDeep = getMapDeep(deps$g);
 
   exports.condense = condense;
   exports.condenseDeep = condenseDeep;
   exports.eachDeep = eachDeep;
   exports.exists = exists;
   exports.filterDeep = filterDeep;
+  exports.findDeep = findDeep;
+  exports.findPathDeep = findPathDeep;
+  exports.findValueDeep = findValueDeep;
   exports.forEachDeep = forEachDeep;
   exports.index = index;
   exports.keysDeep = keysDeep;
@@ -5934,6 +6050,7 @@ var deepdash = (function (exports) {
   exports.paths = paths;
   exports.pickDeep = pickDeep;
   exports.reduceDeep = reduceDeep;
+  exports.someDeep = someDeep;
 
   return exports;
 

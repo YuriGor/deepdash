@@ -12,4 +12,4 @@ var deps = {
   get: _get,
 };
 
-exports.default = deps;
+module.exports = deps;

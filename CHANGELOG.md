@@ -1,5 +1,33 @@
 # Change Log
 
+## v4-5-0
+*(2020-02-16)*
+
+**Features added**
+- [findDeep](/#finddeep) implemented - returns first meta-value {value, key, parent, context},
+iteratee agree with, if none - returns undefined.
+- [findValueDeep](/#findvaluedeep) implemented - returns first value,
+iteratee agree with, if none - returns undefined. Be carefull, some deep value may exists but also be `undefined`.
+- [findPathDeep](/#findpathdeep) implemented - returns first path,
+iteratee agree with, if none - returns undefined. Be carefull with `includeRoot`, object itself, passed as data source, also has path `undefined`.
+- [someDeep](/#somedeep) implemented - returns true if found some deep value,
+iteratee agree with, if none - return false (just shorthand wrapper for findDeep)
+
+## v4-4-0
+*(2019-12-16)*
+
+**Features added**
+- `message` field (if exists) of error thrown by iteratee will be appended by current path, to speed up debug.
+
+## v4-3-0
+*(2019-12-7)*
+
+**Features added**
+- [eachDeep](/#eachdeep-foreachdeep) now supports break.(as context.break function passed into iteratee)
+
+**Bugs fixed**
+- [filterDeep](/#filterdeep) didn't use onUndefined options for parents skipped due leavesOnly mode.
+
 ## v4-2-0
 *(2019-04-19)*
 

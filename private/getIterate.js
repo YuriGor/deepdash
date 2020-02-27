@@ -1,11 +1,11 @@
 'use strict';
 
 var getPathToString = require('../getPathToString.js');
-var __chunk_2 = require('./getHasChildren.js');
+var getHasChildren = require('./getHasChildren.js');
 
 function getIterate(_) {
   var pathToString = getPathToString(_);
-  var hasChildren = __chunk_2.default(_);
+  var hasChildren = getHasChildren(_);
   var _each = _.each || _.forArray;
   function iterate(
     value,
@@ -19,6 +19,7 @@ function getIterate(_) {
     obj,
     childrenPath
   ) {
+    if (options['break']) { return; }
     var currentObj = {
       value: value,
       key: key,
@@ -26,7 +27,7 @@ function getIterate(_) {
       parent: parent,
     };
 
-    var currentParents = parents.concat(currentObj);
+    var currentParents = parents.concat( [currentObj]);
 
     var isCircular = undefined;
     var circularParentIndex = undefined;
@@ -44,14 +45,14 @@ function getIterate(_) {
       isCircular = circularParentIndex !== -1;
     }
     var res;
+    var isLeaf =
+      !_.isObject(value) ||
+      _.isEmpty(value) ||
+      isCircular ||
+      (options.childrenPath !== undefined &&
+        !hasChildren(value, options.childrenPath));
     var needCallback =
-      (depth || options.includeRoot) &&
-      (!options.leavesOnly ||
-        !_.isObject(value) ||
-        _.isEmpty(value) ||
-        isCircular ||
-        (options.childrenPath !== undefined &&
-          !hasChildren(value, options.childrenPath)));
+      (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
     // console.log('needCallback?', needCallback);
     if (needCallback) {
       var context = {
@@ -63,6 +64,11 @@ function getIterate(_) {
         isCircular: isCircular,
         circularParent: circularParent,
         circularParentIndex: circularParentIndex,
+        isLeaf: isLeaf,
+        "break": function () {
+          options['break'] = true;
+          return false;
+        },
       };
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
@@ -71,30 +77,43 @@ function getIterate(_) {
             : pathToString(childrenPath);
         context.childrenPath = currentObj.childrenPath;
       }
-      res = callback(value, key, parent && parent.value, context);
-    }
-    function forChildren(children, cp) {
-      if (children && _.isObject(children)) {
-        _.forOwn(children, function(childValue, childKey) {
-          var childPath = (path || []).concat(cp || [], [childKey]);
-
-          iterate(
-            childValue,
-            callback,
-            options,
-            childKey,
-            childPath,
-            depth + 1,
-            currentObj,
-            currentParents,
-            obj,
-            cp
-          );
-        });
+      try {
+        res = callback(value, key, parent && parent.value, context);
+      } catch (err) {
+        if (err.message) {
+          err.message += "\ncallback failed before deep iterate at:\n" + (context.path);
+        }
+        throw err;
       }
     }
-    if (res !== false && !isCircular && _.isObject(value)) {
+    if (
+      !options['break'] &&
+      res !== false &&
+      !isCircular &&
+      _.isObject(value)
+    ) {
       if (options.childrenPath !== undefined) {
+        function forChildren(children, cp) {
+          if (children && _.isObject(children)) {
+            _.forOwn(children, function(childValue, childKey) {
+              var childPath = (path || []).concat( (cp || []), [childKey]);
+
+              iterate(
+                childValue,
+                callback,
+                options,
+                childKey,
+                childPath,
+                depth + 1,
+                currentObj,
+                currentParents,
+                obj,
+                cp
+              );
+            });
+          }
+        }
+
         if (!depth && options.rootIsChildren) {
           forChildren(value, undefined);
         } else {
@@ -111,7 +130,7 @@ function getIterate(_) {
             }
           }
 
-          var childPath = (path || []).concat([childKey]);
+          var childPath = (path || []).concat( [childKey]);
 
           iterate(
             childValue,
@@ -129,10 +148,17 @@ function getIterate(_) {
     }
     if (options.callbackAfterIterate && needCallback) {
       context.afterIterate = true;
-      callback(value, key, parent && parent.value, context);
+      try {
+        callback(value, key, parent && parent.value, context);
+      } catch (err) {
+        if (err.message) {
+          err.message += "\ncallback failed after deep iterate at:\n" + (context.path);
+        }
+        throw err;
+      }
     }
   }
   return iterate;
 }
 
-exports.default = getIterate;
+module.exports = getIterate;

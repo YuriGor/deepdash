@@ -1,0 +1,141 @@
+{
+  "projectName": "Deepdash",
+  "projectOwner": "YuriGor",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "raz-sinay",
+      "name": "Raz Sinay",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/15093043?v=4",
+      "profile": "https://github.com/raz-sinay",
+      "contributions": [
+        "code",
+        "userTesting",
+        "ideas"
+      ]
+    },
+    {
+      "login": "fgrandval",
+      "name": "Florent",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5641890?v=4",
+      "profile": "http://www.florent-grandval.fr",
+      "contributions": [
+        "bug",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "JoeSchr",
+      "name": "JoeSchr",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8218910?v=4",
+      "profile": "https://github.com/JoeSchr",
+      "contributions": [
+        "ideas",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "mattblackdev",
+      "name": "Matt Black",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/5210361?v=4",
+      "profile": "https://github.com/mattblackdev",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "simlu",
+      "name": "Lukas Siemon",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/1539747?v=4",
+      "profile": "https://github.com/simlu",
+      "contributions": [
+        "ideas",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "crapthings",
+      "name": "crapthings",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1147704?v=4",
+      "profile": "https://github.com/crapthings",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "masciugo",
+      "name": "Corrado Masciullo",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/454321?v=4",
+      "profile": "http://masciugo.github.io/",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "jedrichards",
+      "name": "Jed Richards",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/1078571?v=4",
+      "profile": "https://github.com/jedrichards",
+      "contributions": [
+        "infra"
+      ]
+    },
+    {
+      "login": "ArSn",
+      "name": "Kolja Zuelsdorf",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/2803693?v=4",
+      "profile": "https://github.com/ArSn",
+      "contributions": [
+        "bug",
+        "userTesting",
+        "example"
+      ]
+    },
+    {
+      "login": "novalagung",
+      "name": "Noval Agung Prayogo",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/982868?v=4",
+      "profile": "https://stackoverflow.com/users/1467988",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "MrKumaPants",
+      "name": "Nathan Tomsic",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/39394314?v=4",
+      "profile": "https://github.com/MrKumaPants",
+      "contributions": [
+        "ideas"
+      ]
+    },
+    {
+      "login": "madflow",
+      "name": "madflow",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/183248?v=4",
+      "profile": "https://github.com/madflow",
+      "contributions": [
+        "question"
+      ]
+    },
+    {
+      "login": "ventralnet",
+      "name": "Matthew Kirkley",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/686309?v=4",
+      "profile": "https://github.com/ventralnet",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

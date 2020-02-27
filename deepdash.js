@@ -5,6 +5,9 @@ var addCondenseDeep = require('./addCondenseDeep.js');
 var addEachDeep = require('./addEachDeep.js');
 var addExists = require('./addExists.js');
 var addFilterDeep = require('./addFilterDeep.js');
+var addFindDeep = require('./addFindDeep.js');
+var addFindPathDeep = require('./addFindPathDeep.js');
+var addFindValueDeep = require('./addFindValueDeep.js');
 var addForEachDeep = require('./addForEachDeep.js');
 var addIndex = require('./addIndex.js');
 var addKeysDeep = require('./addKeysDeep.js');
@@ -16,6 +19,7 @@ var addPathToString = require('./addPathToString.js');
 var addPaths = require('./addPaths.js');
 var addPickDeep = require('./addPickDeep.js');
 var addReduceDeep = require('./addReduceDeep.js');
+var addSomeDeep = require('./addSomeDeep.js');
 
 function apply(_) {
   addPathToString(_);
@@ -28,11 +32,15 @@ function apply(_) {
   addCondense(_);
   addCondenseDeep(_);
   addFilterDeep(_);
+  addFindPathDeep(_);
+  addFindValueDeep(_);
+  addFindDeep(_);
   addOmitDeep(_);
   addPickDeep(_);
   addObtain(_);
   addPathMatches(_);
   addReduceDeep(_);
+  addSomeDeep(_);
   addMapDeep(_);
   return _;
 }

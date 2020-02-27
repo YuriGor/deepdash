@@ -1,8 +1,8 @@
 'use strict';
 
 var getPathToString = require('./getPathToString.js');
-var __chunk_6 = require('./deps/pathToString.js');
+var pathToString$1 = require('./deps/pathToString.js');
 
-var pathToString = getPathToString(__chunk_6.default);
+var pathToString = getPathToString(pathToString$1);
 
 module.exports = pathToString;

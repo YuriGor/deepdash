@@ -84,7 +84,7 @@ function getFilterDeep(_) {
       childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
       callbackAfterIterate: true,
-      leavesOnly: options.leavesOnly,
+      leavesOnly: false,
     };
 
     var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
@@ -95,13 +95,15 @@ function getFilterDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
+        delete context['break'];
         var curPath = pathToString(context.path);
         if (!context.afterIterate) {
           if (!context.isCircular) {
-            // console.log('fr: ', context.path);
-            var reply;
-            reply = predicate(value, key, parent, context);
-            // console.log(context.path + '?', reply);
+            // console.log(context.path, { leaf: context.isLeaf });
+            var reply =
+              !options.leavesOnly || context.isLeaf
+                ? predicate(value, key, parent, context)
+                : undefined;
 
             if (!_.isObject(reply)) {
               if (reply === undefined) {
@@ -115,22 +117,19 @@ function getFilterDeep(_) {
             if (reply.empty === undefined) {
               reply.empty = true;
             }
+            // console.log(context.path + '?', reply);
             if (curPath !== undefined) {
               replies[curPath] = reply;
 
-              _.eachRight(context.parents, function(parent) {
-                var p = pathToString(parent.path);
-                if (p !== undefined && !replies[p]) {
-                  replies[p] = {
-                    skipChildren: false,
-                    cloneDeep: false,
-                    keepIfEmpty: false,
-                    empty: reply.empty,
-                  };
-                } else {
-                  return false;
-                }
-              });
+              // _.eachRight(context.parents, function(parent) {
+              //   var p = pathToString(parent.path);
+              //   if (p !== undefined && !replies[p]) {
+              //     replies[p] = _.clone(options.onUndefined);
+              //     replies[p].empty = reply.empty;
+              //   } else {
+              //     return false;
+              //   }
+              // });
 
               if (!rootReply) {
                 rootReply = {
@@ -191,6 +190,7 @@ function getFilterDeep(_) {
             replies[curPath].empty &&
             !replies[curPath].keepIfEmpty
           ) {
+            // console.log('remove ' + context.path);
             _.unset(res, context.path);
           } else {
             _.eachRight(context.parents, function(parent) {
@@ -203,7 +203,6 @@ function getFilterDeep(_) {
             });
             rootReply.empty = false;
           }
-
           // console.log('←', replies);
           return;
         }
@@ -212,12 +211,6 @@ function getFilterDeep(_) {
     );
     if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
       res = null;
-    } else {
-      _.each(replies, function (reply, path) {
-        if (reply.empty && !reply.keepIfEmpty) {
-          _.unset(res, path);
-        }
-      });
     }
     _.each(foundCircular, function(c) {
       var cv;

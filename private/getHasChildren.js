@@ -10,4 +10,4 @@ function getHasChildren(_) {
   return hasChildren;
 }
 
-exports.default = getHasChildren;
+module.exports = getHasChildren;

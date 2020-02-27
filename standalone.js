@@ -7,6 +7,9 @@ var condenseDeep = require('./condenseDeep.js');
 var eachDeep = require('./eachDeep.js');
 var exists = require('./exists.js');
 var filterDeep = require('./filterDeep.js');
+var findDeep = require('./findDeep.js');
+var findPathDeep = require('./findPathDeep.js');
+var findValueDeep = require('./findValueDeep.js');
 var forEachDeep = require('./forEachDeep.js');
 var index = require('./index.js');
 var paths = require('./paths.js');
@@ -18,6 +21,7 @@ var pathMatches = require('./pathMatches.js');
 var pathToString = require('./pathToString.js');
 var pickDeep = require('./pickDeep.js');
 var reduceDeep = require('./reduceDeep.js');
+var someDeep = require('./someDeep.js');
 
 
 
@@ -26,6 +30,9 @@ exports.condenseDeep = condenseDeep;
 exports.eachDeep = eachDeep;
 exports.exists = exists;
 exports.filterDeep = filterDeep;
+exports.findDeep = findDeep;
+exports.findPathDeep = findPathDeep;
+exports.findValueDeep = findValueDeep;
 exports.forEachDeep = forEachDeep;
 exports.index = index;
 exports.paths = paths;
@@ -37,3 +44,4 @@ exports.pathMatches = pathMatches;
 exports.pathToString = pathToString;
 exports.pickDeep = pickDeep;
 exports.reduceDeep = reduceDeep;
+exports.someDeep = someDeep;
