@@ -1,8 +1,8 @@
 'use strict';
 
 var getCondenseDeep = require('./getCondenseDeep.js');
-var __chunk_9 = require('./deps/condenseDeep.js');
+var condenseDeep$1 = require('./deps/condenseDeep.js');
 
-var condenseDeep = getCondenseDeep(__chunk_9.default);
+var condenseDeep = getCondenseDeep(condenseDeep$1);
 
 module.exports = condenseDeep;

@@ -1,9 +1,11 @@
 <img src="deepdash.svg?sanitize=true" width="64px"/>
 
 ## Deepdash
-Looking for deep version of forEach, filter, map, reduce, omit, pick, keys etc?
-Object/tree traversal extension for Lodash.
+eachDeep, filterDeep, findDeep, someDeep, omitDeep, pickDeep, keysDeep etc..
+Tree traversal library written in Underscore/Lodash fashion.
+Standalone or as a Lodash mixin extension
 
+[![All Contributors](https://img.shields.io/badge/all_contributors-13-orange.svg?style=flat-square)](#contributors-)
 [![Known Vulnerabilities](https://snyk.io/test/npm/deepdash/badge.svg)](https://snyk.io/test/npm/deepdash) [![Travis (.org)](https://api.travis-ci.org/YuriGor/deepdash.svg?branch=master)](https://travis-ci.org/YuriGor/deepdash) [![Coverage Status](https://coveralls.io/repos/github/YuriGor/deepdash/badge.svg?branch=master)](https://coveralls.io/github/YuriGor/deepdash?branch=master) <br>
 [![NPM](https://nodei.co/npm/deepdash.png?compact=true)](https://nodei.co/npm/deepdash/)
 
@@ -325,7 +327,7 @@ let children = [
 [Try it yourself ›››](https://codepen.io/yurigor/pen/BeBEqx?editors=0010)
 
 ### filterDeep
-› deep filter object [📚 see docs](https://deepdash.io/#filterdeep))
+› deep filter object [📚 see docs](https://deepdash.io/#filterdeep)
 <details>
   <summary>expand example</summary>
 
@@ -539,6 +541,93 @@ let children = [
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/eaOaQg?editors=0010)
 
+### findDeep
+› find first matching deep meta-value [📚 see docs](https://deepdash.io/#finddeep)
+<details>
+  <summary>example a bit later</summary>
+
+<details>
+  <summary> let children = [/* expand to see */];</summary>
+
+```js
+// next time
+```
+</details>
+
+```js
+// sorry
+```
+
+<details>
+  <summary>Console:</summary>
+
+```
+❤️
+
+```
+</details>
+</details>
+
+[Try it yourself ›››](http://localhost/)
+
+### findValueDeep
+› find first matching deep value [📚 see docs](https://deepdash.io/#findvaluedeep)
+<details>
+  <summary>example a bit later</summary>
+
+<details>
+  <summary> let children = [/* expand to see */];</summary>
+
+```js
+// next time
+```
+</details>
+
+```js
+// sorry
+```
+
+<details>
+  <summary>Console:</summary>
+
+```
+❤️
+
+```
+</details>
+</details>
+
+[Try it yourself ›››](http://localhost/)
+
+### findPathDeep
+› find the path of the first matching deep value [📚 see docs](https://deepdash.io/#findpathdeep)
+<details>
+  <summary>example a bit later</summary>
+
+<details>
+  <summary> let children = [/* expand to see */];</summary>
+
+```js
+// next time
+```
+</details>
+
+```js
+// sorry
+```
+
+<details>
+  <summary>Console:</summary>
+
+```
+❤️
+
+```
+</details>
+</details>
+
+[Try it yourself ›››](http://localhost/)
+
 ### mapDeep
 › get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
 <details>
@@ -574,6 +663,35 @@ let children = [
 </details>
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/ZNzmmR?editors=0010)
+
+### someDeep
+› returns true if some matching deep value found  [📚 see docs](https://deepdash.io/#somedeep)
+<details>
+  <summary>example a bit later</summary>
+
+<details>
+  <summary> let children = [/* expand to see */];</summary>
+
+```js
+// next time
+```
+</details>
+
+```js
+// sorry
+```
+
+<details>
+  <summary>Console:</summary>
+
+```
+❤️
+
+```
+</details>
+</details>
+
+[Try it yourself ›››](http://localhost/)
 
 ### pickDeep
 › pick values by paths specified by endings or regexes [📚 see docs](https://deepdash.io/#pickdeep)
@@ -1092,3 +1210,36 @@ Console:
 [Try it yourself ›››](https://codepen.io/yurigor/pen/joNXGv?editors=0010)
 
 ### See [full docs](https://deepdash.io) for details.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/raz-sinay"><img src="https://avatars3.githubusercontent.com/u/15093043?v=4" width="100px;" alt="Raz Sinay"/><br /><sub><b>Raz Sinay</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/commits?author=raz-sinay" title="Code">💻</a> <a href="#userTesting-raz-sinay" title="User Testing">📓</a> <a href="#ideas-raz-sinay" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://www.florent-grandval.fr"><img src="https://avatars3.githubusercontent.com/u/5641890?v=4" width="100px;" alt="Florent"/><br /><sub><b>Florent</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Afgrandval" title="Bug reports">🐛</a> <a href="#userTesting-fgrandval" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/JoeSchr"><img src="https://avatars3.githubusercontent.com/u/8218910?v=4" width="100px;" alt="JoeSchr"/><br /><sub><b>JoeSchr</b></sub></a><br /><a href="#ideas-JoeSchr" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-JoeSchr" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/mattblackdev"><img src="https://avatars3.githubusercontent.com/u/5210361?v=4" width="100px;" alt="Matt Black"/><br /><sub><b>Matt Black</b></sub></a><br /><a href="#ideas-mattblackdev" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/simlu"><img src="https://avatars1.githubusercontent.com/u/1539747?v=4" width="100px;" alt="Lukas Siemon"/><br /><sub><b>Lukas Siemon</b></sub></a><br /><a href="#ideas-simlu" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-simlu" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/crapthings"><img src="https://avatars2.githubusercontent.com/u/1147704?v=4" width="100px;" alt="crapthings"/><br /><sub><b>crapthings</b></sub></a><br /><a href="#ideas-crapthings" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://masciugo.github.io/"><img src="https://avatars2.githubusercontent.com/u/454321?v=4" width="100px;" alt="Corrado Masciullo"/><br /><sub><b>Corrado Masciullo</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Amasciugo" title="Bug reports">🐛</a> <a href="#ideas-masciugo" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/jedrichards"><img src="https://avatars0.githubusercontent.com/u/1078571?v=4" width="100px;" alt="Jed Richards"/><br /><sub><b>Jed Richards</b></sub></a><br /><a href="#infra-jedrichards" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    <td align="center"><a href="https://github.com/ArSn"><img src="https://avatars3.githubusercontent.com/u/2803693?v=4" width="100px;" alt="Kolja Zuelsdorf"/><br /><sub><b>Kolja Zuelsdorf</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3AArSn" title="Bug reports">🐛</a> <a href="#userTesting-ArSn" title="User Testing">📓</a> <a href="#example-ArSn" title="Examples">💡</a></td>
+    <td align="center"><a href="https://stackoverflow.com/users/1467988"><img src="https://avatars3.githubusercontent.com/u/982868?v=4" width="100px;" alt="Noval Agung Prayogo"/><br /><sub><b>Noval Agung Prayogo</b></sub></a><br /><a href="#question-novalagung" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/MrKumaPants"><img src="https://avatars3.githubusercontent.com/u/39394314?v=4" width="100px;" alt="Nathan Tomsic"/><br /><sub><b>Nathan Tomsic</b></sub></a><br /><a href="#ideas-MrKumaPants" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/madflow"><img src="https://avatars0.githubusercontent.com/u/183248?v=4" width="100px;" alt="madflow"/><br /><sub><b>madflow</b></sub></a><br /><a href="#question-madflow" title="Answering Questions">💬</a></td>
+    <td align="center"><a href="https://github.com/ventralnet"><img src="https://avatars3.githubusercontent.com/u/686309?v=4" width="100px;" alt="Matthew Kirkley"/><br /><sub><b>Matthew Kirkley</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Aventralnet" title="Bug reports">🐛</a> <a href="#ideas-ventralnet" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

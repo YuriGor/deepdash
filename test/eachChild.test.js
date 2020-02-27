@@ -93,6 +93,206 @@ forLodashes('eachDeep', (_) => {
     ]);
   });
 
+  it('children array - break', () => {
+    let visited = [];
+    let options = { childrenPath: 'children' };
+    _.eachDeep(
+      children,
+      (value, key, parent, ctx) => {
+        // console.log('@' + ctx.path);
+        validateIteration(value, key, parent, ctx, options);
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
+        }
+        if (ctx.parent) {
+          expect(ctx.path).to.be.a.string();
+        }
+        visited.push(ctx.path);
+        if (ctx.path == '[1].children[0].children[0]') return ctx.break();
+      },
+      options
+    );
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+  });
+
+  it('children array - path in error', () => {
+    let visited = [];
+    let options = { childrenPath: 'children' };
+    try {
+      _.eachDeep(
+        children,
+        (value, key, parent, ctx) => {
+          // console.log('@' + ctx.path);
+          validateIteration(value, key, parent, ctx, options);
+          if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+            expect(ctx.parent.childrenPath).to.be.a.string();
+          }
+          if (ctx.parent) {
+            expect(ctx.path).to.be.a.string();
+          }
+          visited.push(ctx.path);
+          if (ctx.path == '[1].children[0].children[0]') {
+            throw new Error('Enough!');
+          }
+        },
+        options
+      );
+    } catch (err) {
+      expect(err.message).to.equal(`Enough!
+callback failed before deep iterate at:
+[1].children[0].children[0]`);
+    }
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+
+    visited = [];
+    options = { childrenPath: 'children', callbackAfterIterate: true };
+    try {
+      _.eachDeep(
+        children,
+        (value, key, parent, ctx) => {
+          // console.log('@' + ctx.path);
+          if (!ctx.afterIterate) {
+            validateIteration(value, key, parent, ctx, options);
+            if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+              expect(ctx.parent.childrenPath).to.be.a.string();
+            }
+            if (ctx.parent) {
+              expect(ctx.path).to.be.a.string();
+            }
+            visited.push(ctx.path);
+          } else {
+            if (ctx.path == '[1].children[0].children[0]') {
+              throw new Error('Enough!');
+            }
+          }
+        },
+        options
+      );
+    } catch (err) {
+      expect(err.message).to.equal(`Enough!
+callback failed after deep iterate at:
+[1].children[0].children[0]`);
+    }
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+  });
+
+  it('children array - no path in not an error', () => {
+    let visited = [];
+    let options = { childrenPath: 'children' };
+    try {
+      _.eachDeep(
+        children,
+        (value, key, parent, ctx) => {
+          // console.log('@' + ctx.path);
+          validateIteration(value, key, parent, ctx, options);
+          if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+            expect(ctx.parent.childrenPath).to.be.a.string();
+          }
+          if (ctx.parent) {
+            expect(ctx.path).to.be.a.string();
+          }
+          visited.push(ctx.path);
+          if (ctx.path == '[1].children[0].children[0]') {
+            throw 'Enough!';
+          }
+        },
+        options
+      );
+    } catch (err) {
+      expect(err).to.equal('Enough!');
+    }
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+
+    visited = [];
+    options = { childrenPath: 'children', callbackAfterIterate: true };
+    try {
+      _.eachDeep(
+        children,
+        (value, key, parent, ctx) => {
+          // console.log('@' + ctx.path);
+          if (!ctx.afterIterate) {
+            validateIteration(value, key, parent, ctx, options);
+            if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+              expect(ctx.parent.childrenPath).to.be.a.string();
+            }
+            if (ctx.parent) {
+              expect(ctx.path).to.be.a.string();
+            }
+            visited.push(ctx.path);
+          } else {
+            if (ctx.path == '[1].children[0].children[0]') {
+              throw 'Enough!';
+            }
+          }
+        },
+        options
+      );
+    } catch (err) {
+      expect(err).to.equal('Enough!');
+    }
+    expect(visited).to.deep.equal([
+      // undefined,
+      '[0]',
+      '[0].children[0]',
+      '[0].children[0].children[0]',
+      '[0].children[0].children[1]',
+      '[0].children[1]',
+      '[0].children[1].children[0]',
+      '[0].children[1].children[1]',
+      '[1]',
+      '[1].children[0]',
+      '[1].children[0].children[0]',
+    ]);
+  });
+
   it('children array - include root', () => {
     let visited = [];
     let options = { childrenPath: 'children', includeRoot: true };

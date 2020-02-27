@@ -5,7 +5,7 @@ var isArray = require('./own/isArray.js');
 var _identity = require('lodash/identity');
 var _isString = require('lodash/isString');
 var _toPath = require('lodash/toPath');
-var __chunk_7 = require('./iterate.js');
+var iterate = require('./iterate.js');
 
 var deps = _merge(
   {
@@ -15,7 +15,7 @@ var deps = _merge(
     isString: _isString,
     toPath: _toPath,
   },
-  __chunk_7.default
+  iterate
 );
 
-exports.default = deps;
+module.exports = deps;

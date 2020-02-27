@@ -1,9 +1,9 @@
 'use strict';
 
-var __chunk_3 = require('./private/getIterate.js');
+var getIterate = require('./private/getIterate.js');
 
 function getEachDeep(_) {
-  var iterate = __chunk_3.default(_);
+  var iterate = getIterate(_);
 
   function eachDeep(obj, callback, options) {
     if (callback === undefined) { callback = _.identity; }

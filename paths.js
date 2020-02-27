@@ -1,8 +1,8 @@
 'use strict';
 
 var getPaths = require('./getPaths.js');
-var __chunk_14 = require('./deps/paths.js');
+var paths$1 = require('./deps/paths.js');
 
-var paths = getPaths(__chunk_14.default);
+var paths = getPaths(paths$1);
 
 module.exports = paths;

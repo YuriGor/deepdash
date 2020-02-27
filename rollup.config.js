@@ -26,7 +26,7 @@ export default [
     input: 'es/deepdash.js',
     output: {
       name: 'deepdash',
-      file: pkg.browser,
+      file: pkg.cdn,
       format: 'iife',
       esModule: false,
       sourcemap: true,
@@ -38,7 +38,7 @@ export default [
     input: 'es/deepdash.js',
     output: {
       name: 'deepdash',
-      file: pkg.browser.replace('.min.', '.'),
+      file: pkg.cdn.replace('.min.', '.'),
       format: 'iife',
       esModule: false,
       sourcemap: true,
@@ -50,7 +50,7 @@ export default [
     input: 'es/standalone.js',
     output: {
       name: 'deepdash',
-      file: pkg.browser.replace('.min.', '.standalone.'),
+      file: pkg.cdn.replace('.min.', '.standalone.'),
       format: 'iife',
       esModule: false,
       sourcemap: true,
@@ -62,7 +62,7 @@ export default [
     input: 'es/standalone.js',
     output: {
       name: 'deepdash',
-      file: pkg.browser.replace('.min.', '.standalone.min.'),
+      file: pkg.cdn.replace('.min.', '.standalone.min.'),
       format: 'iife',
       esModule: false,
       sourcemap: true,

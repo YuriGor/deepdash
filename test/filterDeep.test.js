@@ -32,6 +32,7 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
       let filtrate = _(demo)
         .filterDeep(isNS())
         .value();
+      // console.log(filtrate);
       expect(JSON.stringify(filtrate)).equal(
         '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
       );
@@ -464,7 +465,9 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
       condense: false,
     });
     // console.log(filtrate);
-    filtrate.should.deep.equal({ a: [, , { b: true }] });
+    let karrekt = { a: [, , { b: true }, 'x'] };
+    delete karrekt.a[3];
+    filtrate.should.deep.equal(karrekt);
   });
   it('replaceCircularBy', () => {
     let again = Symbol('[circular]');
@@ -491,7 +494,74 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
       .property('i[5][1][0].b.c.e')
       .and.equal(undefined);
   });
-
+  it('keep empty parents', () => {
+    let data = {
+      x: {
+        x: {},
+        y: ['aaaa', 'bbbb'],
+        a: 'aaaa',
+        b: 'bbbb',
+      },
+      y: [
+        'aaaa',
+        'bbbb',
+        {
+          x: {},
+          y: ['aaaa', 'bbbb'],
+          a: 'aaaa',
+          b: 'bbbb',
+        },
+      ],
+      a: 'aaaa',
+      b: 'bbbb',
+    };
+    let filtrate = _.filterDeep(
+      data,
+      (v) => (_.isString(v) ? v.includes('a') : undefined),
+      {
+        onUndefined: { keepIfEmpty: true },
+      }
+    );
+    expect(filtrate).to.deep.equal({
+      x: {
+        x: {},
+        y: ['aaaa'],
+        a: 'aaaa',
+      },
+      y: [
+        'aaaa',
+        {
+          x: {},
+          y: ['aaaa'],
+          a: 'aaaa',
+        },
+      ],
+      a: 'aaaa',
+    });
+    // console.log('---');
+    filtrate = _.filterDeep(
+      data,
+      (v, k, p, c) => {
+        // console.log(c.path, _.isString(v) ? v.includes('Ё') : undefined, v);
+        return _.isString(v) ? v.includes('Ё') : undefined;
+      },
+      {
+        onUndefined: { keepIfEmpty: true },
+      }
+    );
+    expect(filtrate).to.deep.equal({
+      x: {
+        x: {},
+        y: [],
+      },
+      y: [
+        {
+          x: {},
+          y: [],
+        },
+      ],
+    });
+  });
   it('keepUndefined', () => {
     let filtrate = _.filterDeep(
       demo,

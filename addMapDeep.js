@@ -1,10 +1,10 @@
 'use strict';
 
-var __chunk_1 = require('./private/getMixOrPatchIn.js');
+var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getMapDeep = require('./getMapDeep.js');
 
 function addMapDeep(_) {
-  var mixOrPatchIn = __chunk_1.default(_);
+  var mixOrPatchIn = getMixOrPatchIn(_);
   return mixOrPatchIn('mapDeep', getMapDeep(_));
 }
 

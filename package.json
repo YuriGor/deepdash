@@ -1,10 +1,11 @@
 {
   "name": "deepdash",
-  "version": "4.2.12",
+  "version": "4.5.2",
   "description": "➔ 𝐃eep standalone lib / 𝐋odash extension: ✓ eachDeep ✓ filterDeep ✓ mapDeep ✓ reduceDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ index ✓ condenseDeep ⋮ Parents stack ⋮ Circular check ⋮ Leaves only mode ⋮ Children mode ⋮ cherry-pick ⋮ esm",
   "main": "deepdash.js",
   "module": "es/standalone.js",
-  "browser": "browser/deepdash.min.js",
+  "jsdelivr": "browser/deepdash.min.js",
+  "cdn": "browser/deepdash.min.js",
   "directories": {
     "test": "test"
   },
@@ -15,10 +16,12 @@
     "test": "nyc mocha  --reporter min",
     "report": "npm run build && nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "nodemon ./node_modules/.bin/mocha -g 'pickDeep no mutation' --reporter min --no-deprecation",
+    "dev": "npm run build && ./node_modules/.bin/mocha -g 'someDeep' --reporter min --no-deprecation",
     "debug": "node --inspect-brk test/debugDeep.js",
     "demo": "serve",
-    "snyk-protect": "snyk protect"
+    "snyk-protect": "snyk protect",
+    "contributors:add": "all-contributors add",
+    "contributors:generate": "all-contributors generate"
   },
   "repository": {
     "type": "git",
@@ -56,33 +59,35 @@
   "bugs": {
     "url": "https://github.com/YuriGor/deepdash/issues"
   },
-  "homepage": "https://deepdash.io/",
+  "homepage": "https://deepdash.io",
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-conventional": "^8.1.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "all-contributors-cli": "^6.11.2",
     "chai": "*",
     "chai-asserttype": "*",
-    "coveralls": "^3.0.5",
-    "eslint": "^6.1.0",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "husky": "^3.0.2",
-    "mocha": "^6.2.0",
+    "chai-string": "^1.5.0",
+    "coveralls": "^3.0.9",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "husky": "^3.1.0",
+    "mocha": "^6.2.2",
     "nyc": "^14.1.1",
-    "prettier": "^1.18.2",
-    "rollup": "^1.18.0",
+    "prettier": "^1.19.1",
+    "rollup": "^1.27.10",
     "rollup-plugin-buble": "^0.19.8",
-    "rollup-plugin-commonjs": "^10.0.1",
+    "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-postprocess": "^1.0.2",
     "rollup-plugin-replace": "^2.2.0",
-    "rollup-plugin-terser": "^5.1.1",
-    "serve": "^11.1.0"
+    "rollup-plugin-terser": "^5.1.3",
+    "serve": "^11.2.0",
+    "snyk": "^1.258.2"
   },
   "dependencies": {
     "lodash": "^4.17.15",
-    "lodash-es": "^4.17.15",
-    "snyk": "^1.208.0"
+    "lodash-es": "^4.17.15"
   },
   "snyk": true
 }

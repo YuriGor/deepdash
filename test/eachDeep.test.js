@@ -31,6 +31,114 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString', 'obtain'], (_) => {
       '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","s","b","n","u","nl"]'
     );
   });
+  it('eachDeep break', () => {
+    let keys = [];
+    _.eachDeep(demo, (value, key, parent, ctx) => {
+      validateIteration(value, key, parent, ctx);
+      keys.push(key);
+      if (key == 'skip') return ctx.break();
+    });
+
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip"]'
+    );
+  });
+
+  it('eachDeep break for childs', () => {
+    let keys = [];
+    _.eachDeep(
+      demo,
+      (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx);
+        keys.push(key);
+        if (value.i == 3) return ctx.break();
+      },
+      { leavesOnly: false }
+    );
+
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3"]'
+    );
+  });
+
+  it('eachDeep - path in error', () => {
+    let keys = [];
+    try {
+      _.eachDeep(demo, (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx);
+        keys.push(key);
+        if (key == 'skip') throw new Error('Enough!');
+      });
+    } catch (err) {
+      expect(err.message).to.equal(`Enough!
+callback failed before deep iterate at:
+a.b.c.d[6].o.skip`);
+    }
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip"]'
+    );
+
+    keys = [];
+    try {
+      _.eachDeep(
+        demo,
+        (value, key, parent, ctx) => {
+          if (!ctx.afterIterate) {
+            validateIteration(value, key, parent, ctx);
+            keys.push(key);
+          } else {
+            if (key == 'skip') throw new Error('Enough!');
+          }
+        },
+        { callbackAfterIterate: true }
+      );
+    } catch (err) {
+      expect(err.message).to.equal(`Enough!
+callback failed after deep iterate at:
+a.b.c.d[6].o.skip`);
+    }
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","please","dont","go","here"]'
+    );
+  });
+
+  it('eachDeep - no path in not an error', () => {
+    let keys = [];
+    try {
+      _.eachDeep(demo, (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx);
+        keys.push(key);
+        if (key == 'skip') throw 'Enough!';
+      });
+    } catch (err) {
+      expect(err).to.equal(`Enough!`);
+    }
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip"]'
+    );
+
+    keys = [];
+    try {
+      _.eachDeep(
+        demo,
+        (value, key, parent, ctx) => {
+          if (!ctx.afterIterate) {
+            validateIteration(value, key, parent, ctx);
+            keys.push(key);
+          } else {
+            if (key == 'skip') throw 'Enough!';
+          }
+        },
+        { callbackAfterIterate: true }
+      );
+    } catch (err) {
+      expect(err).to.equal(`Enough!`);
+    }
+    expect(JSON.stringify(keys)).equal(
+      '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip","please","dont","go","here"]'
+    );
+  });
+
   if (!_.v) {
     it('Chaining', () => {
       let keys = [];
