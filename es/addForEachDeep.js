@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getEachDeep from './getEachDeep';
-
+import getForEachDeep from './getForEachDeep';
+//console.log('getForEachDeep',getForEachDeep.notChainable);
 export default function addForEachDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('forEachDeep', getEachDeep(_));
+  return mixOrPatchIn('forEachDeep', getForEachDeep(_), !getForEachDeep.notChainable);
 }

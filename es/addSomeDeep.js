@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
 import getSomeDeep from './getSomeDeep';
-
-export default function addFindDeep(_) {
+//console.log('getSomeDeep',getSomeDeep.notChainable);
+export default function addSomeDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('someDeep', getSomeDeep(_));
+  return mixOrPatchIn('someDeep', getSomeDeep(_), !getSomeDeep.notChainable);
 }

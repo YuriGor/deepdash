@@ -1,3 +1,3 @@
-import eachDeep from './eachDeep';
-const forEachDeep = eachDeep;
-export default forEachDeep;
+import deps from './deps/forEachDeep';
+import getForEachDeep from './getForEachDeep';
+export default getForEachDeep(deps);

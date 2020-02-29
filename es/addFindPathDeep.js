@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
 import getFindPathDeep from './getFindPathDeep';
-
-export default function addFindDeep(_) {
+//console.log('getFindPathDeep',getFindPathDeep.notChainable);
+export default function addFindPathDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('findPathDeep', getFindPathDeep(_));
+  return mixOrPatchIn('findPathDeep', getFindPathDeep(_), !getFindPathDeep.notChainable);
 }

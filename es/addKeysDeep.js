@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getPaths from './getPaths';
-
+import getKeysDeep from './getKeysDeep';
+//console.log('getKeysDeep',getKeysDeep.notChainable);
 export default function addKeysDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('keysDeep', getPaths(_));
+  return mixOrPatchIn('keysDeep', getKeysDeep(_), !getKeysDeep.notChainable);
 }

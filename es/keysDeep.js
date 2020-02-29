@@ -1,3 +1,3 @@
-import paths from './paths';
-const keysDeep = paths;
-export default keysDeep;
+import deps from './deps/keysDeep';
+import getKeysDeep from './getKeysDeep';
+export default getKeysDeep(deps);

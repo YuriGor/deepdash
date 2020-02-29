@@ -1,7 +1,7 @@
 import getMixOrPatchIn from './private/getMixOrPatchIn';
 import getFindValueDeep from './getFindValueDeep';
-
-export default function addFindDeep(_) {
+//console.log('getFindValueDeep',getFindValueDeep.notChainable);
+export default function addFindValueDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('findValueDeep', getFindValueDeep(_));
+  return mixOrPatchIn('findValueDeep', getFindValueDeep(_), !getFindValueDeep.notChainable);
 }

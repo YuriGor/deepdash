@@ -3,9 +3,10 @@
 var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getSomeDeep = require('./getSomeDeep.js');
 
-function addFindDeep(_) {
+//console.log('getSomeDeep',getSomeDeep.notChainable);
+function addSomeDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('someDeep', getSomeDeep(_));
+  return mixOrPatchIn('someDeep', getSomeDeep(_), !getSomeDeep.notChainable);
 }
 
-module.exports = addFindDeep;
+module.exports = addSomeDeep;

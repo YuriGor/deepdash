@@ -5,7 +5,7 @@ module.exports = function(methodsList) {
   let strExport = '';
   methodsList.forEach((methodName) => {
     let capMethodName = arstr.upFirst(methodName);
-    strImport += `import add${capMethodName} from './${capMethodName}';\n`;
+    strImport += `import add${capMethodName} from './add${capMethodName}';\n`;
     strExport += `  add${capMethodName}(_);\n`;
   });
 

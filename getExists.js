@@ -10,4 +10,6 @@ function getExists(_) {
   return exists;
 }
 
+getExists.notChainable = true;
+
 module.exports = getExists;

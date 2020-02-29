@@ -10,4 +10,6 @@ function getObtain(_) {
   return obtain;
 }
 
+getObtain.notChainable = true;
+
 module.exports = getObtain;

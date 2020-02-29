@@ -7,9 +7,6 @@ var deepdash = (function () {
         if (_.mixin) {
           var patch = {};
           patch[name] = method;
-          if (chain === undefined) {
-            chain = true;
-          }
           _.mixin(patch, { chain: chain });
         } else {
           _[name] = method;
@@ -46,10 +43,7 @@ var deepdash = (function () {
     return pathToString;
   }
 
-  function addPathToString(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('pathToString', getPathToString(_), false);
-  }
+  getPathToString.notChainable = true;
 
   function getHasChildren(_) {
     function hasChildren(obj, childrenPath) {
@@ -267,125 +261,162 @@ var deepdash = (function () {
     return eachDeep;
   }
 
-  function addEachDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('eachDeep', getEachDeep(_));
-  }
-
-  function addForEachDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('forEachDeep', getEachDeep(_));
-  }
-
-  function getIndex(_) {
+  function getFindDeep(_) {
     var eachDeep = getEachDeep(_);
 
-    function index(obj, options) {
+    function findDeep(obj, predicate, options) {
+      predicate = _.iteratee(predicate);
+      if (!options) {
+        options = {};
+      } else {
+        options = _.cloneDeep(options);
+        if (options.leafsOnly !== undefined) {
+          options.leavesOnly = options.leafsOnly;
+        }
+      }
+
       options = _.merge(
         {
           checkCircular: false,
-          includeCircularPath: true,
-          leavesOnly: !options || options.childrenPath === undefined,
-        },
-        options || {}
-      );
-      if (options && options.leafsOnly !== undefined) {
-        options.leavesOnly = options.leafsOnly;
-      }
-      var eachDeepOptions = {
-        pathFormat: 'string',
-        checkCircular: options.checkCircular,
-        includeRoot: options.includeRoot,
-        childrenPath: options.childrenPath,
-        rootIsChildren: options.rootIsChildren,
-        leavesOnly: options.leavesOnly,
-      };
-      var res = {};
-      eachDeep(
-        obj,
-        function(value, key, parent, context) {
-          if (!context.isCircular || options.includeCircularPath) {
-            if (context.path !== undefined) {
-              res[context.path] = value;
-            }
-          }
-        },
-        eachDeepOptions
-      );
-      return res;
-    }
-    return index;
-  }
-
-  function addIndex(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('index', getIndex(_));
-  }
-
-  function getPaths(_) {
-    var eachDeep = getEachDeep(_);
-    function paths(obj, options) {
-      if (options && options.leafsOnly !== undefined) {
-        options.leavesOnly = options.leafsOnly;
-      }
-      options = _.merge(
-        {
-          checkCircular: false,
-          includeCircularPath: true,
-          leavesOnly: !options || options.childrenPath === undefined,
+          leavesOnly: options.childrenPath === undefined,
           pathFormat: 'string',
         },
-        options || {}
+        options
       );
+
       var eachDeepOptions = {
         pathFormat: options.pathFormat,
         checkCircular: options.checkCircular,
-        includeRoot: options.includeRoot,
         childrenPath: options.childrenPath,
-        rootIsChildren: options.rootIsChildren,
+        includeRoot: options.includeRoot,
+        callbackAfterIterate: false,
         leavesOnly: options.leavesOnly,
       };
-      var res = [];
+
+      var res;
+
       eachDeep(
         obj,
-        function(value, key, parent, context) {
-          if (!context.isCircular || options.includeCircularPath) {
-            if (context.path !== undefined) {
-              res.push(context.path);
-            }
+        function (value, key, parent, context) {
+          if (predicate(value, key, parent, context)) {
+            res = { value: value, key: key, parent: parent, context: context };
+            return context['break']();
           }
         },
         eachDeepOptions
       );
       return res;
     }
-    return paths;
+    return findDeep;
   }
 
-  function addPaths(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('paths', getPaths(_));
-  }
-
-  function addKeysDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('keysDeep', getPaths(_));
-  }
-
-  function getExists(_) {
-    function exists(obj, path) {
-      path = _.isArray(path) ? _.clone(path) : _.toPath(path);
-      var key = path.pop();
-      var parent = path.length ? _.get(obj, path) : obj;
-      return parent !== undefined && key in parent;
+  function getSomeDeep(_) {
+    var findDeep = getFindDeep(_);
+    function someDeep(obj, predicate, options) {
+      return !!findDeep(obj, predicate, options);
     }
-    return exists;
+    return someDeep;
   }
 
-  function addExists(_) {
+  //console.log('getSomeDeep',getSomeDeep.notChainable);
+  function addSomeDeep(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('exists', getExists(_), false);
+    return mixOrPatchIn('someDeep', getSomeDeep(_), !getSomeDeep.notChainable);
   }
+
+  function getReduceDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function reduceDeep(obj, iteratee, accumulator, options) {
+      iteratee = _.iteratee(iteratee);
+      var accumulatorInited = accumulator !== undefined;
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          delete context['break'];
+          if (!accumulatorInited) {
+            accumulator = value;
+            accumulatorInited = true;
+          } else {
+            accumulator = iteratee(accumulator, value, key, parent, context);
+          }
+        },
+        options
+      );
+      return accumulator;
+    }
+    return reduceDeep;
+  }
+
+  //console.log('getReduceDeep',getReduceDeep.notChainable);
+  function addReduceDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('reduceDeep', getReduceDeep(_), !getReduceDeep.notChainable);
+  }
+
+  function getPathMatches(_) {
+    var pathToString = getPathToString(_);
+    function pathMatches(path, paths) {
+      var pathString;
+      var pathArray;
+      if (_.isString(path)) {
+        pathString = path;
+      } else {
+        pathArray = path;
+      }
+      if (!_.isArray(paths)) {
+        paths = [paths];
+      } else {
+        paths = _.cloneDeep(paths);
+      }
+      for (var i = 0; i < paths.length; i++) {
+        if (_.isString(paths[i])) {
+          paths[i] = _.toPath(paths[i]);
+        }
+        if (_.isArray(paths[i])) {
+          if (pathArray === undefined) {
+            pathArray = _.toPath(pathString);
+          }
+          if (
+            pathArray.length >= paths[i].length &&
+            _.isEqual(_.takeRight(pathArray, paths[i].length), paths[i])
+          ) {
+            // console.log('path matched');
+            return paths[i];
+          }
+        } else if (paths[i] instanceof RegExp) {
+          if (pathString === undefined) {
+            pathString = pathToString(path);
+          }
+          if (paths[i].test(pathString)) {
+            // console.log('regex matched', paths[i]);
+            return paths[i];
+          }
+        } else {
+          throw new Error(
+            'To match path use only string/regex or array of them.'
+          );
+        }
+      }
+      // console.log('matched nothing');
+      return false;
+    }
+    return pathMatches;
+  }
+
+  getPathMatches.notChainable = true;
+
+  function getObtain(_) {
+    function obtain(obj, path) {
+      if (path === undefined) {
+        return obj;
+      }
+      return _.get(obj, path);
+    }
+    return obtain;
+  }
+
+  getObtain.notChainable = true;
 
   function getCondense(_) {
     function condense(arr) {
@@ -403,11 +434,6 @@ var deepdash = (function () {
       return arr;
     }
     return condense;
-  }
-
-  function addCondense(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('condense', getCondense());
   }
 
   function getCondenseDeep(_) {
@@ -440,20 +466,17 @@ var deepdash = (function () {
     return condenseDeep;
   }
 
-  function addCondenseDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('condenseDeep', getCondenseDeep(_));
+  function getExists(_) {
+    function exists(obj, path) {
+      path = _.isArray(path) ? _.clone(path) : _.toPath(path);
+      var key = path.pop();
+      var parent = path.length ? _.get(obj, path) : obj;
+      return parent !== undefined && key in parent;
+    }
+    return exists;
   }
 
-  function getObtain(_) {
-    function obtain(obj, path) {
-      if (path === undefined) {
-        return obj;
-      }
-      return _.get(obj, path);
-    }
-    return obtain;
-  }
+  getExists.notChainable = true;
 
   function getFilterDeep(_) {
     // console.log('getFilterDeep:', _);
@@ -684,143 +707,6 @@ var deepdash = (function () {
     return filterDeep;
   }
 
-  function addFilterDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('filterDeep', getFilterDeep(_));
-  }
-
-  function getFindDeep(_) {
-    var eachDeep = getEachDeep(_);
-
-    function findDeep(obj, predicate, options) {
-      predicate = _.iteratee(predicate);
-      if (!options) {
-        options = {};
-      } else {
-        options = _.cloneDeep(options);
-        if (options.leafsOnly !== undefined) {
-          options.leavesOnly = options.leafsOnly;
-        }
-      }
-
-      options = _.merge(
-        {
-          checkCircular: false,
-          leavesOnly: options.childrenPath === undefined,
-          pathFormat: 'string',
-        },
-        options
-      );
-
-      var eachDeepOptions = {
-        pathFormat: options.pathFormat,
-        checkCircular: options.checkCircular,
-        childrenPath: options.childrenPath,
-        includeRoot: options.includeRoot,
-        callbackAfterIterate: false,
-        leavesOnly: options.leavesOnly,
-      };
-
-      var res;
-
-      eachDeep(
-        obj,
-        function (value, key, parent, context) {
-          if (predicate(value, key, parent, context)) {
-            res = { value: value, key: key, parent: parent, context: context };
-            return context['break']();
-          }
-        },
-        eachDeepOptions
-      );
-      return res;
-    }
-    return findDeep;
-  }
-
-  function addFindDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('findDeep', getFindDeep(_));
-  }
-
-  function getFindPathDeep(_) {
-    var findDeep = getFindDeep(_);
-    function findPathDeep(obj, predicate, options) {
-      var res = findDeep(obj, predicate, options);
-      return res && res.context.path;
-    }
-    return findPathDeep;
-  }
-
-  function addFindDeep$1(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('findPathDeep', getFindPathDeep(_));
-  }
-
-  function getFindValueDeep(_) {
-    var findDeep = getFindDeep(_);
-    function findValueDeep(obj, predicate, options) {
-      var res = findDeep(obj, predicate, options);
-      return res && res.value;
-    }
-    return findValueDeep;
-  }
-
-  function addFindDeep$2(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('findValueDeep', getFindValueDeep(_));
-  }
-
-  function getPathMatches(_) {
-    var pathToString = getPathToString(_);
-    function pathMatches(path, paths) {
-      var pathString;
-      var pathArray;
-      if (_.isString(path)) {
-        pathString = path;
-      } else {
-        pathArray = path;
-      }
-      if (!_.isArray(paths)) {
-        paths = [paths];
-      } else {
-        paths = _.cloneDeep(paths);
-      }
-      for (var i = 0; i < paths.length; i++) {
-        if (_.isString(paths[i])) {
-          paths[i] = _.toPath(paths[i]);
-        }
-        if (_.isArray(paths[i])) {
-          if (pathArray === undefined) {
-            pathArray = _.toPath(pathString);
-          }
-          if (
-            pathArray.length >= paths[i].length &&
-            _.isEqual(_.takeRight(pathArray, paths[i].length), paths[i])
-          ) {
-            // console.log('path matched');
-            return paths[i];
-          }
-        } else if (paths[i] instanceof RegExp) {
-          if (pathString === undefined) {
-            pathString = pathToString(path);
-          }
-          if (paths[i].test(pathString)) {
-            // console.log('regex matched', paths[i]);
-            return paths[i];
-          }
-        } else {
-          throw new Error(
-            'To match path use only string/regex or array of them.'
-          );
-        }
-      }
-      // console.log('matched nothing');
-      return false;
-    }
-    return pathMatches;
-  }
-
   function getOmitDeep(_) {
     var pathMatches = getPathMatches(_);
     var filterDeep = getFilterDeep(_);
@@ -867,11 +753,6 @@ var deepdash = (function () {
     return omitDeep;
   }
 
-  function addOmitDeep(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('omitDeep', getOmitDeep(_));
-  }
-
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
     function pickDeep(obj, paths, options) {
@@ -887,61 +768,80 @@ var deepdash = (function () {
     return pickDeep;
   }
 
+  //console.log('getPickDeep',getPickDeep.notChainable);
   function addPickDeep(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('pickDeep', getPickDeep(_));
+    return mixOrPatchIn('pickDeep', getPickDeep(_), !getPickDeep.notChainable);
   }
 
-  function addObtain(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('obtain', getObtain(_), true);
-  }
-
-  function addPathMatches(_) {
-    var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('pathMatches', getPathMatches(_), false);
-  }
-
-  function getReduceDeep(_) {
+  function getPaths(_) {
     var eachDeep = getEachDeep(_);
-
-    function reduceDeep(obj, iteratee, accumulator, options) {
-      iteratee = _.iteratee(iteratee);
-      var accumulatorInited = accumulator !== undefined;
+    function paths(obj, options) {
+      if (options && options.leafsOnly !== undefined) {
+        options.leavesOnly = options.leafsOnly;
+      }
+      options = _.merge(
+        {
+          checkCircular: false,
+          includeCircularPath: true,
+          leavesOnly: !options || options.childrenPath === undefined,
+          pathFormat: 'string',
+        },
+        options || {}
+      );
+      var eachDeepOptions = {
+        pathFormat: options.pathFormat,
+        checkCircular: options.checkCircular,
+        includeRoot: options.includeRoot,
+        childrenPath: options.childrenPath,
+        rootIsChildren: options.rootIsChildren,
+        leavesOnly: options.leavesOnly,
+      };
+      var res = [];
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context['break'];
-          if (!accumulatorInited) {
-            accumulator = value;
-            accumulatorInited = true;
-          } else {
-            accumulator = iteratee(accumulator, value, key, parent, context);
+          if (!context.isCircular || options.includeCircularPath) {
+            if (context.path !== undefined) {
+              res.push(context.path);
+            }
           }
         },
-        options
+        eachDeepOptions
       );
-      return accumulator;
+      return res;
     }
-    return reduceDeep;
+    return paths;
   }
 
-  function addReduceDeep(_) {
+  //console.log('getPaths',getPaths.notChainable);
+  function addPaths(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('reduceDeep', getReduceDeep(_));
+    return mixOrPatchIn('paths', getPaths(_), !getPaths.notChainable);
   }
 
-  function getSomeDeep(_) {
-    var findDeep = getFindDeep(_);
-    function someDeep(obj, predicate, options) {
-      return !!findDeep(obj, predicate, options);
-    }
-    return someDeep;
-  }
-
-  function addFindDeep$3(_) {
+  //console.log('getPathToString',getPathToString.notChainable);
+  function addPathToString(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('someDeep', getSomeDeep(_));
+    return mixOrPatchIn('pathToString', getPathToString(_), !getPathToString.notChainable);
+  }
+
+  //console.log('getPathMatches',getPathMatches.notChainable);
+  function addPathMatches(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('pathMatches', getPathMatches(_), !getPathMatches.notChainable);
+  }
+
+  //console.log('getOmitDeep',getOmitDeep.notChainable);
+  function addOmitDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('omitDeep', getOmitDeep(_), !getOmitDeep.notChainable);
+  }
+
+  //console.log('getObtain',getObtain.notChainable);
+  function addObtain(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('obtain', getObtain(_), !getObtain.notChainable);
   }
 
   function getMapDeep(_) {
@@ -968,32 +868,166 @@ var deepdash = (function () {
     return mapDeep;
   }
 
+  //console.log('getMapDeep',getMapDeep.notChainable);
   function addMapDeep(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('mapDeep', getMapDeep(_));
+    return mixOrPatchIn('mapDeep', getMapDeep(_), !getMapDeep.notChainable);
+  }
+
+  function getKeysDeep(_) {
+    return getPaths(_);
+  }
+
+  //console.log('getKeysDeep',getKeysDeep.notChainable);
+  function addKeysDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('keysDeep', getKeysDeep(_), !getKeysDeep.notChainable);
+  }
+
+  function getIndex(_) {
+    var eachDeep = getEachDeep(_);
+
+    function index(obj, options) {
+      options = _.merge(
+        {
+          checkCircular: false,
+          includeCircularPath: true,
+          leavesOnly: !options || options.childrenPath === undefined,
+        },
+        options || {}
+      );
+      if (options && options.leafsOnly !== undefined) {
+        options.leavesOnly = options.leafsOnly;
+      }
+      var eachDeepOptions = {
+        pathFormat: 'string',
+        checkCircular: options.checkCircular,
+        includeRoot: options.includeRoot,
+        childrenPath: options.childrenPath,
+        rootIsChildren: options.rootIsChildren,
+        leavesOnly: options.leavesOnly,
+      };
+      var res = {};
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          if (!context.isCircular || options.includeCircularPath) {
+            if (context.path !== undefined) {
+              res[context.path] = value;
+            }
+          }
+        },
+        eachDeepOptions
+      );
+      return res;
+    }
+    return index;
+  }
+
+  //console.log('getIndex',getIndex.notChainable);
+  function addIndex(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('index', getIndex(_), !getIndex.notChainable);
+  }
+
+  function getForEachDeep(_) {
+    return getEachDeep(_);
+  }
+
+  //console.log('getForEachDeep',getForEachDeep.notChainable);
+  function addForEachDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('forEachDeep', getForEachDeep(_), !getForEachDeep.notChainable);
+  }
+
+  function getFindValueDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findValueDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.value;
+    }
+    return findValueDeep;
+  }
+
+  //console.log('getFindValueDeep',getFindValueDeep.notChainable);
+  function addFindValueDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findValueDeep', getFindValueDeep(_), !getFindValueDeep.notChainable);
+  }
+
+  function getFindPathDeep(_) {
+    var findDeep = getFindDeep(_);
+    function findPathDeep(obj, predicate, options) {
+      var res = findDeep(obj, predicate, options);
+      return res && res.context.path;
+    }
+    return findPathDeep;
+  }
+
+  //console.log('getFindPathDeep',getFindPathDeep.notChainable);
+  function addFindPathDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findPathDeep', getFindPathDeep(_), !getFindPathDeep.notChainable);
+  }
+
+  //console.log('getFindDeep',getFindDeep.notChainable);
+  function addFindDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('findDeep', getFindDeep(_), !getFindDeep.notChainable);
+  }
+
+  //console.log('getFilterDeep',getFilterDeep.notChainable);
+  function addFilterDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('filterDeep', getFilterDeep(_), !getFilterDeep.notChainable);
+  }
+
+  //console.log('getExists',getExists.notChainable);
+  function addExists(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('exists', getExists(_), !getExists.notChainable);
+  }
+
+  //console.log('getEachDeep',getEachDeep.notChainable);
+  function addEachDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('eachDeep', getEachDeep(_), !getEachDeep.notChainable);
+  }
+
+  //console.log('getCondenseDeep',getCondenseDeep.notChainable);
+  function addCondenseDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('condenseDeep', getCondenseDeep(_), !getCondenseDeep.notChainable);
+  }
+
+  //console.log('getCondense',getCondense.notChainable);
+  function addCondense(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('condense', getCondense(), !getCondense.notChainable);
   }
 
   function apply(_) {
-    addPathToString(_);
-    addEachDeep(_);
-    addForEachDeep(_);
-    addIndex(_);
-    addPaths(_);
-    addKeysDeep(_);
-    addExists(_);
-    addCondense(_);
-    addCondenseDeep(_);
-    addFilterDeep(_);
-    addFindDeep$1(_);
-    addFindDeep$2(_);
-    addFindDeep(_);
-    addOmitDeep(_);
-    addPickDeep(_);
-    addObtain(_);
-    addPathMatches(_);
+    addSomeDeep(_);
     addReduceDeep(_);
-    addFindDeep$3(_);
+    addPickDeep(_);
+    addPaths(_);
+    addPathToString(_);
+    addPathMatches(_);
+    addOmitDeep(_);
+    addObtain(_);
     addMapDeep(_);
+    addKeysDeep(_);
+    addIndex(_);
+    addForEachDeep(_);
+    addFindValueDeep(_);
+    addFindPathDeep(_);
+    addFindDeep(_);
+    addFilterDeep(_);
+    addExists(_);
+    addEachDeep(_);
+    addCondenseDeep(_);
+    addCondense(_);
+
     return _;
   }
 

@@ -23,3 +23,5 @@ export default function getPathToString(_) {
   }
   return pathToString;
 }
+
+getPathToString.notChainable = true;

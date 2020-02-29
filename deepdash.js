@@ -22,26 +22,27 @@ var addReduceDeep = require('./addReduceDeep.js');
 var addSomeDeep = require('./addSomeDeep.js');
 
 function apply(_) {
-  addPathToString(_);
-  addEachDeep(_);
-  addForEachDeep(_);
-  addIndex(_);
-  addPaths(_);
-  addKeysDeep(_);
-  addExists(_);
-  addCondense(_);
-  addCondenseDeep(_);
-  addFilterDeep(_);
-  addFindPathDeep(_);
-  addFindValueDeep(_);
-  addFindDeep(_);
-  addOmitDeep(_);
-  addPickDeep(_);
-  addObtain(_);
-  addPathMatches(_);
-  addReduceDeep(_);
   addSomeDeep(_);
+  addReduceDeep(_);
+  addPickDeep(_);
+  addPaths(_);
+  addPathToString(_);
+  addPathMatches(_);
+  addOmitDeep(_);
+  addObtain(_);
   addMapDeep(_);
+  addKeysDeep(_);
+  addIndex(_);
+  addForEachDeep(_);
+  addFindValueDeep(_);
+  addFindPathDeep(_);
+  addFindDeep(_);
+  addFilterDeep(_);
+  addExists(_);
+  addEachDeep(_);
+  addCondenseDeep(_);
+  addCondense(_);
+
   return _;
 }
 

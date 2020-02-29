@@ -26,4 +26,6 @@ function getPathToString(_) {
   return pathToString;
 }
 
+getPathToString.notChainable = true;
+
 module.exports = getPathToString;
