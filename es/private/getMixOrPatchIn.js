@@ -4,9 +4,6 @@ export default function getMixOrPatchIn(_) {
       if (_.mixin) {
         var patch = {};
         patch[name] = method;
-        if (chain === undefined) {
-          chain = true;
-        }
         _.mixin(patch, { chain: chain });
       } else {
         _[name] = method;

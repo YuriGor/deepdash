@@ -49,3 +49,5 @@ export default function getPathMatches(_) {
   }
   return pathMatches;
 }
+
+getPathMatches.notChainable = true;

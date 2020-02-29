@@ -1,106 +1,122 @@
-var argv = require('yargs').argv;
+const util = require('util');
+const rimraf = util.promisify(require('rimraf'));
 var arstr = require('./arstr');
 const log = require('./log');
-const { readFile, readdir, stat, writeFile, copyFile } = require('fs').promises;
+const readdir = util.promisify(require('fs').readdir);
+const writeFile = util.promisify(require('fs').writeFile);
+const copyFile = util.promisify(require('fs').copyFile);
+const mkdir = util.promisify(require('fs').mkdir);
+
 const path = require('path');
 const _ = require('lodash');
-const dir = path.join(__dirname, '../src/');
-const targetDir = path.join(__dirname, '../tmp/');
 const tplAddMethod = require('./tpl/addMethod');
 const tplMethod = require('./tpl/method');
-const tplDeepdash = require('./tpl/deepdash');
+const tplPrivateMethod = require('./tpl/privateMethod');
 const tplStandalone = require('./tpl/standalone');
+const tplDeepdash = require('./tpl/deepdash');
+
+const dir = path.join(__dirname, '../src/');
+const targetDir = path.join(__dirname, '../es/');
+
+const privateDir = path.join(dir, 'private');
+const privateTarget = path.join(targetDir, 'private');
+
+const depsDir = path.join(dir, 'deps');
+const depsTarget = path.join(targetDir, 'deps');
+
+const depsOwnDir = path.join(depsDir, 'own');
+const depsOwnTarget = path.join(depsTarget, 'own');
 
 async function main() {
-  log('code generator' + (argv.all ? ' (forced)' : ''));
-  let mtimes = {};
-  if (!argv.all) {
-    log('read last changes list');
-    try {
-      mtimes = JSON.parse(await readFile('./.mtimes.json', 'utf8'));
-      // console.log(mtimes);
-    } catch (ex) {
-      if (ex.code !== 'ENOENT') {
-        log.fail(ex.message);
-        throw ex;
-      }
+  log('copy/gen from /src/..');
+  try {
+    await mkdir(targetDir);
+    log(`created ${targetDir}`);
+  } catch (err) {
+    if (err.code !== 'EEXIST') {
+      throw err;
     }
   }
+
+  await rimraf(path.join(targetDir, '*.js'));
+  await rimraf(depsTarget);
+  await rimraf(privateTarget);
+  log(`cleared ${targetDir}`);
+
+  await mkdir(privateTarget);
+  await mkdir(depsTarget);
+  await mkdir(depsOwnTarget);
+
   let getters = (await readdir(dir)).filter((fn) => _.startsWith(fn, 'get'));
   let c = getters.length;
-  let changed = [];
-  let methods = [];
+  const methods = [];
   while (c--) {
     let getter = getters[c];
     let upMethodName = getter.substr(3, getter.length - 6);
     let methodName = arstr.lowFirst(upMethodName);
     methods.push(methodName);
-    let mt = (await stat(dir + getter)).mtime.toJSON();
-    if (mt == mtimes[getter]) {
-      log.done(`[${c + 1}/${getters.length}] - ${methodName} - no changes`);
-      continue;
-    }
-    log.warn(`[${c + 1}/${getters.length}] - ${methodName} - changed!`, mt);
-    mtimes[getter] = mt;
-    changed.push(methodName);
 
     await copyFile(path.join(dir, getter), path.join(targetDir, getter));
+    // log.done(`${getter}`);
 
     await writeFile(
       path.join(targetDir, `add${upMethodName}.js`),
       tplAddMethod(methodName)
     );
+    // log.done(`add${upMethodName}.js`);
 
     await writeFile(
       path.join(targetDir, `${methodName}.js`),
       tplMethod(methodName)
     );
+    log.done(`${methodName}.js`);
   }
 
-  // info(getters);
-  if (changed.length) {
-    await writeFile(path.join(targetDir, 'deepdash.js'), tplDeepdash(methods));
-    await writeFile(
-      path.join(targetDir, 'standalone.js'),
-      tplStandalone(methods)
+  getters = (await readdir(privateDir)).filter((fn) => _.startsWith(fn, 'get'));
+  c = getters.length;
+
+  while (c--) {
+    let getter = getters[c];
+    let upMethodName = getter.substr(3, getter.length - 6);
+    let methodName = arstr.lowFirst(upMethodName);
+
+    await copyFile(
+      path.join(privateDir, getter),
+      path.join(privateTarget, getter)
     );
-    for (var i = getters.length - 1; i >= 0; i--) {
-      let fn = getters[i];
-      mtimes[fn] = (await stat(dir + fn)).mtime;
-    }
+    log.done(`private/${getter}`);
+
     await writeFile(
-      path.join(__dirname, '.mtimes.json'),
-      JSON.stringify(mtimes, null, 2)
+      path.join(privateTarget, `${methodName}.js`),
+      tplPrivateMethod(methodName)
     );
+    log.done(`private/${methodName}.js`);
   }
-  log.done('done');
+
+  let fileNames = (await readdir(depsDir)).filter((f) => f.endsWith('.js'));
+
+  for (let fn of fileNames) {
+    await copyFile(path.join(depsDir, fn), path.join(depsTarget, fn));
+  }
+  log.done('deps');
+
+  fileNames = (await readdir(depsOwnDir)).filter((f) => f.endsWith('.js'));
+
+  for (let fn of fileNames) {
+    await copyFile(path.join(depsOwnDir, fn), path.join(depsOwnTarget, fn));
+  }
+  log.done('deps/own');
+
+  await writeFile(path.join(targetDir, 'deepdash.js'), tplDeepdash(methods));
+  log.done('deepdash.js');
+
+  await writeFile(
+    path.join(targetDir, 'standalone.js'),
+    tplStandalone(methods)
+  );
+  log.done('standalone.js');
+
+  log.done('copy/gen done');
 }
-main();
 
-// process.chdir(path.join(__dirname, '..', 'es'));
-// const getters = fs
-//   .readdirSync('.')
-//   .filter(
-//     (fn) => _.startsWith(fn, 'get') && fs.statSync(fn).mtime != mtimes[fn]
-//   );
-//
-// // console.log(getters.length + ' files changed');
-// console.log(getters);
-// const
-//
-// getters.forEach((fn)=>{
-//   fs.writeFile
-// });
-// fs.writeFileSync(
-//   path.join(__dirname, '.mtimes.json'),
-//   JSON.stringify(
-//     _.reduce(
-//       getters,
-//       (res, fn) => {
-//         res[fn] = fs.statSync(fn).mtime;
-//         return res;
-//       },
-//       mtimes
-//     )
-//   )
-// );
+main();

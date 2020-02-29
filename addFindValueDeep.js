@@ -3,9 +3,10 @@
 var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getFindValueDeep = require('./getFindValueDeep.js');
 
-function addFindDeep(_) {
+//console.log('getFindValueDeep',getFindValueDeep.notChainable);
+function addFindValueDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
-  return mixOrPatchIn('findValueDeep', getFindValueDeep(_));
+  return mixOrPatchIn('findValueDeep', getFindValueDeep(_), !getFindValueDeep.notChainable);
 }
 
-module.exports = addFindDeep;
+module.exports = addFindValueDeep;

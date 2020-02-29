@@ -1,3 +1,3 @@
-import deps from '../deps/iterate';
+import deps from '../deps/mixOrPatchIn';
 import getMixOrPatchIn from './getMixOrPatchIn';
 export default getMixOrPatchIn(deps);

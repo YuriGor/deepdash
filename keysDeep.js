@@ -1,7 +1,8 @@
 'use strict';
 
-var paths = require('./paths.js');
+var getKeysDeep = require('./getKeysDeep.js');
+var keysDeep$1 = require('./deps/keysDeep.js');
 
-var keysDeep = paths;
+var keysDeep = getKeysDeep(keysDeep$1);
 
 module.exports = keysDeep;
