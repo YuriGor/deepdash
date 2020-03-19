@@ -3,7 +3,8 @@
 var getMixOrPatchIn = require('./private/getMixOrPatchIn.js');
 var getCondense = require('./getCondense.js');
 
-//console.log('getCondense',getCondense.notChainable);
+/* build/tpl */
+
 function addCondense(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);
   return mixOrPatchIn('condense', getCondense(), !getCondense.notChainable);

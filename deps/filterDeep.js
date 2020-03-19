@@ -3,6 +3,7 @@
 var _merge = require('lodash/merge');
 var isArray = require('./own/isArray.js');
 var _isObject = require('lodash/isObject');
+var _get = require('lodash/get');
 var pathToString = require('./pathToString.js');
 var eachDeep$1 = require('./eachDeep.js');
 var condenseDeep$1 = require('./condenseDeep.js');
@@ -16,7 +17,6 @@ var _set = require('lodash/set');
 var _unset = require('lodash/unset');
 var _isPlainObject = require('lodash/isPlainObject');
 var _iteratee = require('lodash/iteratee');
-var obtain = require('./obtain.js');
 
 var deps = _merge(
   {
@@ -32,10 +32,10 @@ var deps = _merge(
     unset: _unset,
     isPlainObject: _isPlainObject,
     iteratee: _iteratee,
+    get: _get,
   },
   eachDeep$1,
   pathToString,
-  obtain,
   condenseDeep$1,
   exists$1
 );

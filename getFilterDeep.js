@@ -4,13 +4,11 @@ var getPathToString = require('./getPathToString.js');
 var getEachDeep = require('./getEachDeep.js');
 var getCondenseDeep = require('./getCondenseDeep.js');
 var getExists = require('./getExists.js');
-var getObtain = require('./getObtain.js');
 
 function getFilterDeep(_) {
   // console.log('getFilterDeep:', _);
   var eachDeep = getEachDeep(_);
   var pathToString = getPathToString(_);
-  var obtain = getObtain(_);
   var condenseDeep = getCondenseDeep(_);
   var exists = getExists(_);
 
@@ -83,6 +81,7 @@ function getFilterDeep(_) {
       checkCircular: options.checkCircular,
       childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
+      rootIsChildren: options.rootIsChildren,
       callbackAfterIterate: true,
       leavesOnly: false,
     };
@@ -220,7 +219,7 @@ function getFilterDeep(_) {
       if (_.has(options, 'replaceCircularBy')) {
         cv = options.replaceCircularBy;
       } else {
-        cv = obtain(res, c[1]);
+        cv = c[1] !== undefined ? _.get(res, c[1]) : res;
       }
       _.set(res, c[0], cv);
     });

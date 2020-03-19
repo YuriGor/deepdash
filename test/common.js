@@ -85,7 +85,10 @@ module.exports = {
         //   throw new Error(`no children path on depth ${context.depth}`);
         // }
         if (context.childrenPath) {
-          var children = _.obtain(parentVal, context.childrenPath);
+          var children =
+            context.childrenPath !== undefined
+              ? _.get(parentVal, context.childrenPath)
+              : parentVal;
           if (!children) {
             throw new Error(
               `no children collection found by children path ${context.childrenPath}`
@@ -234,7 +237,12 @@ module.exports = {
           if (value !== context.circularParent.value)
             throw new Error(`circular value must be equal to circularParent`);
 
-          if (value !== _.obtain(context.obj, context.circularParent.path)) {
+          if (
+            value !==
+            (context.circularParent.path !== undefined
+              ? _.get(context.obj, context.circularParent.path)
+              : context.obj)
+          ) {
             throw new Error(
               `circular value doesnt match one by circularParent path`
             );
@@ -256,7 +264,9 @@ module.exports = {
           throw new Error('value doesnt match one got by key');
         if (
           options.childrenPath &&
-          _.obtain(parentVal, context.childrenPath)[key] != value
+          (context.childrenPath !== undefined
+            ? _.get(parentVal, context.childrenPath)
+            : parentVal)[key] != value
         )
           throw new Error('child value doesnt match one got by key');
         if (_.get(context.obj, context.path) !== value)

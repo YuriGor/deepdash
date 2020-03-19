@@ -9,7 +9,7 @@ chai.use(asserttype);
 var { demo, circular } = require('./object');
 var { validateIteration, forLodashes } = require('./common.js');
 
-forLodashes(['eachDeep', 'forEachDeep', 'pathToString', 'obtain'], (_) => {
+forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
     let obj = _.cloneDeep(demo);
@@ -288,7 +288,7 @@ a.b.c.d[6].o.skip`);
       function(value, key, parent, ctx) {
         validateIteration(value, key, parent, ctx, options);
         assert(
-          _.obtain(demo, ctx.path) === value,
+          (ctx.path !== undefined ? _.get(demo, ctx.path) : demo) === value,
           'Incorrect path: ' + ctx.path
         );
       },

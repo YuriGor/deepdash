@@ -12,7 +12,6 @@ var addForEachDeep = require('./addForEachDeep.js');
 var addIndex = require('./addIndex.js');
 var addKeysDeep = require('./addKeysDeep.js');
 var addMapDeep = require('./addMapDeep.js');
-var addObtain = require('./addObtain.js');
 var addOmitDeep = require('./addOmitDeep.js');
 var addPathMatches = require('./addPathMatches.js');
 var addPathToString = require('./addPathToString.js');
@@ -21,27 +20,28 @@ var addPickDeep = require('./addPickDeep.js');
 var addReduceDeep = require('./addReduceDeep.js');
 var addSomeDeep = require('./addSomeDeep.js');
 
+/* build/tpl */
+
 function apply(_) {
-  addSomeDeep(_);
-  addReduceDeep(_);
-  addPickDeep(_);
-  addPaths(_);
-  addPathToString(_);
-  addPathMatches(_);
-  addOmitDeep(_);
-  addObtain(_);
-  addMapDeep(_);
-  addKeysDeep(_);
-  addIndex(_);
-  addForEachDeep(_);
-  addFindValueDeep(_);
-  addFindPathDeep(_);
-  addFindDeep(_);
-  addFilterDeep(_);
-  addExists(_);
-  addEachDeep(_);
-  addCondenseDeep(_);
   addCondense(_);
+  addCondenseDeep(_);
+  addEachDeep(_);
+  addExists(_);
+  addFilterDeep(_);
+  addFindDeep(_);
+  addFindPathDeep(_);
+  addFindValueDeep(_);
+  addForEachDeep(_);
+  addIndex(_);
+  addKeysDeep(_);
+  addMapDeep(_);
+  addOmitDeep(_);
+  addPathMatches(_);
+  addPathToString(_);
+  addPaths(_);
+  addPickDeep(_);
+  addReduceDeep(_);
+  addSomeDeep(_);
 
   return _;
 }

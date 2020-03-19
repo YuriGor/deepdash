@@ -9,7 +9,8 @@ module.exports = function(methodsList) {
     strExport += `  add${capMethodName}(_);\n`;
   });
 
-  return `${strImport}
+  return `/* build/tpl */
+${strImport}
 export default function apply(_) {
 ${strExport}
   return _;
