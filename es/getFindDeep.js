@@ -28,6 +28,7 @@ export default function getFindDeep(_) {
       checkCircular: options.checkCircular,
       childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
+      rootIsChildren: options.rootIsChildren,
       callbackAfterIterate: false,
       leavesOnly: options.leavesOnly,
     };

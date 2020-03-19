@@ -1,0 +1,42 @@
+/* build/tpl */
+import condense from "./condense";
+import condenseDeep from "./condenseDeep";
+import eachDeep from "./eachDeep";
+import exists from "./exists";
+import filterDeep from "./filterDeep";
+import findDeep from "./findDeep";
+import findPathDeep from "./findPathDeep";
+import findValueDeep from "./findValueDeep";
+import forEachDeep from "./forEachDeep";
+import index from "./index";
+import keysDeep from "./keysDeep";
+import mapDeep from "./mapDeep";
+import omitDeep from "./omitDeep";
+import pathMatches from "./pathMatches";
+import pathToString from "./pathToString";
+import paths from "./paths";
+import pickDeep from "./pickDeep";
+import reduceDeep from "./reduceDeep";
+import someDeep from "./someDeep";
+
+export default function addDeepdash<Src>(_: Src): Src & {
+  condense: typeof condense;
+  condenseDeep: typeof condenseDeep;
+  eachDeep: typeof eachDeep;
+  exists: typeof exists;
+  filterDeep: typeof filterDeep;
+  findDeep: typeof findDeep;
+  findPathDeep: typeof findPathDeep;
+  findValueDeep: typeof findValueDeep;
+  forEachDeep: typeof forEachDeep;
+  index: typeof index;
+  keysDeep: typeof keysDeep;
+  mapDeep: typeof mapDeep;
+  omitDeep: typeof omitDeep;
+  pathMatches: typeof pathMatches;
+  pathToString: typeof pathToString;
+  paths: typeof paths;
+  pickDeep: typeof pickDeep;
+  reduceDeep: typeof reduceDeep;
+  someDeep: typeof someDeep;
+};

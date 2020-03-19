@@ -10,10 +10,9 @@ import _set from 'lodash-es/set';
 import _unset from 'lodash-es/unset';
 import _isPlainObject from 'lodash-es/isPlainObject';
 import _iteratee from 'lodash-es/iteratee';
-
+import _get from 'lodash-es/get';
 import eachDeepDeps from './eachDeep';
 import pathToStringDeps from './pathToString';
-import obtainDeps from './obtain';
 import condenseDeepDeps from './condenseDeep';
 import existsDeps from './exists';
 
@@ -31,10 +30,10 @@ var deps = _merge(
     unset: _unset,
     isPlainObject: _isPlainObject,
     iteratee: _iteratee,
+    get: _get,
   },
   eachDeepDeps,
   pathToStringDeps,
-  obtainDeps,
   condenseDeepDeps,
   existsDeps
 );
