@@ -885,7 +885,7 @@ _.pickDeep( obj, paths, options={
   }) => object
 ```
 * `obj` - The object/array to pick from.
-* `paths` - path or array of paths to pick. Can be string or regex.
+* `paths` - array or single path criteria to pick. Can be string or regex. In case if string every path will be tested if it's end equal to given criteria, key by key from the end.
 * `options`
     - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
     - `keepCircular` (true) - The result object will contain circular references if they passed the filter.
@@ -931,10 +931,10 @@ Console(x2):
 
 ## omitDeep
 
-returns an object without keys specified by names or regexes
+returns an object without given path endings or regexes
 
 ```js
-_.omitDeep( obj, keys, options={
+_.omitDeep( obj, paths, options={
     checkCircular: false,
     keepCircular: true,
     // replaceCircularBy: <value>,
@@ -952,8 +952,8 @@ _.omitDeep( obj, keys, options={
   }) => object
 ```
 
-* `obj` - The object to omit from.
-* `keys` - key or array of keys to exclude. Can be string or regex.
+* `obj` - The object to exclude from.
+* `paths` -  - array or single path criteria to omit. Can be string or regex. In case if string every path will be tested if it's end equal to given criteria, key by key from the end.
 * `options`
     - `checkCircular` (false) - Check each value to not be one of the parents, to avoid circular references.
     - `keepCircular` (true) - The result object will contain circular references if they passed the filter.
