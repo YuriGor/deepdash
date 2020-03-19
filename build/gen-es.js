@@ -11,12 +11,17 @@ const path = require('path');
 const _ = require('lodash');
 const tplAddMethod = require('./tpl/addMethod');
 const tplMethod = require('./tpl/method');
+const tplAddMethodD = require('./tpl/addMethod.d');
+const tplGetMethodD = require('./tpl/getMethod.d');
 const tplPrivateMethod = require('./tpl/privateMethod');
 const tplStandalone = require('./tpl/standalone');
+const tplStandaloneD = require('./tpl/standalone.d');
 const tplDeepdash = require('./tpl/deepdash');
+const tplDeepdashD = require('./tpl/deepdash.d');
 
 const dir = path.join(__dirname, '../src/');
 const targetDir = path.join(__dirname, '../es/');
+const typesDir = path.join(__dirname, '../es/');
 
 const privateDir = path.join(dir, 'private');
 const privateTarget = path.join(targetDir, 'private');
@@ -39,19 +44,30 @@ async function main() {
   }
 
   await rimraf(path.join(targetDir, '*.js'));
+  await rimraf(path.join(typesDir, '*.ts'));
+  // await rimraf(typesDir);
   await rimraf(depsTarget);
   await rimraf(privateTarget);
   log(`cleared ${targetDir}`);
 
+  // await mkdir(typesDir);
   await mkdir(privateTarget);
   await mkdir(depsTarget);
   await mkdir(depsOwnTarget);
+  const files = await readdir(dir);
 
-  let getters = (await readdir(dir)).filter((fn) => _.startsWith(fn, 'get'));
-  let c = getters.length;
+  let defs = files.filter((fn) => fn.endsWith('.d.ts'));
+  for (const def of defs) {
+    await copyFile(path.join(dir, def), path.join(typesDir, def));
+  }
+
+  let getters = files.filter(
+    (fn) => fn.startsWith('get') && fn.endsWith('.js')
+  );
+
   const methods = [];
-  while (c--) {
-    let getter = getters[c];
+
+  for (const getter of getters) {
     let upMethodName = getter.substr(3, getter.length - 6);
     let methodName = arstr.lowFirst(upMethodName);
     methods.push(methodName);
@@ -63,6 +79,14 @@ async function main() {
       path.join(targetDir, `add${upMethodName}.js`),
       tplAddMethod(methodName)
     );
+    await writeFile(
+      path.join(typesDir, `add${upMethodName}.d.ts`),
+      tplAddMethodD(methodName)
+    );
+    await writeFile(
+      path.join(typesDir, `get${upMethodName}.d.ts`),
+      tplGetMethodD(methodName)
+    );
     // log.done(`add${upMethodName}.js`);
 
     await writeFile(
@@ -72,11 +96,11 @@ async function main() {
     log.done(`${methodName}.js`);
   }
 
-  getters = (await readdir(privateDir)).filter((fn) => _.startsWith(fn, 'get'));
-  c = getters.length;
+  getters = (await readdir(privateDir)).filter(
+    (fn) => _.startsWith(fn, 'get') && fn.endsWith('.js')
+  );
 
-  while (c--) {
-    let getter = getters[c];
+  for (const getter of getters) {
     let upMethodName = getter.substr(3, getter.length - 6);
     let methodName = arstr.lowFirst(upMethodName);
 
@@ -108,14 +132,18 @@ async function main() {
   log.done('deps/own');
 
   await writeFile(path.join(targetDir, 'deepdash.js'), tplDeepdash(methods));
+  await writeFile(path.join(typesDir, 'deepdash.d.ts'), tplDeepdashD(methods));
   log.done('deepdash.js');
 
   await writeFile(
     path.join(targetDir, 'standalone.js'),
     tplStandalone(methods)
   );
+  await writeFile(
+    path.join(typesDir, 'standalone.d.ts'),
+    tplStandaloneD(methods)
+  );
   log.done('standalone.js');
-
   log.done('copy/gen done');
 }
 
