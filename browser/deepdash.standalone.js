@@ -4255,7 +4255,24 @@ var deepdash = (function (exports) {
           }
 
           if (!depth && options.rootIsChildren) {
-            forChildren(value, undefined);
+            if (_.isArray(value)) {
+              forChildren(value, undefined);
+            } else {
+              _.forOwn(value, function(childValue, childKey) {
+                iterate(
+                  childValue,
+                  callback,
+                  options,
+                  childKey,
+                  [childKey],
+                  depth + 1,
+                  currentObj,
+                  currentParents,
+                  obj,
+                  undefined
+                );
+              });
+            }
           } else {
             _each(options.childrenPath, function(cp) {
               var children = _.get(value, cp);

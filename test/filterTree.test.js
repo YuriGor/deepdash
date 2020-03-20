@@ -70,6 +70,29 @@ forLodashes(['filterDeep'], (_) => {
       },
     ]);
   });
+
+  it('rootIsChildren', () => {
+    let filtrate = _.filterDeep(
+      { g1: children[0], g2: children[1] },
+      ['name', 'child 1.2.1'],
+      {
+        childrenPath: 'children',
+        rootIsChildren: true,
+      }
+    );
+    expect(filtrate).to.deep.equal({
+      g1: {
+        name: 'grand 1',
+        children: [
+          {
+            name: 'parent 1.2',
+            children: [{ name: 'child 1.2.1' }],
+          },
+        ],
+      },
+    });
+  });
+
   it('filter deeper nodes circular', () => {
     let filtrate = _.filterDeep(deeperCommentsCircular, 'verified', {
       checkCircular: true,

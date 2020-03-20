@@ -66,6 +66,41 @@ forLodashes(['reduceDeep'], (_) => {
     ]);
   });
 
+  it('Get specific children rootIsChildren', () => {
+    let names = _.reduceDeep(
+      {
+        p0: social[0],
+        p1: social[1],
+        p2: social[2],
+      },
+      (res, v, k, p, c) => {
+        res.push(v.name);
+        return res;
+      },
+      [],
+      {
+        childrenPath: ['parents', 'children'],
+        rootIsChildren: true,
+        includeRoot: false,
+      }
+    );
+    expect(names).to.deep.equal([
+      'Dalton Hull',
+      'Francis Landry',
+      'Alexandra Byrd',
+      'Nicole Mcdaniel',
+      'Dale Booth',
+      'Peck Herman',
+      'Ada Crosby',
+      'Golden Vasquez',
+      'Cameron Stout',
+      'Stewart Hays',
+      'Saunders Craig',
+      'Young Marshall',
+      'Bryant Bright',
+    ]);
+  });
+
   it('Get first from specific children', () => {
     let names = _.reduceDeep(
       social,
