@@ -57,6 +57,19 @@ forLodashes(['findDeep'], (_) => {
     });
     expect(found.context.path).equal('[0].children[1].children[0]');
   });
+
+  it('findTree rootIsChildren', () => {
+    let found = _.findDeep(
+      { g1: children[0], g2: children[1] },
+      ['name', 'child 1.2.1'],
+      {
+        childrenPath: 'children',
+        rootIsChildren: true,
+      }
+    );
+    expect(found.context.path).equal('g1.children[1].children[0]');
+  });
+
   it('findTree deeper nodes circular', () => {
     let found = _.findDeep(
       deeperCommentsCircular,

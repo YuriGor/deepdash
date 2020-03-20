@@ -355,6 +355,51 @@ callback failed after deep iterate at:
     ]);
   });
 
+  it('children object - include root, root is children', () => {
+    let visited = [];
+    let options = {
+      childrenPath: 'children',
+      rootIsChildren: true,
+      includeRoot: true,
+    };
+    let objChildren = {
+      kid0: children[0],
+      kid1: children[1],
+    };
+    _.eachDeep(
+      objChildren,
+      (value, key, parent, ctx) => {
+        // console.log('@' + ctx.path);
+        validateIteration(value, key, parent, ctx, options);
+        if (ctx.parent && ctx.parent.childrenPath !== undefined) {
+          expect(ctx.parent.childrenPath).to.be.a.string();
+        }
+        if (ctx.parent) {
+          expect(ctx.path).to.be.a.string();
+        }
+        visited.push(ctx.path);
+      },
+      options
+    );
+    expect(visited).to.deep.equal([
+      undefined,
+      'kid0',
+      'kid0.children[0]',
+      'kid0.children[0].children[0]',
+      'kid0.children[0].children[1]',
+      'kid0.children[1]',
+      'kid0.children[1].children[0]',
+      'kid0.children[1].children[1]',
+      'kid1',
+      'kid1.children[0]',
+      'kid1.children[0].children[0]',
+      'kid1.children[0].children[1]',
+      'kid1.children[1]',
+      'kid1.children[1].children[0]',
+      'kid1.children[1].children[1]',
+    ]);
+  });
+
   it('children array - exclude root, root is not children', () => {
     let visited = [];
     let options = {

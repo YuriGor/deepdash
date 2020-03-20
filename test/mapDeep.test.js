@@ -73,4 +73,18 @@ forLodashes(['mapDeep'], (_) => {
       '[{"title":"GRAND 1","children":[{"title":"PARENT 1.1","children":[{"title":"CHILD 1.1.1"},{"title":"CHILD 1.1.2"}]},{"title":"PARENT 1.2","children":[{"title":"CHILD 1.2.1"},{"title":"CHILD 1.2.2"}]}]},{"title":"GRAND 2","children":[{"title":"PARENT 2.1","children":[{"title":"CHILD 2.1.1"},{"title":"CHILD 2.1.2"}]},{"title":"PARENT 2.2","children":[{"title":"CHILD 2.2.1"},{"title":"CHILD 2.2.2"}]}]}]'
     );
   });
+
+  it('tree mode - rootIsChildren', () => {
+    let res = _.mapDeep(
+      { g1: children[0], g2: children[1] },
+      (v, k, p, c) => {
+        return { title: v.name.toUpperCase() };
+      },
+      { childrenPath: 'children', rootIsChildren: true, includeRoot: false }
+    );
+    // console.log(JSON.stringify(res));
+    expect(JSON.stringify(res)).to.equal(
+      '{"g1":{"title":"GRAND 1","children":[{"title":"PARENT 1.1","children":[{"title":"CHILD 1.1.1"},{"title":"CHILD 1.1.2"}]},{"title":"PARENT 1.2","children":[{"title":"CHILD 1.2.1"},{"title":"CHILD 1.2.2"}]}]},"g2":{"title":"GRAND 2","children":[{"title":"PARENT 2.1","children":[{"title":"CHILD 2.1.1"},{"title":"CHILD 2.1.2"}]},{"title":"PARENT 2.2","children":[{"title":"CHILD 2.2.1"},{"title":"CHILD 2.2.2"}]}]}}'
+    );
+  });
 });
