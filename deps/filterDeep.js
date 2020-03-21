@@ -2,7 +2,7 @@
 
 var _merge = require('lodash/merge');
 var isArray = require('./own/isArray.js');
-var _isObject = require('lodash/isObject');
+var isObject = require('./own/isObject.js');
 var _get = require('lodash/get');
 var pathToString = require('./pathToString.js');
 var eachDeep$1 = require('./eachDeep.js');
@@ -24,7 +24,7 @@ var deps = _merge(
     clone: _clone,
     cloneDeep: _cloneDeep,
     isArray: isArray,
-    isObject: _isObject,
+    isObject: isObject,
     each: _each,
     eachRight: _eachRight,
     has: _has,

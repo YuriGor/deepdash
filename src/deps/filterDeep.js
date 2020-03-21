@@ -2,7 +2,7 @@ import _merge from 'lodash-es/merge';
 import _clone from 'lodash-es/clone';
 import _cloneDeep from 'lodash-es/cloneDeep';
 import _isArray from './own/isArray';
-import _isObject from 'lodash-es/isObject';
+import _isObject from './own/isObject';
 import _each from 'lodash-es/each';
 import _eachRight from 'lodash-es/eachRight';
 import _has from 'lodash-es/has';

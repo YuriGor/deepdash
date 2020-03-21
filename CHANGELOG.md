@@ -1,5 +1,11 @@
 # Change Log
 
+## v4-6-0
+*(2020-03-21)*
+**Features added**
+- [pathToString](/#pathtostring) prefixes args added to prepend result path correctly. (Used internally to optimize a bit by re-using already stringified paths)
+- TypeScript definitions added, see [this "discussion"](https://github.com/YuriGor/deepdash/issues/14) for details.
+
 ## v4-5-0
 *(2020-02-16)*
 

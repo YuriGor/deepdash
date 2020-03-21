@@ -29,22 +29,19 @@ function getEachDeep(_) {
         if (_.isString(options.childrenPath)) {
           options.childrenPath = [options.childrenPath];
         }
-        for (var i = options.childrenPath.length - 1; i >= 0; i--) {
-          options.childrenPath[i] = _.toPath(options.childrenPath[i]);
+        options.strChildrenPath = options.childrenPath;
+        options.childrenPath = [];
+        for (var i = options.strChildrenPath.length - 1; i >= 0; i--) {
+          options.childrenPath[i] = _.toPath(options.strChildrenPath[i]);
         }
       }
     }
-    iterate(
-      obj,
-      callback,
-      options,
-      undefined,
-      undefined,
-      0,
-      undefined,
-      [],
-      obj
-    );
+    iterate({
+      value: obj,
+      callback: callback,
+      options: options,
+      obj: obj,
+    });
     return obj;
   }
   return eachDeep;

@@ -7,36 +7,44 @@ function getIterate(_) {
   var pathToString = getPathToString(_);
   var hasChildren = getHasChildren(_);
   var _each = _.each || _.forArray;
-  function iterate(
-    value,
-    callback,
-    options,
-    key,
-    path,
-    depth,
-    parent,
-    parents,
-    obj,
-    childrenPath
-  ) {
+  function iterate(ref) {
+    var value = ref.value;
+    var callback = ref.callback;
+    var options = ref.options;
+    var key = ref.key;
+    var path = ref.path;
+    var strPath = ref.strPath;
+    var depth = ref.depth; if ( depth === void 0 ) depth = 0;
+    var parent = ref.parent;
+    var parents = ref.parents; if ( parents === void 0 ) parents = [];
+    var obj = ref.obj;
+    var childrenPath = ref.childrenPath;
+    var strChildrenPath = ref.strChildrenPath;
+
     if (options['break']) { return; }
     var currentObj = {
       value: value,
       key: key,
-      path: options.pathFormat == 'array' ? path : pathToString(path),
+      path:
+        options.pathFormat == 'array' ? path : strPath || pathToString(path),
       parent: parent,
     };
 
     var currentParents = parents.concat( [currentObj]);
-
-    var isCircular = undefined;
+    var isCircular;
     var circularParentIndex = undefined;
     var circularParent = undefined;
     if (options.checkCircular) {
       if (_.isObject(value) && !_.isEmpty(value)) {
-        circularParentIndex = _.findIndex(parents, function(v) {
-          return v.value === value;
-        });
+        circularParentIndex = -1;
+        var i = parents.length;
+        while (i--) {
+          if (parents[i].value === value) {
+            circularParentIndex = i;
+            break;
+          }
+        }
+
         circularParent = parents[circularParentIndex] || null;
       } else {
         circularParentIndex = -1;
@@ -44,7 +52,6 @@ function getIterate(_) {
       }
       isCircular = circularParentIndex !== -1;
     }
-    var res;
     var isLeaf =
       !_.isObject(value) ||
       _.isEmpty(value) ||
@@ -53,10 +60,10 @@ function getIterate(_) {
         !hasChildren(value, options.childrenPath));
     var needCallback =
       (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
-    // console.log('needCallback?', needCallback);
+
     if (needCallback) {
       var context = {
-        path: options.pathFormat == 'array' ? path : pathToString(path),
+        path: currentObj.path,
         parent: parent,
         parents: parents,
         obj: obj,
@@ -72,13 +79,11 @@ function getIterate(_) {
       };
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
-          options.pathFormat == 'array'
-            ? childrenPath
-            : pathToString(childrenPath);
+          options.pathFormat == 'array' ? childrenPath : strChildrenPath;
         context.childrenPath = currentObj.childrenPath;
       }
       try {
-        res = callback(value, key, parent && parent.value, context);
+        var res = callback(value, key, parent && parent.value, context);
       } catch (err) {
         if (err.message) {
           err.message += "\ncallback failed before deep iterate at:\n" + (context.path);
@@ -93,50 +98,55 @@ function getIterate(_) {
       _.isObject(value)
     ) {
       if (options.childrenPath !== undefined) {
-        function forChildren(children, cp) {
+        function forChildren(children, cp, scp) {
           if (children && _.isObject(children)) {
             _.forOwn(children, function(childValue, childKey) {
               var childPath = (path || []).concat( (cp || []), [childKey]);
-
-              iterate(
-                childValue,
-                callback,
-                options,
-                childKey,
-                childPath,
-                depth + 1,
-                currentObj,
-                currentParents,
-                obj,
-                cp
-              );
+              var strChildPath =
+                options.pathFormat == 'array'
+                  ? pathToString([childKey], strPath || '', scp || '')
+                  : undefined;
+              iterate({
+                value: childValue,
+                callback: callback,
+                options: options,
+                key: childKey,
+                path: childPath,
+                strPath: strChildPath,
+                depth: depth + 1,
+                parent: currentObj,
+                parents: currentParents,
+                obj: obj,
+                childrenPath: cp,
+                strChildrenPath: scp,
+              });
             });
           }
         }
 
         if (!depth && options.rootIsChildren) {
           if (_.isArray(value)) {
-            forChildren(value, undefined);
+            forChildren(value);
           } else {
             _.forOwn(value, function(childValue, childKey) {
-              iterate(
-                childValue,
-                callback,
-                options,
-                childKey,
-                [childKey],
-                depth + 1,
-                currentObj,
-                currentParents,
-                obj,
-                undefined
-              );
+              iterate({
+                value: childValue,
+                callback: callback,
+                options: options,
+                key: childKey,
+                path: [childKey],
+                strPath: pathToString([childKey]),
+                depth: depth + 1,
+                parent: currentObj,
+                parents: currentParents,
+                obj: obj,
+              });
             });
           }
         } else {
-          _each(options.childrenPath, function(cp) {
+          _each(options.childrenPath, function(cp, i) {
             var children = _.get(value, cp);
-            forChildren(children, cp);
+            forChildren(children, cp, options.strChildrenPath[i]);
           });
         }
       } else {
@@ -148,18 +158,23 @@ function getIterate(_) {
           }
 
           var childPath = (path || []).concat( [childKey]);
+          var strChildPath =
+            options.pathFormat == 'array'
+              ? pathToString([childKey], strPath || '')
+              : undefined;
 
-          iterate(
-            childValue,
-            callback,
-            options,
-            childKey,
-            childPath,
-            depth + 1,
-            currentObj,
-            currentParents,
-            obj
-          );
+          iterate({
+            value: childValue,
+            callback: callback,
+            options: options,
+            key: childKey,
+            path: childPath,
+            strPath: strChildPath,
+            depth: depth + 1,
+            parent: currentObj,
+            parents: currentParents,
+            obj: obj,
+          });
         });
       }
     }

@@ -1,3 +1,4 @@
 export default function pathToString(
-  path: (string | number)[]
+  path: (string | number)[],
+  ...prefixes: string[]
 ): string;

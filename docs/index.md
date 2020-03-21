@@ -1,6 +1,6 @@
 # Deepdash
 
-> v4.5.0 - [see changes](/changelog#v4-5-0)
+> v4.6.0 - [see changes](/changelog#v4-6-0)
 
 eachDeep, filterDeep, findDeep, someDeep, omitDeep, pickDeep, keysDeep etc..
 Tree traversal library written in Underscore/Lodash fashion.
@@ -1073,9 +1073,10 @@ _.someDeep( obj, predicate, options={
 Converts given path from array to string format.
 
 ```js
-_.pathToString( path ) => string;
+_.pathToString( path, ...prefixes ) => string;
 ```
 * `path` - path in array format
+* `...prefixes` - any number of string prefixes to prepend result path correctly (with or without dots)
 * `returns` - path in string format
 
 **Example:**

@@ -2578,27 +2578,228 @@ var deepdash = (function (exports) {
     return true;
   }
 
+  /*import isArray from './isArray';
+  import isObject from './isObject';
+
+  function ownIsEmpty(value) {
+    if (value === undefined || value === null) {
+      return true;
+    }
+    if (isArray(value)) {
+      return !value.length;
+    }
+    if (isObject(value)) {
+      return !Object.keys(value).length;
+    }
+    return true;
+  }
+  export default (value) => {
+    const ldRes = isEmpty(value);
+    const ownRes = ownIsEmpty(value);
+    if (ldRes !== ownRes) {
+      console.log({ ldRes, ownRes, value });
+    }
+    return ldRes;
+  };
+  */
+
   /**
-   * The base implementation of `_.findIndex` and `_.findLastIndex` without
-   * support for iteratee shorthands.
+   * Creates an array of the own enumerable property names of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects. See the
+   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+   * for more details.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.keys(new Foo);
+   * // => ['a', 'b'] (iteration order is not guaranteed)
+   *
+   * _.keys('hi');
+   * // => ['0', '1']
+   */
+  function keys(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+  }
+
+  /**
+   * The base implementation of `_.forOwn` without support for iteratee shorthands.
    *
    * @private
-   * @param {Array} array The array to inspect.
-   * @param {Function} predicate The function invoked per iteration.
-   * @param {number} fromIndex The index to search from.
-   * @param {boolean} [fromRight] Specify iterating from right to left.
-   * @returns {number} Returns the index of the matched value, else `-1`.
+   * @param {Object} object The object to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Object} Returns `object`.
    */
-  function baseFindIndex(array, predicate, fromIndex, fromRight) {
-    var length = array.length,
-        index = fromIndex + (fromRight ? 1 : -1);
+  function baseForOwn(object, iteratee) {
+    return object && baseFor(object, iteratee, keys);
+  }
 
-    while ((fromRight ? index-- : ++index < length)) {
+  /**
+   * Casts `value` to `identity` if it's not a function.
+   *
+   * @private
+   * @param {*} value The value to inspect.
+   * @returns {Function} Returns cast function.
+   */
+  function castFunction(value) {
+    return typeof value == 'function' ? value : identity;
+  }
+
+  /**
+   * Iterates over own enumerable string keyed properties of an object and
+   * invokes `iteratee` for each property. The iteratee is invoked with three
+   * arguments: (value, key, object). Iteratee functions may exit iteration
+   * early by explicitly returning `false`.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.3.0
+   * @category Object
+   * @param {Object} object The object to iterate over.
+   * @param {Function} [iteratee=_.identity] The function invoked per iteration.
+   * @returns {Object} Returns `object`.
+   * @see _.forOwnRight
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.forOwn(new Foo, function(value, key) {
+   *   console.log(key);
+   * });
+   * // => Logs 'a' then 'b' (iteration order is not guaranteed).
+   */
+  function forOwn(object, iteratee) {
+    return object && baseForOwn(object, castFunction(iteratee));
+  }
+
+  /** Used to match property names within property paths. */
+  var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
+      reIsPlainProp = /^\w*$/;
+
+  /**
+   * Checks if `value` is a property name and not a property path.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @param {Object} [object] The object to query keys on.
+   * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
+   */
+  function isKey(value, object) {
+    if (isArray(value)) {
+      return false;
+    }
+    var type = typeof value;
+    if (type == 'number' || type == 'symbol' || type == 'boolean' ||
+        value == null || isSymbol(value)) {
+      return true;
+    }
+    return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
+      (object != null && value in Object(object));
+  }
+
+  /**
+   * Casts `value` to a path array if it's not one.
+   *
+   * @private
+   * @param {*} value The value to inspect.
+   * @param {Object} [object] The object to query keys on.
+   * @returns {Array} Returns the cast property path array.
+   */
+  function castPath(value, object) {
+    if (isArray(value)) {
+      return value;
+    }
+    return isKey(value, object) ? [value] : stringToPath(toString(value));
+  }
+
+  /**
+   * The base implementation of `_.get` without support for default values.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {Array|string} path The path of the property to get.
+   * @returns {*} Returns the resolved value.
+   */
+  function baseGet(object, path) {
+    path = castPath(path, object);
+
+    var index = 0,
+        length = path.length;
+
+    while (object != null && index < length) {
+      object = object[toKey(path[index++])];
+    }
+    return (index && index == length) ? object : undefined;
+  }
+
+  /**
+   * Gets the value at `path` of `object`. If the resolved value is
+   * `undefined`, the `defaultValue` is returned in its place.
+   *
+   * @static
+   * @memberOf _
+   * @since 3.7.0
+   * @category Object
+   * @param {Object} object The object to query.
+   * @param {Array|string} path The path of the property to get.
+   * @param {*} [defaultValue] The value returned for `undefined` resolved values.
+   * @returns {*} Returns the resolved value.
+   * @example
+   *
+   * var object = { 'a': [{ 'b': { 'c': 3 } }] };
+   *
+   * _.get(object, 'a[0].b.c');
+   * // => 3
+   *
+   * _.get(object, ['a', '0', 'b', 'c']);
+   * // => 3
+   *
+   * _.get(object, 'a.b.c', 'default');
+   * // => 'default'
+   */
+  function get(object, path, defaultValue) {
+    var result = object == null ? undefined : baseGet(object, path);
+    return result === undefined ? defaultValue : result;
+  }
+
+  /**
+   * A specialized version of `_.some` for arrays without support for iteratee
+   * shorthands.
+   *
+   * @private
+   * @param {Array} [array] The array to iterate over.
+   * @param {Function} predicate The function invoked per iteration.
+   * @returns {boolean} Returns `true` if any element passes the predicate check,
+   *  else `false`.
+   */
+  function arraySome(array, predicate) {
+    var index = -1,
+        length = array == null ? 0 : array.length;
+
+    while (++index < length) {
       if (predicate(array[index], index, array)) {
-        return index;
+        return true;
       }
     }
-    return -1;
+    return false;
   }
 
   /** Used to stand-in for `undefined` hash values. */
@@ -2653,28 +2854,6 @@ var deepdash = (function (exports) {
   // Add methods to `SetCache`.
   SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
   SetCache.prototype.has = setCacheHas;
-
-  /**
-   * A specialized version of `_.some` for arrays without support for iteratee
-   * shorthands.
-   *
-   * @private
-   * @param {Array} [array] The array to iterate over.
-   * @param {Function} predicate The function invoked per iteration.
-   * @returns {boolean} Returns `true` if any element passes the predicate check,
-   *  else `false`.
-   */
-  function arraySome(array, predicate) {
-    var index = -1,
-        length = array == null ? 0 : array.length;
-
-    while (++index < length) {
-      if (predicate(array[index], index, array)) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   /**
    * Checks if a `cache` value for `key` exists.
@@ -3012,38 +3191,6 @@ var deepdash = (function (exports) {
   };
 
   /**
-   * Creates an array of the own enumerable property names of `object`.
-   *
-   * **Note:** Non-object values are coerced to objects. See the
-   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-   * for more details.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Object
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.keys(new Foo);
-   * // => ['a', 'b'] (iteration order is not guaranteed)
-   *
-   * _.keys('hi');
-   * // => ['0', '1']
-   */
-  function keys(object) {
-    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-  }
-
-  /**
    * Creates an array of own enumerable property names and symbols of `object`.
    *
    * @private
@@ -3363,96 +3510,6 @@ var deepdash = (function (exports) {
     };
   }
 
-  /** Used to match property names within property paths. */
-  var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
-      reIsPlainProp = /^\w*$/;
-
-  /**
-   * Checks if `value` is a property name and not a property path.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @param {Object} [object] The object to query keys on.
-   * @returns {boolean} Returns `true` if `value` is a property name, else `false`.
-   */
-  function isKey(value, object) {
-    if (isArray(value)) {
-      return false;
-    }
-    var type = typeof value;
-    if (type == 'number' || type == 'symbol' || type == 'boolean' ||
-        value == null || isSymbol(value)) {
-      return true;
-    }
-    return reIsPlainProp.test(value) || !reIsDeepProp.test(value) ||
-      (object != null && value in Object(object));
-  }
-
-  /**
-   * Casts `value` to a path array if it's not one.
-   *
-   * @private
-   * @param {*} value The value to inspect.
-   * @param {Object} [object] The object to query keys on.
-   * @returns {Array} Returns the cast property path array.
-   */
-  function castPath(value, object) {
-    if (isArray(value)) {
-      return value;
-    }
-    return isKey(value, object) ? [value] : stringToPath(toString(value));
-  }
-
-  /**
-   * The base implementation of `_.get` without support for default values.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @param {Array|string} path The path of the property to get.
-   * @returns {*} Returns the resolved value.
-   */
-  function baseGet(object, path) {
-    path = castPath(path, object);
-
-    var index = 0,
-        length = path.length;
-
-    while (object != null && index < length) {
-      object = object[toKey(path[index++])];
-    }
-    return (index && index == length) ? object : undefined;
-  }
-
-  /**
-   * Gets the value at `path` of `object`. If the resolved value is
-   * `undefined`, the `defaultValue` is returned in its place.
-   *
-   * @static
-   * @memberOf _
-   * @since 3.7.0
-   * @category Object
-   * @param {Object} object The object to query.
-   * @param {Array|string} path The path of the property to get.
-   * @param {*} [defaultValue] The value returned for `undefined` resolved values.
-   * @returns {*} Returns the resolved value.
-   * @example
-   *
-   * var object = { 'a': [{ 'b': { 'c': 3 } }] };
-   *
-   * _.get(object, 'a[0].b.c');
-   * // => 3
-   *
-   * _.get(object, ['a', '0', 'b', 'c']);
-   * // => 3
-   *
-   * _.get(object, 'a.b.c', 'default');
-   * // => 'default'
-   */
-  function get(object, path, defaultValue) {
-    var result = object == null ? undefined : baseGet(object, path);
-    return result === undefined ? defaultValue : result;
-  }
-
   /**
    * The base implementation of `_.hasIn` without support for deep paths.
    *
@@ -3624,245 +3681,6 @@ var deepdash = (function (exports) {
         : baseMatches(value);
     }
     return property(value);
-  }
-
-  /** Used as references for various `Number` constants. */
-  var NAN = 0 / 0;
-
-  /** Used to match leading and trailing whitespace. */
-  var reTrim = /^\s+|\s+$/g;
-
-  /** Used to detect bad signed hexadecimal string values. */
-  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
-
-  /** Used to detect binary string values. */
-  var reIsBinary = /^0b[01]+$/i;
-
-  /** Used to detect octal string values. */
-  var reIsOctal = /^0o[0-7]+$/i;
-
-  /** Built-in method references without a dependency on `root`. */
-  var freeParseInt = parseInt;
-
-  /**
-   * Converts `value` to a number.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to process.
-   * @returns {number} Returns the number.
-   * @example
-   *
-   * _.toNumber(3.2);
-   * // => 3.2
-   *
-   * _.toNumber(Number.MIN_VALUE);
-   * // => 5e-324
-   *
-   * _.toNumber(Infinity);
-   * // => Infinity
-   *
-   * _.toNumber('3.2');
-   * // => 3.2
-   */
-  function toNumber(value) {
-    if (typeof value == 'number') {
-      return value;
-    }
-    if (isSymbol(value)) {
-      return NAN;
-    }
-    if (isObject(value)) {
-      var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
-      value = isObject(other) ? (other + '') : other;
-    }
-    if (typeof value != 'string') {
-      return value === 0 ? value : +value;
-    }
-    value = value.replace(reTrim, '');
-    var isBinary = reIsBinary.test(value);
-    return (isBinary || reIsOctal.test(value))
-      ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
-      : (reIsBadHex.test(value) ? NAN : +value);
-  }
-
-  /** Used as references for various `Number` constants. */
-  var INFINITY$2 = 1 / 0,
-      MAX_INTEGER = 1.7976931348623157e+308;
-
-  /**
-   * Converts `value` to a finite number.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.12.0
-   * @category Lang
-   * @param {*} value The value to convert.
-   * @returns {number} Returns the converted number.
-   * @example
-   *
-   * _.toFinite(3.2);
-   * // => 3.2
-   *
-   * _.toFinite(Number.MIN_VALUE);
-   * // => 5e-324
-   *
-   * _.toFinite(Infinity);
-   * // => 1.7976931348623157e+308
-   *
-   * _.toFinite('3.2');
-   * // => 3.2
-   */
-  function toFinite(value) {
-    if (!value) {
-      return value === 0 ? value : 0;
-    }
-    value = toNumber(value);
-    if (value === INFINITY$2 || value === -INFINITY$2) {
-      var sign = (value < 0 ? -1 : 1);
-      return sign * MAX_INTEGER;
-    }
-    return value === value ? value : 0;
-  }
-
-  /**
-   * Converts `value` to an integer.
-   *
-   * **Note:** This method is loosely based on
-   * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to convert.
-   * @returns {number} Returns the converted integer.
-   * @example
-   *
-   * _.toInteger(3.2);
-   * // => 3
-   *
-   * _.toInteger(Number.MIN_VALUE);
-   * // => 0
-   *
-   * _.toInteger(Infinity);
-   * // => 1.7976931348623157e+308
-   *
-   * _.toInteger('3.2');
-   * // => 3
-   */
-  function toInteger(value) {
-    var result = toFinite(value),
-        remainder = result % 1;
-
-    return result === result ? (remainder ? result - remainder : result) : 0;
-  }
-
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeMax$1 = Math.max;
-
-  /**
-   * This method is like `_.find` except that it returns the index of the first
-   * element `predicate` returns truthy for instead of the element itself.
-   *
-   * @static
-   * @memberOf _
-   * @since 1.1.0
-   * @category Array
-   * @param {Array} array The array to inspect.
-   * @param {Function} [predicate=_.identity] The function invoked per iteration.
-   * @param {number} [fromIndex=0] The index to search from.
-   * @returns {number} Returns the index of the found element, else `-1`.
-   * @example
-   *
-   * var users = [
-   *   { 'user': 'barney',  'active': false },
-   *   { 'user': 'fred',    'active': false },
-   *   { 'user': 'pebbles', 'active': true }
-   * ];
-   *
-   * _.findIndex(users, function(o) { return o.user == 'barney'; });
-   * // => 0
-   *
-   * // The `_.matches` iteratee shorthand.
-   * _.findIndex(users, { 'user': 'fred', 'active': false });
-   * // => 1
-   *
-   * // The `_.matchesProperty` iteratee shorthand.
-   * _.findIndex(users, ['active', false]);
-   * // => 0
-   *
-   * // The `_.property` iteratee shorthand.
-   * _.findIndex(users, 'active');
-   * // => 2
-   */
-  function findIndex(array, predicate, fromIndex) {
-    var length = array == null ? 0 : array.length;
-    if (!length) {
-      return -1;
-    }
-    var index = fromIndex == null ? 0 : toInteger(fromIndex);
-    if (index < 0) {
-      index = nativeMax$1(length + index, 0);
-    }
-    return baseFindIndex(array, baseIteratee(predicate), index);
-  }
-
-  /**
-   * The base implementation of `_.forOwn` without support for iteratee shorthands.
-   *
-   * @private
-   * @param {Object} object The object to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Object} Returns `object`.
-   */
-  function baseForOwn(object, iteratee) {
-    return object && baseFor(object, iteratee, keys);
-  }
-
-  /**
-   * Casts `value` to `identity` if it's not a function.
-   *
-   * @private
-   * @param {*} value The value to inspect.
-   * @returns {Function} Returns cast function.
-   */
-  function castFunction(value) {
-    return typeof value == 'function' ? value : identity;
-  }
-
-  /**
-   * Iterates over own enumerable string keyed properties of an object and
-   * invokes `iteratee` for each property. The iteratee is invoked with three
-   * arguments: (value, key, object). Iteratee functions may exit iteration
-   * early by explicitly returning `false`.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.3.0
-   * @category Object
-   * @param {Object} object The object to iterate over.
-   * @param {Function} [iteratee=_.identity] The function invoked per iteration.
-   * @returns {Object} Returns `object`.
-   * @see _.forOwnRight
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.forOwn(new Foo, function(value, key) {
-   *   console.log(key);
-   * });
-   * // => Logs 'a' then 'b' (iteration order is not guaranteed).
-   */
-  function forOwn(object, iteratee) {
-    return object && baseForOwn(object, castFunction(iteratee));
   }
 
   /**
@@ -4074,7 +3892,6 @@ var deepdash = (function (exports) {
     {
       isObject: isObject,
       isEmpty: isEmpty,
-      findIndex: findIndex,
       forOwn: forOwn,
       forArray: forArray,
       get: get,
@@ -4105,28 +3922,53 @@ var deepdash = (function (exports) {
     deps$4
   );
 
-  var rxArrIndex = /^\d+$/;
+  var rxArrIndex = /\D/;
   var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
+  var rxQuot = /"/g;
+
+  function concatPaths() {
+    var paths = [], len = arguments.length;
+    while ( len-- ) paths[ len ] = arguments[ len ];
+
+    return paths.reduce(
+      function (acc, p) { return acc ? (!p || p.startsWith('[') ? ("" + acc + p) : (acc + "." + p)) : p; },
+      ''
+    );
+  }
 
   function getPathToString(_) {
     function pathToString(path) {
-      if (_.isString(path)) { return path; }
+      var prefixes = [], len = arguments.length - 1;
+      while ( len-- > 0 ) prefixes[ len ] = arguments[ len + 1 ];
+
+      if (_.isString(path)) { return concatPaths.apply(void 0, prefixes.concat( [path] )); }
       if (!_.isArray(path)) { return undefined; }
-      return _.reduce(
-        path,
-        function(accumulator, value) {
-          if (rxArrIndex.test(value)) {
-            return accumulator + '[' + value + ']';
+      prefixes = concatPaths.apply(void 0, prefixes);
+      return path.reduce(function (acc, value) {
+        var type = typeof value;
+        if (type === 'number') {
+          if (value < 0 || value % 1 !== 0) {
+            return (acc + "[\"" + value + "\"]");
+          } else {
+            return (acc + "[" + value + "]");
           }
-          if (rxVarName.test(value)) {
-            return accumulator + (accumulator ? '.' : '') + value;
+        } else if (type !== 'string') {
+          return (acc + "[\"" + value + "\"]");
+        } else if (!value) {
+          return (acc + "[\"\"]");
+        }
+        if (!rxArrIndex.test(value)) {
+          return (acc + "[" + value + "]");
+        }
+        if (rxVarName.test(value)) {
+          if (acc) {
+            return (acc + "." + value);
+          } else {
+            return ("" + acc + value);
           }
-          return (
-            accumulator + '["' + value.toString().replace(/"/g, '\\"') + '"]'
-          );
-        },
-        ''
-      );
+        }
+        return (acc + "[\"" + (value.replace(rxQuot, '\\"')) + "\"]");
+      }, prefixes);
     }
     return pathToString;
   }
@@ -4147,36 +3989,44 @@ var deepdash = (function (exports) {
     var pathToString = getPathToString(_);
     var hasChildren = getHasChildren(_);
     var _each = _.each || _.forArray;
-    function iterate(
-      value,
-      callback,
-      options,
-      key,
-      path,
-      depth,
-      parent,
-      parents,
-      obj,
-      childrenPath
-    ) {
+    function iterate(ref) {
+      var value = ref.value;
+      var callback = ref.callback;
+      var options = ref.options;
+      var key = ref.key;
+      var path = ref.path;
+      var strPath = ref.strPath;
+      var depth = ref.depth; if ( depth === void 0 ) depth = 0;
+      var parent = ref.parent;
+      var parents = ref.parents; if ( parents === void 0 ) parents = [];
+      var obj = ref.obj;
+      var childrenPath = ref.childrenPath;
+      var strChildrenPath = ref.strChildrenPath;
+
       if (options['break']) { return; }
       var currentObj = {
         value: value,
         key: key,
-        path: options.pathFormat == 'array' ? path : pathToString(path),
+        path:
+          options.pathFormat == 'array' ? path : strPath || pathToString(path),
         parent: parent,
       };
 
       var currentParents = parents.concat( [currentObj]);
-
-      var isCircular = undefined;
+      var isCircular;
       var circularParentIndex = undefined;
       var circularParent = undefined;
       if (options.checkCircular) {
         if (_.isObject(value) && !_.isEmpty(value)) {
-          circularParentIndex = _.findIndex(parents, function(v) {
-            return v.value === value;
-          });
+          circularParentIndex = -1;
+          var i = parents.length;
+          while (i--) {
+            if (parents[i].value === value) {
+              circularParentIndex = i;
+              break;
+            }
+          }
+
           circularParent = parents[circularParentIndex] || null;
         } else {
           circularParentIndex = -1;
@@ -4184,7 +4034,6 @@ var deepdash = (function (exports) {
         }
         isCircular = circularParentIndex !== -1;
       }
-      var res;
       var isLeaf =
         !_.isObject(value) ||
         _.isEmpty(value) ||
@@ -4193,10 +4042,10 @@ var deepdash = (function (exports) {
           !hasChildren(value, options.childrenPath));
       var needCallback =
         (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
-      // console.log('needCallback?', needCallback);
+
       if (needCallback) {
         var context = {
-          path: options.pathFormat == 'array' ? path : pathToString(path),
+          path: currentObj.path,
           parent: parent,
           parents: parents,
           obj: obj,
@@ -4212,13 +4061,11 @@ var deepdash = (function (exports) {
         };
         if (options.childrenPath !== undefined) {
           currentObj.childrenPath =
-            options.pathFormat == 'array'
-              ? childrenPath
-              : pathToString(childrenPath);
+            options.pathFormat == 'array' ? childrenPath : strChildrenPath;
           context.childrenPath = currentObj.childrenPath;
         }
         try {
-          res = callback(value, key, parent && parent.value, context);
+          var res = callback(value, key, parent && parent.value, context);
         } catch (err) {
           if (err.message) {
             err.message += "\ncallback failed before deep iterate at:\n" + (context.path);
@@ -4233,50 +4080,55 @@ var deepdash = (function (exports) {
         _.isObject(value)
       ) {
         if (options.childrenPath !== undefined) {
-          function forChildren(children, cp) {
+          function forChildren(children, cp, scp) {
             if (children && _.isObject(children)) {
               _.forOwn(children, function(childValue, childKey) {
                 var childPath = (path || []).concat( (cp || []), [childKey]);
-
-                iterate(
-                  childValue,
-                  callback,
-                  options,
-                  childKey,
-                  childPath,
-                  depth + 1,
-                  currentObj,
-                  currentParents,
-                  obj,
-                  cp
-                );
+                var strChildPath =
+                  options.pathFormat == 'array'
+                    ? pathToString([childKey], strPath || '', scp || '')
+                    : undefined;
+                iterate({
+                  value: childValue,
+                  callback: callback,
+                  options: options,
+                  key: childKey,
+                  path: childPath,
+                  strPath: strChildPath,
+                  depth: depth + 1,
+                  parent: currentObj,
+                  parents: currentParents,
+                  obj: obj,
+                  childrenPath: cp,
+                  strChildrenPath: scp,
+                });
               });
             }
           }
 
           if (!depth && options.rootIsChildren) {
             if (_.isArray(value)) {
-              forChildren(value, undefined);
+              forChildren(value);
             } else {
               _.forOwn(value, function(childValue, childKey) {
-                iterate(
-                  childValue,
-                  callback,
-                  options,
-                  childKey,
-                  [childKey],
-                  depth + 1,
-                  currentObj,
-                  currentParents,
-                  obj,
-                  undefined
-                );
+                iterate({
+                  value: childValue,
+                  callback: callback,
+                  options: options,
+                  key: childKey,
+                  path: [childKey],
+                  strPath: pathToString([childKey]),
+                  depth: depth + 1,
+                  parent: currentObj,
+                  parents: currentParents,
+                  obj: obj,
+                });
               });
             }
           } else {
-            _each(options.childrenPath, function(cp) {
+            _each(options.childrenPath, function(cp, i) {
               var children = _.get(value, cp);
-              forChildren(children, cp);
+              forChildren(children, cp, options.strChildrenPath[i]);
             });
           }
         } else {
@@ -4288,18 +4140,23 @@ var deepdash = (function (exports) {
             }
 
             var childPath = (path || []).concat( [childKey]);
+            var strChildPath =
+              options.pathFormat == 'array'
+                ? pathToString([childKey], strPath || '')
+                : undefined;
 
-            iterate(
-              childValue,
-              callback,
-              options,
-              childKey,
-              childPath,
-              depth + 1,
-              currentObj,
-              currentParents,
-              obj
-            );
+            iterate({
+              value: childValue,
+              callback: callback,
+              options: options,
+              key: childKey,
+              path: childPath,
+              strPath: strChildPath,
+              depth: depth + 1,
+              parent: currentObj,
+              parents: currentParents,
+              obj: obj,
+            });
           });
         }
       }
@@ -4345,22 +4202,19 @@ var deepdash = (function (exports) {
           if (_.isString(options.childrenPath)) {
             options.childrenPath = [options.childrenPath];
           }
-          for (var i = options.childrenPath.length - 1; i >= 0; i--) {
-            options.childrenPath[i] = _.toPath(options.childrenPath[i]);
+          options.strChildrenPath = options.childrenPath;
+          options.childrenPath = [];
+          for (var i = options.strChildrenPath.length - 1; i >= 0; i--) {
+            options.childrenPath[i] = _.toPath(options.strChildrenPath[i]);
           }
         }
       }
-      iterate(
-        obj,
-        callback,
-        options,
-        undefined,
-        undefined,
-        0,
-        undefined,
-        [],
-        obj
-      );
+      iterate({
+        value: obj,
+        callback: callback,
+        options: options,
+        obj: obj,
+      });
       return obj;
     }
     return eachDeep;
@@ -5777,7 +5631,7 @@ var deepdash = (function (exports) {
   var deps$b = merge(
     {
       iteratee: iteratee,
-      isArray: isArray,
+      isArray: _isArray,
       isObject: isObject,
       clone: clone,
       set: set,
@@ -5842,6 +5696,140 @@ var deepdash = (function (exports) {
    */
   function isEqual(value, other) {
     return baseIsEqual(value, other);
+  }
+
+  /** Used as references for various `Number` constants. */
+  var NAN = 0 / 0;
+
+  /** Used to match leading and trailing whitespace. */
+  var reTrim = /^\s+|\s+$/g;
+
+  /** Used to detect bad signed hexadecimal string values. */
+  var reIsBadHex = /^[-+]0x[0-9a-f]+$/i;
+
+  /** Used to detect binary string values. */
+  var reIsBinary = /^0b[01]+$/i;
+
+  /** Used to detect octal string values. */
+  var reIsOctal = /^0o[0-7]+$/i;
+
+  /** Built-in method references without a dependency on `root`. */
+  var freeParseInt = parseInt;
+
+  /**
+   * Converts `value` to a number.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to process.
+   * @returns {number} Returns the number.
+   * @example
+   *
+   * _.toNumber(3.2);
+   * // => 3.2
+   *
+   * _.toNumber(Number.MIN_VALUE);
+   * // => 5e-324
+   *
+   * _.toNumber(Infinity);
+   * // => Infinity
+   *
+   * _.toNumber('3.2');
+   * // => 3.2
+   */
+  function toNumber(value) {
+    if (typeof value == 'number') {
+      return value;
+    }
+    if (isSymbol(value)) {
+      return NAN;
+    }
+    if (isObject(value)) {
+      var other = typeof value.valueOf == 'function' ? value.valueOf() : value;
+      value = isObject(other) ? (other + '') : other;
+    }
+    if (typeof value != 'string') {
+      return value === 0 ? value : +value;
+    }
+    value = value.replace(reTrim, '');
+    var isBinary = reIsBinary.test(value);
+    return (isBinary || reIsOctal.test(value))
+      ? freeParseInt(value.slice(2), isBinary ? 2 : 8)
+      : (reIsBadHex.test(value) ? NAN : +value);
+  }
+
+  /** Used as references for various `Number` constants. */
+  var INFINITY$2 = 1 / 0,
+      MAX_INTEGER = 1.7976931348623157e+308;
+
+  /**
+   * Converts `value` to a finite number.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.12.0
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {number} Returns the converted number.
+   * @example
+   *
+   * _.toFinite(3.2);
+   * // => 3.2
+   *
+   * _.toFinite(Number.MIN_VALUE);
+   * // => 5e-324
+   *
+   * _.toFinite(Infinity);
+   * // => 1.7976931348623157e+308
+   *
+   * _.toFinite('3.2');
+   * // => 3.2
+   */
+  function toFinite(value) {
+    if (!value) {
+      return value === 0 ? value : 0;
+    }
+    value = toNumber(value);
+    if (value === INFINITY$2 || value === -INFINITY$2) {
+      var sign = (value < 0 ? -1 : 1);
+      return sign * MAX_INTEGER;
+    }
+    return value === value ? value : 0;
+  }
+
+  /**
+   * Converts `value` to an integer.
+   *
+   * **Note:** This method is loosely based on
+   * [`ToInteger`](http://www.ecma-international.org/ecma-262/7.0/#sec-tointeger).
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to convert.
+   * @returns {number} Returns the converted integer.
+   * @example
+   *
+   * _.toInteger(3.2);
+   * // => 3
+   *
+   * _.toInteger(Number.MIN_VALUE);
+   * // => 0
+   *
+   * _.toInteger(Infinity);
+   * // => 1.7976931348623157e+308
+   *
+   * _.toInteger('3.2');
+   * // => 3
+   */
+  function toInteger(value) {
+    var result = toFinite(value),
+        remainder = result % 1;
+
+    return result === result ? (remainder ? result - remainder : result) : 0;
   }
 
   /**

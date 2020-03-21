@@ -1198,8 +1198,9 @@ Console:
   <summary>expand example</summary>
 
 ```js
-  console.log(_.pathToString(['a', 'b', 'c', 'defg', 0, '1', 2.3]));
-  // a.b.c.defg[0][1]["2.3"]
+  console.log(_.pathToString(['a', 'b', 'c', 'defg', 0, '1', 2.3]
+    ,'prefix1', 'prefix2', '[3]'));
+  // prefix1.prefix2[3].a.b.c.defg[0][1]["2.3"]
   console.log(_.pathToString(['"', '"', '"']));
   // ["\\""]["\\""]["\\""]
   console.log(_.pathToString('it.s.a.string'));

@@ -18,12 +18,13 @@
     "test": "nyc mocha  --reporter min",
     "report": "npm run build && nyc --reporter=html --reporter=text mocha",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "dev": "npm run build && ./node_modules/.bin/mocha -g 'someDeep' --reporter min --no-deprecation",
+    "dev": "npm run build && ./node_modules/.bin/mocha -g 'eachDeep' --reporter min --no-deprecation",
     "debug": "node --inspect-brk test/debugDeep.js",
     "demo": "serve",
     "snyk-protect": "snyk protect",
     "contributors:add": "all-contributors add",
-    "contributors:generate": "all-contributors generate"
+    "contributors:generate": "all-contributors generate",
+    "profiling": "./node_modules/.bin/mocha --reporter min --prof"
   },
   "repository": {
     "type": "git",
