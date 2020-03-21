@@ -5639,7 +5639,7 @@ var deepdash = (function (exports) {
     deps$4
   );
 
-  function getMapDeep(_) {
+  function getMapValuesDeep(_) {
     var eachDeep = getEachDeep(_);
 
     function mapDeep(obj, iteratee, options) {
@@ -5664,7 +5664,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var mapDeep = getMapDeep(deps$b);
+  var mapValuesDeep = getMapValuesDeep(deps$b);
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -6067,7 +6067,7 @@ var deepdash = (function (exports) {
   exports.forEachDeep = forEachDeep;
   exports.index = index;
   exports.keysDeep = keysDeep;
-  exports.mapDeep = mapDeep;
+  exports.mapValuesDeep = mapValuesDeep;
   exports.omitDeep = omitDeep;
   exports.pathMatches = pathMatches;
   exports.pathToString = pathToString;

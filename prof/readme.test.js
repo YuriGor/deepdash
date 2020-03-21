@@ -15,7 +15,7 @@ forLodashes(
     'omitDeep',
     'pickDeep',
     'omitDeep',
-    'mapDeep',
+    'mapValuesDeep',
   ],
   (_) => {
     it('usage', () => {
@@ -481,7 +481,9 @@ forLodashes(
       expect(
         _.omitDeep(children, /[^e]$/i, { onMatch: { skipChildren: false } })
       );
-      expect(_.mapDeep({ hello: { from: { the: 'deep word' } } }, (v) => v));
+      expect(
+        _.mapValuesDeep({ hello: { from: { the: 'deep word' } } }, (v) => v)
+      );
     });
   }
 );

@@ -837,7 +837,7 @@ var deepdash = (function () {
     return mixOrPatchIn('keysDeep', getKeysDeep(_), !getKeysDeep.notChainable);
   }
 
-  function getMapDeep(_) {
+  function getMapValuesDeep(_) {
     var eachDeep = getEachDeep(_);
 
     function mapDeep(obj, iteratee, options) {
@@ -863,9 +863,9 @@ var deepdash = (function () {
 
   /* build/tpl */
 
-  function addMapDeep(_) {
+  function addMapValuesDeep(_) {
     var mixOrPatchIn = getMixOrPatchIn(_);
-    return mixOrPatchIn('mapDeep', getMapDeep(_), !getMapDeep.notChainable);
+    return mixOrPatchIn('mapValuesDeep', getMapValuesDeep(_), !getMapValuesDeep.notChainable);
   }
 
   function getPathMatches(_) {
@@ -1076,7 +1076,7 @@ var deepdash = (function () {
     addForEachDeep(_);
     addIndex(_);
     addKeysDeep(_);
-    addMapDeep(_);
+    addMapValuesDeep(_);
     addOmitDeep(_);
     addPathMatches(_);
     addPathToString(_);

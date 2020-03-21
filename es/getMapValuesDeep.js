@@ -1,6 +1,6 @@
 import getEachDeep from './getEachDeep';
 
-export default function getMapDeep(_) {
+export default function getMapValuesDeep(_) {
   var eachDeep = getEachDeep(_);
 
   function mapDeep(obj, iteratee, options) {

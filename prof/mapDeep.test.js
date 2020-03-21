@@ -3,10 +3,10 @@
 var { demo, children } = require('./object');
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
-forLodashes(['mapDeep'], (_) => {
+forLodashes(['mapValuesDeep'], (_) => {
   it('defaults', () => {
-    let res = _.mapDeep(demo, (value, key, parent, ctx) => {
-      validateIteration(value, key, parent, ctx, { method: 'mapDeep' });
+    let res = _.mapValuesDeep(demo, (value, key, parent, ctx) => {
+      validateIteration(value, key, parent, ctx, { method: 'mapValuesDeep' });
       if (value instanceof Date) return 'DATE SKIPPED';
       if (typeof value == 'object') return { '?': '!' };
       return value + '';
@@ -15,10 +15,10 @@ forLodashes(['mapDeep'], (_) => {
     expect(JSON.stringify(res));
   });
   it('leavesOnly', () => {
-    let res = _.mapDeep(
+    let res = _.mapValuesDeep(
       demo,
       (value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx, { method: 'mapDeep' });
+        validateIteration(value, key, parent, ctx, { method: 'mapValuesDeep' });
         if (value instanceof Date) return 'DATE SKIPPED';
         return value + '';
       },
@@ -29,10 +29,10 @@ forLodashes(['mapDeep'], (_) => {
   });
 
   it('array', () => {
-    let res = _.mapDeep(
+    let res = _.mapValuesDeep(
       [demo],
       (value, key, parent, ctx) => {
-        validateIteration(value, key, parent, ctx, { method: 'mapDeep' });
+        validateIteration(value, key, parent, ctx, { method: 'mapValuesDeep' });
         if (value instanceof Date) return 'DATE SKIPPED';
         return value + '';
       },
@@ -44,12 +44,12 @@ forLodashes(['mapDeep'], (_) => {
 
   it('primitive', () => {
     _.each([0, 1, 2, 'a', 'bcd', true, false, null, undefined], (v) => {
-      expect(_.mapDeep(v));
+      expect(_.mapValuesDeep(v));
     });
   });
 
   it('tree mode', () => {
-    let res = _.mapDeep(
+    let res = _.mapValuesDeep(
       children,
       (v) => {
         return { title: v.name };
@@ -61,7 +61,7 @@ forLodashes(['mapDeep'], (_) => {
   });
 
   it('tree mode - rootIsChildren', () => {
-    let res = _.mapDeep(
+    let res = _.mapValuesDeep(
       { g1: children[0], g2: children[1] },
       (v, k, p, c) => {
         return { title: v.name };

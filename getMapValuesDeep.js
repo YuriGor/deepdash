@@ -1,6 +1,8 @@
-import getEachDeep from './getEachDeep';
+'use strict';
 
-export default function getMapDeep(_) {
+var getEachDeep = require('./getEachDeep.js');
+
+function getMapValuesDeep(_) {
   var eachDeep = getEachDeep(_);
 
   function mapDeep(obj, iteratee, options) {
@@ -23,3 +25,5 @@ export default function getMapDeep(_) {
   }
   return mapDeep;
 }
+
+module.exports = getMapValuesDeep;

@@ -1,5 +1,11 @@
 # Change Log
 
+## v5-0-0
+*(2020-03-21)*
+
+**Breaking Changes**
+- mapDeep renamed to mapValuesDeep to conform to Lodash map/mapValues pair of methods
+
 ## v4-6-0
 *(2020-03-21)*
 **Features added**

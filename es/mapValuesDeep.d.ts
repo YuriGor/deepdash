@@ -1,7 +1,7 @@
 import { Path } from "./Path";
 import { IIterateeContext } from "./IIterateeContext";
 
-export default function eachDeep(
+export default function mapValuesDeep(
   obj: any,
   callback?: (
     value: any,
@@ -10,12 +10,12 @@ export default function eachDeep(
     context: IIterateeContext
   ) => any,
   options?: {
-    pathFormat?: "string" | "array"; // = "string";
-    checkCircular?: boolean; // = false;
+    pathFormat?: "string" | "array";
+    checkCircular?: boolean;
     childrenPath?: Path[];
     includeRoot?: boolean;
-    leavesOnly?: boolean; // = false;
+    leavesOnly?: boolean;
     rootIsChildren?: boolean;
-    callbackAfterIterate?: boolean; // = false;
+    callbackAfterIterate?: boolean;
   }
 ): any;

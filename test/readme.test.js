@@ -20,7 +20,7 @@ forLodashes(
     'omitDeep',
     'pickDeep',
     'omitDeep',
-    'mapDeep',
+    'mapValuesDeep',
   ],
   (_) => {
     it('usage', () => {
@@ -861,7 +861,7 @@ forLodashes(
         },
       ]);
       expect(
-        _.mapDeep(
+        _.mapValuesDeep(
           { hello: { from: { the: 'deep word' } } },
           (v) => v.toUpperCase(),
           { leavesOnly: true }
