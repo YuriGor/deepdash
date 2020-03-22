@@ -4,7 +4,6 @@ export default function getReduceDeep(_) {
   var eachDeep = getEachDeep(_);
 
   function reduceDeep(obj, iteratee, accumulator, options) {
-    iteratee = _.iteratee(iteratee);
     var accumulatorInited = accumulator !== undefined;
     eachDeep(
       obj,

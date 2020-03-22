@@ -10,6 +10,7 @@ export { default as findValueDeep } from './findValueDeep';
 export { default as forEachDeep } from './forEachDeep';
 export { default as index } from './index';
 export { default as keysDeep } from './keysDeep';
+export { default as mapDeep } from './mapDeep';
 export { default as mapValuesDeep } from './mapValuesDeep';
 export { default as omitDeep } from './omitDeep';
 export { default as pathMatches } from './pathMatches';

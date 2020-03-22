@@ -5631,6 +5631,57 @@ var deepdash = (function (exports) {
   var deps$b = merge(
     {
       iteratee: iteratee,
+    },
+    deps$4
+  );
+
+  function getReduceDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function reduceDeep(obj, iteratee, accumulator, options) {
+      var accumulatorInited = accumulator !== undefined;
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          delete context['break'];
+          if (!accumulatorInited) {
+            accumulator = value;
+            accumulatorInited = true;
+          } else {
+            accumulator = iteratee(accumulator, value, key, parent, context);
+          }
+        },
+        options
+      );
+      return accumulator;
+    }
+    return reduceDeep;
+  }
+
+  function getMapDeep(_) {
+    var reduceDeep = getReduceDeep(_);
+
+    function mapDeep(obj, iteratee, options) {
+      iteratee = _.iteratee(iteratee);
+      return reduceDeep(
+        obj,
+        function (acc, value, key, parentValue, context) {
+          acc.push(iteratee(value, key, parentValue, context));
+          return acc;
+        },
+        [],
+        options
+      );
+    }
+    return mapDeep;
+  }
+
+  /* build/tpl */
+  var mapDeep = getMapDeep(deps$b);
+
+  var deps$c = merge(
+    {
+      iteratee: iteratee,
       isArray: _isArray,
       isObject: isObject,
       clone: clone,
@@ -5664,7 +5715,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var mapValuesDeep = getMapValuesDeep(deps$b);
+  var mapValuesDeep = getMapValuesDeep(deps$c);
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -5867,7 +5918,7 @@ var deepdash = (function (exports) {
     return baseSlice(array, n < 0 ? 0 : n, length);
   }
 
-  var deps$c = merge(
+  var deps$d = merge(
     {
       isString: isString,
       isArray: _isArray,
@@ -5879,7 +5930,7 @@ var deepdash = (function (exports) {
     deps$2
   );
 
-  var deps$d = merge({ merge: merge }, deps$c, deps$7);
+  var deps$e = merge({ merge: merge }, deps$d, deps$7);
 
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
@@ -5980,10 +6031,10 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var omitDeep = getOmitDeep(deps$d);
+  var omitDeep = getOmitDeep(deps$e);
 
   /* build/tpl */
-  var pathMatches = getPathMatches(deps$c);
+  var pathMatches = getPathMatches(deps$d);
 
   /* build/tpl */
   var pathToString = getPathToString(deps$2);
@@ -5991,7 +6042,7 @@ var deepdash = (function (exports) {
   /* build/tpl */
   var paths = getPaths(deps$a);
 
-  var deps$e = merge({ merge: merge }, deps$d);
+  var deps$f = merge({ merge: merge }, deps$e);
 
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
@@ -6009,41 +6060,10 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var pickDeep = getPickDeep(deps$e);
-
-  var deps$f = merge(
-    {
-      iteratee: iteratee,
-    },
-    deps$4
-  );
-
-  function getReduceDeep(_) {
-    var eachDeep = getEachDeep(_);
-
-    function reduceDeep(obj, iteratee, accumulator, options) {
-      iteratee = _.iteratee(iteratee);
-      var accumulatorInited = accumulator !== undefined;
-      eachDeep(
-        obj,
-        function(value, key, parent, context) {
-          delete context['break'];
-          if (!accumulatorInited) {
-            accumulator = value;
-            accumulatorInited = true;
-          } else {
-            accumulator = iteratee(accumulator, value, key, parent, context);
-          }
-        },
-        options
-      );
-      return accumulator;
-    }
-    return reduceDeep;
-  }
+  var pickDeep = getPickDeep(deps$f);
 
   /* build/tpl */
-  var reduceDeep = getReduceDeep(deps$f);
+  var reduceDeep = getReduceDeep(deps$4);
 
   function getSomeDeep(_) {
     var findDeep = getFindDeep(_);
@@ -6067,6 +6087,7 @@ var deepdash = (function (exports) {
   exports.forEachDeep = forEachDeep;
   exports.index = index;
   exports.keysDeep = keysDeep;
+  exports.mapDeep = mapDeep;
   exports.mapValuesDeep = mapValuesDeep;
   exports.omitDeep = omitDeep;
   exports.pathMatches = pathMatches;

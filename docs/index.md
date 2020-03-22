@@ -18,6 +18,7 @@ Standalone or as a Lodash mixin extension
 - [findPathDeep](/#findpathdeep) returns path of the first matching deep value
 - [index](#index) - get an object with all the paths as keys and corresponding values
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
+- [mapDeep](#mapdeep) - produce an array of deep values processed by iteratee.
 - [mapValuesDeep](#mapvaluesdeep) - produce an object with the same structure but with values trasformed thru iteratee.
 - [reduceDeep](#reducedeep) - like reduce but deep
 - [someDeep](/#somedeep)  - returns true if found some matching deep value, otherwise false
@@ -645,7 +646,7 @@ _.findDeep( obj, predicate, options={
     - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - and object with found value, key, parent and context or undefined if nothing found
 
-*examples a bit later sorry*
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ## findValueDeep
 
@@ -672,7 +673,7 @@ _.findValueDeep( obj, predicate, options={
     - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - found value or undefined if nothing found. Be carefull, deep value may also be undefined
 
-*examples a bit later sorry*
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ## findPathDeep
 
@@ -699,7 +700,7 @@ _.findPathDeep( obj, predicate, options={
     - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - the path of the found value or undefined if nothing found. Be carefull, path may also be undefined for datasource object itself, if includeRoot == true
 
-*examples a bit later sorry*
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 
 ## index
@@ -824,6 +825,44 @@ Console:
 ```
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/mYbByL?editors=0010)
+
+## mapDeep
+
+returns an array of deep values processed by iteratee.
+previous implemetation with object structure preserved renamed to [mapValuesDeep](/#mapvaluesdeep)
+
+```js
+_.mapDeep( obj, iteratee, options) => object
+```
+
+* `obj` - The object/array to iterate over.
+* `iteratee` (_.identity) - The function invoked per iteration with four arguments (see [iteratee subsection](#iteratee) for details)
+    - `value`
+    - `key|index`
+    - `parentValue`
+    - `context`
+    - `returns` - desired value instead of initial to be added to result array
+* `options` - (see [eachDeep options](#eachdeep) for details)
+    - `callbackAfterIterate` (false)
+    - `checkCircular` (false)
+    - `leavesOnly` (false)
+    - `pathFormat` ('string')
+    - `includeRoot` (!_.isArray(obj))
+    - `childrenPath` (undefined)
+    - `rootIsChildren` (!includeRoot && _.isArray(obj))
+* `returns` - array of deep values processed by iteratee.
+
+**Example:**
+```js
+  let res = _.mapValuesDeep(
+    { hello: { from: { the: 'deep world', and: 'deepdash' } } },
+    (v) => v.toUpperCase(),
+    { leavesOnly: true }
+  );
+  // res -> ['DEEP WORLD','DEEPDASH']
+```
+
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ## mapValuesDeep
 
@@ -1066,7 +1105,7 @@ _.someDeep( obj, predicate, options={
     - `rootIsChildren` (!includeRoot && _.isArray(obj)) - treat `obj` as a top-level children collection, so its elements will be passed into predicate without parent path check. Considered only if `childrenPath` specified. By default true for arrays if not `includeRoot`.
 * `returns` - true if some deep value found or false if not.
 
-*examples a bit later sorry*
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ## pathToString
 

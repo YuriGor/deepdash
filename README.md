@@ -568,7 +568,7 @@ let children = [
 </details>
 </details>
 
-[Try it yourself ›››](http://localhost/)
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ### findValueDeep
 › find first matching deep value [📚 see docs](https://deepdash.io/#findvaluedeep)
@@ -597,7 +597,7 @@ let children = [
 </details>
 </details>
 
-[Try it yourself ›››](http://localhost/)
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ### findPathDeep
 › find the path of the first matching deep value [📚 see docs](https://deepdash.io/#findpathdeep)
@@ -626,15 +626,32 @@ let children = [
 </details>
 </details>
 
-[Try it yourself ›››](http://localhost/)
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ### mapDeep
-› get the same object, but different. [📚 see docs](https://deepdash.io/#mapdeep)
+› get array of values processed by iteratee. [📚 see docs](https://deepdash.io/#mapdeep)
 <details>
   <summary>expand example</summary>
 
 ```js
-  let res = _.mapDeep(
+  let res = _.mapValuesDeep(
+    { hello: { from: { the: 'deep world', and: 'deepdash' } } },
+    (v) => v.toUpperCase(),
+    { leavesOnly: true }
+  );
+  // res -> ['DEEP WORLD','DEEPDASH']
+```
+</details>
+
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
+
+### mapValuesDeep
+› get the same object, but different. [📚 see docs](https://deepdash.io/#mapvaluesdeep)
+<details>
+  <summary>expand example</summary>
+
+```js
+  let res = _.mapValuesDeep(
     { hello: { from: { the: 'deep world' } } },
     (v) => v.toUpperCase(),
     { leavesOnly: true }
@@ -691,7 +708,7 @@ let children = [
 </details>
 </details>
 
-[Try it yourself ›››](http://localhost/)
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ### pickDeep
 › pick values by paths specified by endings or regexes [📚 see docs](https://deepdash.io/#pickdeep)

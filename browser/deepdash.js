@@ -837,6 +837,54 @@ var deepdash = (function () {
     return mixOrPatchIn('keysDeep', getKeysDeep(_), !getKeysDeep.notChainable);
   }
 
+  function getReduceDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function reduceDeep(obj, iteratee, accumulator, options) {
+      var accumulatorInited = accumulator !== undefined;
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
+          delete context['break'];
+          if (!accumulatorInited) {
+            accumulator = value;
+            accumulatorInited = true;
+          } else {
+            accumulator = iteratee(accumulator, value, key, parent, context);
+          }
+        },
+        options
+      );
+      return accumulator;
+    }
+    return reduceDeep;
+  }
+
+  function getMapDeep(_) {
+    var reduceDeep = getReduceDeep(_);
+
+    function mapDeep(obj, iteratee, options) {
+      iteratee = _.iteratee(iteratee);
+      return reduceDeep(
+        obj,
+        function (acc, value, key, parentValue, context) {
+          acc.push(iteratee(value, key, parentValue, context));
+          return acc;
+        },
+        [],
+        options
+      );
+    }
+    return mapDeep;
+  }
+
+  /* build/tpl */
+
+  function addMapDeep(_) {
+    var mixOrPatchIn = getMixOrPatchIn(_);
+    return mixOrPatchIn('mapDeep', getMapDeep(_), !getMapDeep.notChainable);
+  }
+
   function getMapValuesDeep(_) {
     var eachDeep = getEachDeep(_);
 
@@ -1016,30 +1064,6 @@ var deepdash = (function () {
     return mixOrPatchIn('pickDeep', getPickDeep(_), !getPickDeep.notChainable);
   }
 
-  function getReduceDeep(_) {
-    var eachDeep = getEachDeep(_);
-
-    function reduceDeep(obj, iteratee, accumulator, options) {
-      iteratee = _.iteratee(iteratee);
-      var accumulatorInited = accumulator !== undefined;
-      eachDeep(
-        obj,
-        function(value, key, parent, context) {
-          delete context['break'];
-          if (!accumulatorInited) {
-            accumulator = value;
-            accumulatorInited = true;
-          } else {
-            accumulator = iteratee(accumulator, value, key, parent, context);
-          }
-        },
-        options
-      );
-      return accumulator;
-    }
-    return reduceDeep;
-  }
-
   /* build/tpl */
 
   function addReduceDeep(_) {
@@ -1076,6 +1100,7 @@ var deepdash = (function () {
     addForEachDeep(_);
     addIndex(_);
     addKeysDeep(_);
+    addMapDeep(_);
     addMapValuesDeep(_);
     addOmitDeep(_);
     addPathMatches(_);

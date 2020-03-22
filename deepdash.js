@@ -11,6 +11,7 @@ var addFindValueDeep = require('./addFindValueDeep.js');
 var addForEachDeep = require('./addForEachDeep.js');
 var addIndex = require('./addIndex.js');
 var addKeysDeep = require('./addKeysDeep.js');
+var addMapDeep = require('./addMapDeep.js');
 var addMapValuesDeep = require('./addMapValuesDeep.js');
 var addOmitDeep = require('./addOmitDeep.js');
 var addPathMatches = require('./addPathMatches.js');
@@ -34,6 +35,7 @@ function apply(_) {
   addForEachDeep(_);
   addIndex(_);
   addKeysDeep(_);
+  addMapDeep(_);
   addMapValuesDeep(_);
   addOmitDeep(_);
   addPathMatches(_);
