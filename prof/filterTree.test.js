@@ -8,7 +8,7 @@ var {
   deeperComments,
   deeperCommentsCircular,
   badChildren,
-} = require('./object');
+} = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
 forLodashes(['filterDeep'], (_) => {

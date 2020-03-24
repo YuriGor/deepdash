@@ -12,7 +12,7 @@ function getPathMatches(_) {
     } else {
       pathArray = path;
     }
-    if (!_.isArray(paths)) {
+    if (!Array.isArray(paths)) {
       paths = [paths];
     } else {
       paths = _.cloneDeep(paths);
@@ -21,7 +21,7 @@ function getPathMatches(_) {
       if (_.isString(paths[i])) {
         paths[i] = _.toPath(paths[i]);
       }
-      if (_.isArray(paths[i])) {
+      if (Array.isArray(paths[i])) {
         if (pathArray === undefined) {
           pathArray = _.toPath(pathString);
         }

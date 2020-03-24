@@ -8,7 +8,7 @@ const chai = require('chai'),
 
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { circular } = require('./object');
+var { circular } = require('./object')();
 
 var { forLodashes } = require('./common.js');
 

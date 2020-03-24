@@ -14,7 +14,7 @@ var {
   comments,
   deeperComments,
   deeperCommentsCircular,
-} = require('./object');
+} = require('./object')();
 
 forLodashes('eachDeep', (_) => {
   it('no mutation', () => {

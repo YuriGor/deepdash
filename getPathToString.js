@@ -4,7 +4,7 @@ var rxArrIndex = /\D/;
 var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 var rxQuot = /"/g;
 
-function concatPaths() {
+function joinPaths() {
   var paths = [], len = arguments.length;
   while ( len-- ) paths[ len ] = arguments[ len ];
 
@@ -19,9 +19,10 @@ function getPathToString(_) {
     var prefixes = [], len = arguments.length - 1;
     while ( len-- > 0 ) prefixes[ len ] = arguments[ len + 1 ];
 
-    if (_.isString(path)) { return concatPaths.apply(void 0, prefixes.concat( [path] )); }
-    if (!_.isArray(path)) { return undefined; }
-    prefixes = concatPaths.apply(void 0, prefixes);
+    prefixes = prefixes.filter(function (p) { return p !== undefined; });
+    if (_.isString(path)) { return joinPaths.apply(void 0, prefixes.concat( [path] )); }
+    if (!Array.isArray(path)) { return undefined; }
+    prefixes = joinPaths.apply(void 0, prefixes);
     return path.reduce(function (acc, value) {
       var type = typeof value;
       if (type === 'number') {

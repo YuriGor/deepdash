@@ -5,13 +5,12 @@ var getEachDeep = require('./getEachDeep.js');
 function getMapValuesDeep(_) {
   var eachDeep = getEachDeep(_);
 
-  function mapDeep(obj, iteratee, options) {
+  function mapValuesDeep(obj, iteratee, options) {
     iteratee = _.iteratee(iteratee);
-    var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : _.clone(obj);
+    var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : _.clone(obj);
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        delete context['break'];
         var r = iteratee(value, key, parent, context);
         if (key === undefined) {
           res = r;
@@ -23,7 +22,7 @@ function getMapValuesDeep(_) {
     );
     return res;
   }
-  return mapDeep;
+  return mapValuesDeep;
 }
 
 module.exports = getMapValuesDeep;

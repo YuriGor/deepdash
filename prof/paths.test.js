@@ -1,6 +1,6 @@
 'use strict';
 
-var { demo, circular, children } = require('./object');
+var { demo, circular, children } = require('./object')();
 
 var { forLodashes, it, expect } = require('./common.js');
 forLodashes(['paths', 'keysDeep', 'index'], (_) => {

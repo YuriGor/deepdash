@@ -11,6 +11,7 @@ import forEachDeep from "./forEachDeep";
 import index from "./index";
 import keysDeep from "./keysDeep";
 import mapDeep from "./mapDeep";
+import mapKeysDeep from "./mapKeysDeep";
 import mapValuesDeep from "./mapValuesDeep";
 import omitDeep from "./omitDeep";
 import pathMatches from "./pathMatches";
@@ -33,6 +34,7 @@ export default function addDeepdash<Src>(_: Src): Src & {
   index: typeof index;
   keysDeep: typeof keysDeep;
   mapDeep: typeof mapDeep;
+  mapKeysDeep: typeof mapKeysDeep;
   mapValuesDeep: typeof mapValuesDeep;
   omitDeep: typeof omitDeep;
   pathMatches: typeof pathMatches;

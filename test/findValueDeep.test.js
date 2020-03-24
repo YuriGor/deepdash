@@ -7,7 +7,7 @@ const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 var { validateIteration, forLodashes } = require('./common.js');
 
-var { demo, circular } = require('./object');
+var { demo, circular } = require('./object')();
 
 forLodashes(['findValueDeep', 'omitDeep', 'paths'], (_) => {
   function isNS(options = {}) {

@@ -84,7 +84,7 @@ export default function getFilterDeep(_) {
       leavesOnly: false,
     };
 
-    var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
+    var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
     var replies = {};
     var rootReply;
     var foundCircular = [];
@@ -92,7 +92,7 @@ export default function getFilterDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        delete context['break'];
+        // delete context['break'];
         var curPath = pathToString(context.path);
         if (!context.afterIterate) {
           if (!context.isCircular) {
@@ -153,10 +153,14 @@ export default function getFilterDeep(_) {
                   _.set(
                     res,
                     context.path,
-                    _.isArray(value) ? [] : _.isPlainObject(value) ? {} : value
+                    Array.isArray(value)
+                      ? []
+                      : _.isPlainObject(value)
+                      ? {}
+                      : value
                   );
                 } else {
-                  res = _.isArray(value)
+                  res = Array.isArray(value)
                     ? []
                     : _.isPlainObject(value)
                     ? {}
@@ -227,7 +231,7 @@ export default function getFilterDeep(_) {
       //console.log('filterDeep → condenseDeep');
       res = condenseDeep(res, { checkCircular: options.checkCircular });
     }
-    if (_.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
+    if (Array.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
       return null;
     return res;
   }

@@ -7,7 +7,7 @@ const chai = require('chai'),
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 
-var { demo } = require('./object');
+var { demo } = require('./object')();
 
 var { forLodashes } = require('./common.js');
 forLodashes(['pickDeep'], (_) => {

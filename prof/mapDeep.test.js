@@ -1,6 +1,6 @@
 'use strict';
 
-var { demo, children } = require('./object');
+var { demo, children } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
 forLodashes(['mapValuesDeep'], (_) => {

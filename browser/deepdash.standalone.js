@@ -2125,8 +2125,6 @@ var deepdash = (function (exports) {
     baseMerge(object, source, srcIndex);
   });
 
-  var _isArray = Array.isArray;
-
   function forArray(arr, iteratee) {
     for (var i = 0; i < arr.length; i++) {
       if (iteratee(arr[i], i, arr) === false) { break; }
@@ -2577,31 +2575,6 @@ var deepdash = (function (exports) {
     }
     return true;
   }
-
-  /*import isArray from './isArray';
-  import isObject from './isObject';
-
-  function ownIsEmpty(value) {
-    if (value === undefined || value === null) {
-      return true;
-    }
-    if (isArray(value)) {
-      return !value.length;
-    }
-    if (isObject(value)) {
-      return !Object.keys(value).length;
-    }
-    return true;
-  }
-  export default (value) => {
-    const ldRes = isEmpty(value);
-    const ownRes = ownIsEmpty(value);
-    if (ldRes !== ownRes) {
-      console.log({ ldRes, ownRes, value });
-    }
-    return ldRes;
-  };
-  */
 
   /**
    * Creates an array of the own enumerable property names of `object`.
@@ -3884,7 +3857,6 @@ var deepdash = (function (exports) {
 
   var deps$2 = {
     isString: isString,
-    isArray: _isArray,
     reduce: reduce,
   };
 
@@ -3895,7 +3867,6 @@ var deepdash = (function (exports) {
       forOwn: forOwn,
       forArray: forArray,
       get: get,
-      isArray: _isArray,
     },
     deps$2,
     deps$1
@@ -3905,7 +3876,6 @@ var deepdash = (function (exports) {
     {
       identity: identity,
       merge: merge,
-      isArray: _isArray,
       isString: isString,
       toPath: toPath,
     },
@@ -3915,7 +3885,6 @@ var deepdash = (function (exports) {
   var deps$5 = merge(
     {
       merge: merge,
-      isArray: _isArray,
       forArray: forArray,
     },
     deps,
@@ -3926,7 +3895,7 @@ var deepdash = (function (exports) {
   var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
   var rxQuot = /"/g;
 
-  function concatPaths() {
+  function joinPaths() {
     var paths = [], len = arguments.length;
     while ( len-- ) paths[ len ] = arguments[ len ];
 
@@ -3941,9 +3910,10 @@ var deepdash = (function (exports) {
       var prefixes = [], len = arguments.length - 1;
       while ( len-- > 0 ) prefixes[ len ] = arguments[ len + 1 ];
 
-      if (_.isString(path)) { return concatPaths.apply(void 0, prefixes.concat( [path] )); }
-      if (!_.isArray(path)) { return undefined; }
-      prefixes = concatPaths.apply(void 0, prefixes);
+      prefixes = prefixes.filter(function (p) { return p !== undefined; });
+      if (_.isString(path)) { return joinPaths.apply(void 0, prefixes.concat( [path] )); }
+      if (!Array.isArray(path)) { return undefined; }
+      prefixes = joinPaths.apply(void 0, prefixes);
       return path.reduce(function (acc, value) {
         var type = typeof value;
         if (type === 'number') {
@@ -4107,7 +4077,7 @@ var deepdash = (function (exports) {
           }
 
           if (!depth && options.rootIsChildren) {
-            if (_.isArray(value)) {
+            if (Array.isArray(value)) {
               forChildren(value);
             } else {
               _.forOwn(value, function(childValue, childKey) {
@@ -4133,7 +4103,7 @@ var deepdash = (function (exports) {
           }
         } else {
           _.forOwn(value, function(childValue, childKey) {
-            if (_.isArray(value)) {
+            if (Array.isArray(value)) {
               if (childValue === undefined && !(childKey in value)) {
                 return; //empty slot
               }
@@ -4182,7 +4152,7 @@ var deepdash = (function (exports) {
       if (callback === undefined) { callback = _.identity; }
       options = _.merge(
         {
-          includeRoot: !_.isArray(obj),
+          includeRoot: !Array.isArray(obj),
           pathFormat: 'string',
           checkCircular: false,
           leavesOnly: false,
@@ -4191,11 +4161,11 @@ var deepdash = (function (exports) {
       );
       if (options.childrenPath !== undefined) {
         if (!options.includeRoot && options.rootIsChildren === undefined) {
-          options.rootIsChildren = _.isArray(obj);
+          options.rootIsChildren = Array.isArray(obj);
         }
         if (
           !_.isString(options.childrenPath) &&
-          !_.isArray(options.childrenPath)
+          !Array.isArray(options.childrenPath)
         ) {
           throw Error('childrenPath can be string or array');
         } else {
@@ -4239,11 +4209,11 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          if (!context.isCircular && _.isArray(value)) { arrays.push(value); }
+          if (!context.isCircular && Array.isArray(value)) { arrays.push(value); }
         },
         eachDeepOptions
       );
-      if (_.isArray(obj)) { arrays.push(obj); }
+      if (Array.isArray(obj)) { arrays.push(obj); }
       _each(arrays, condense);
       return obj;
     }
@@ -4745,7 +4715,6 @@ var deepdash = (function (exports) {
   }
 
   var deps$6 = {
-    isArray: _isArray,
     clone: clone,
     toPath: toPath,
     get: get,
@@ -4753,7 +4722,7 @@ var deepdash = (function (exports) {
 
   function getExists(_) {
     function exists(obj, path) {
-      path = _.isArray(path) ? _.clone(path) : _.toPath(path);
+      path = Array.isArray(path) ? _.clone(path) : _.toPath(path);
       var key = path.pop();
       var parent = path.length ? _.get(obj, path) : obj;
       return parent !== undefined && key in parent;
@@ -5187,7 +5156,6 @@ var deepdash = (function (exports) {
       merge: merge,
       clone: clone,
       cloneDeep: cloneDeep,
-      isArray: _isArray,
       isObject: isObject,
       each: forEach,
       eachRight: forEachRight,
@@ -5285,7 +5253,7 @@ var deepdash = (function (exports) {
         leavesOnly: false,
       };
 
-      var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
+      var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
       var replies = {};
       var rootReply;
       var foundCircular = [];
@@ -5293,7 +5261,7 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context['break'];
+          // delete context['break'];
           var curPath = pathToString(context.path);
           if (!context.afterIterate) {
             if (!context.isCircular) {
@@ -5354,10 +5322,14 @@ var deepdash = (function (exports) {
                     _.set(
                       res,
                       context.path,
-                      _.isArray(value) ? [] : _.isPlainObject(value) ? {} : value
+                      Array.isArray(value)
+                        ? []
+                        : _.isPlainObject(value)
+                        ? {}
+                        : value
                     );
                   } else {
-                    res = _.isArray(value)
+                    res = Array.isArray(value)
                       ? []
                       : _.isPlainObject(value)
                       ? {}
@@ -5426,7 +5398,7 @@ var deepdash = (function (exports) {
         //console.log('filterDeep → condenseDeep');
         res = condenseDeep(res, { checkCircular: options.checkCircular });
       }
-      if (_.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
+      if (Array.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
         { return null; }
       return res;
     }
@@ -5643,7 +5615,6 @@ var deepdash = (function (exports) {
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context['break'];
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;
@@ -5682,7 +5653,6 @@ var deepdash = (function (exports) {
   var deps$c = merge(
     {
       iteratee: iteratee,
-      isArray: _isArray,
       isObject: isObject,
       clone: clone,
       set: set,
@@ -5690,16 +5660,111 @@ var deepdash = (function (exports) {
     deps$4
   );
 
-  function getMapValuesDeep(_) {
-    var eachDeep = getEachDeep(_);
+  var deps$d = merge(
+    {
+      cloneDeep: cloneDeep,
+      has: has,
+      unset: unset,
+    },
+    deps$c
+  );
 
-    function mapDeep(obj, iteratee, options) {
+  function getMapKeysDeep(_) {
+    var eachDeep = getEachDeep(_);
+    var pathToString = getPathToString(_);
+    function mapKeysDeep(obj, iteratee, options) {
+      if ( options === void 0 ) options = {};
+
       iteratee = _.iteratee(iteratee);
-      var res = _.isArray(obj) ? [] : _.isObject(obj) ? {} : _.clone(obj);
+      options.cloneDeep = options.cloneDeep || _.cloneDeep;
+      options.callbackAfterIterate = false;
+      var newPaths = [];
+
       eachDeep(
         obj,
         function(value, key, parent, context) {
-          delete context['break'];
+          if (key === undefined) {
+            return;
+          }
+          var newKey = iteratee(value, key, parent, context) + '';
+          if (newKey === key) {
+            return;
+          }
+          var oldPath = context.path;
+          var oldPathStr =
+            options.pathFormat === 'array' ? JSON.stringify(oldPath) : oldPath;
+          var newPath =
+            options.pathFormat === 'array'
+              ? (context.parent.path || []).concat( (context.childrenPath || []),
+                  [newKey] )
+              : pathToString([newKey], context.parent.path, context.childrenPath);
+          var newPathStr =
+            options.pathFormat === 'array' ? JSON.stringify(newPath) : newPath;
+          if (!newPaths[context.depth - 1]) {
+            newPaths[context.depth - 1] = [];
+          }
+          newPaths[context.depth - 1].push({
+            oldPath: oldPath,
+            oldPathStr: oldPathStr,
+            newPath: newPath,
+            newPathStr: newPathStr,
+          });
+        },
+        options
+      );
+      var res = options.cloneDeep(obj);
+
+      var d = newPaths.length;
+      var loop = function () {
+        if (!newPaths[d]) {
+          return;
+        }
+        var overwritten = {};
+        newPaths[d].forEach(function (ref) {
+          var oldPath = ref.oldPath;
+          var oldPathStr = ref.oldPathStr;
+          var newPath = ref.newPath;
+          var newPathStr = ref.newPathStr;
+
+          var value;
+          if (Object.prototype.hasOwnProperty.call(overwritten, oldPathStr)) {
+            value = overwritten[oldPathStr];
+            delete overwritten[oldPathStr];
+          } else {
+            value = _.get(res, oldPath);
+            if (value === undefined && !_.has(res, oldPath)) {
+              return;
+            }
+            _.unset(res, oldPath);
+          }
+          if (
+            _.has(res, newPath) &&
+            !Object.prototype.hasOwnProperty.call(overwritten, newPathStr)
+          ) {
+            overwritten[newPathStr] = _.get(res, newPath);
+          }
+          _.set(res, newPath, value);
+        });
+      };
+
+      while (d--) loop();
+      return res;
+    }
+    return mapKeysDeep;
+  }
+
+  /* build/tpl */
+  var mapKeysDeep = getMapKeysDeep(deps$d);
+
+  function getMapValuesDeep(_) {
+    var eachDeep = getEachDeep(_);
+
+    function mapValuesDeep(obj, iteratee, options) {
+      iteratee = _.iteratee(iteratee);
+      var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : _.clone(obj);
+      eachDeep(
+        obj,
+        function(value, key, parent, context) {
           var r = iteratee(value, key, parent, context);
           if (key === undefined) {
             res = r;
@@ -5711,7 +5776,7 @@ var deepdash = (function (exports) {
       );
       return res;
     }
-    return mapDeep;
+    return mapValuesDeep;
   }
 
   /* build/tpl */
@@ -5918,10 +5983,9 @@ var deepdash = (function (exports) {
     return baseSlice(array, n < 0 ? 0 : n, length);
   }
 
-  var deps$d = merge(
+  var deps$e = merge(
     {
       isString: isString,
-      isArray: _isArray,
       toPath: toPath,
       isEqual: isEqual,
       takeRight: takeRight,
@@ -5930,7 +5994,7 @@ var deepdash = (function (exports) {
     deps$2
   );
 
-  var deps$e = merge({ merge: merge }, deps$d, deps$7);
+  var deps$f = merge({ merge: merge }, deps$e, deps$7);
 
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
@@ -5942,7 +6006,7 @@ var deepdash = (function (exports) {
       } else {
         pathArray = path;
       }
-      if (!_.isArray(paths)) {
+      if (!Array.isArray(paths)) {
         paths = [paths];
       } else {
         paths = _.cloneDeep(paths);
@@ -5951,7 +6015,7 @@ var deepdash = (function (exports) {
         if (_.isString(paths[i])) {
           paths[i] = _.toPath(paths[i]);
         }
-        if (_.isArray(paths[i])) {
+        if (Array.isArray(paths[i])) {
           if (pathArray === undefined) {
             pathArray = _.toPath(pathString);
           }
@@ -6031,10 +6095,10 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var omitDeep = getOmitDeep(deps$e);
+  var omitDeep = getOmitDeep(deps$f);
 
   /* build/tpl */
-  var pathMatches = getPathMatches(deps$d);
+  var pathMatches = getPathMatches(deps$e);
 
   /* build/tpl */
   var pathToString = getPathToString(deps$2);
@@ -6042,7 +6106,7 @@ var deepdash = (function (exports) {
   /* build/tpl */
   var paths = getPaths(deps$a);
 
-  var deps$f = merge({ merge: merge }, deps$e);
+  var deps$g = merge({ merge: merge }, deps$f);
 
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
@@ -6060,7 +6124,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var pickDeep = getPickDeep(deps$f);
+  var pickDeep = getPickDeep(deps$g);
 
   /* build/tpl */
   var reduceDeep = getReduceDeep(deps$4);
@@ -6088,6 +6152,7 @@ var deepdash = (function (exports) {
   exports.index = index;
   exports.keysDeep = keysDeep;
   exports.mapDeep = mapDeep;
+  exports.mapKeysDeep = mapKeysDeep;
   exports.mapValuesDeep = mapValuesDeep;
   exports.omitDeep = omitDeep;
   exports.pathMatches = pathMatches;

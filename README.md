@@ -634,7 +634,7 @@ let children = [
   <summary>expand example</summary>
 
 ```js
-  let res = _.mapValuesDeep(
+  let res = _.mapDeep(
     { hello: { from: { the: 'deep world', and: 'deepdash' } } },
     (v) => v.toUpperCase(),
     { leavesOnly: true }
@@ -646,7 +646,7 @@ let children = [
 [Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ### mapValuesDeep
-› get the same object, but different. [📚 see docs](https://deepdash.io/#mapvaluesdeep)
+› get the object with same structure, but transformed values. [📚 see docs](https://deepdash.io/#mapvaluesdeep)
 <details>
   <summary>expand example</summary>
 
@@ -661,6 +661,22 @@ let children = [
 </details>
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/yWBzGV?editors=0010)
+
+### mapKeysDeep
+› get the object with same values, but transformed keys. [📚 see docs](https://deepdash.io/#mapkeysdeep)
+<details>
+  <summary>expand example</summary>
+
+```js
+  let res = _.mapKeysDeep(
+    { hello: { from: { the: 'deep world' } } },
+    (v, k) => k.toUpperCase()
+  );
+  // res -> { HELLO: { FROM: { THE: 'deep world' } } }
+```
+</details>
+
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor/)
 
 ### reduceDeep
 › like reduce, but deep [📚 see docs](https://deepdash.io/#reducedeep)

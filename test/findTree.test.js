@@ -15,7 +15,7 @@ var {
   deeperComments,
   deeperCommentsCircular,
   badChildren,
-} = require('./object');
+} = require('./object')();
 var { validateIteration, forLodashes } = require('./common.js');
 
 forLodashes(['findDeep'], (_) => {

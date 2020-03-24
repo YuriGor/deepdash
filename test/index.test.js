@@ -9,7 +9,7 @@ chai.use(asserttype);
 
 chai.use(require('chai-string'));
 
-var { demo, circular, children } = require('./object');
+var { demo, circular, children } = require('./object')();
 var { forLodashes } = require('./common.js');
 forLodashes(['index'], (_) => {
   it('no mutation', () => {

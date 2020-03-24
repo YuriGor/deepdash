@@ -1,6 +1,6 @@
 'use strict';
 
-var { demo, circular, social } = require('./object');
+var { demo, circular, social } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
 forLodashes(['reduceDeep'], (_) => {

@@ -11,6 +11,7 @@ import addForEachDeep from './addForEachDeep';
 import addIndex from './addIndex';
 import addKeysDeep from './addKeysDeep';
 import addMapDeep from './addMapDeep';
+import addMapKeysDeep from './addMapKeysDeep';
 import addMapValuesDeep from './addMapValuesDeep';
 import addOmitDeep from './addOmitDeep';
 import addPathMatches from './addPathMatches';
@@ -33,6 +34,7 @@ export default function apply(_) {
   addIndex(_);
   addKeysDeep(_);
   addMapDeep(_);
+  addMapKeysDeep(_);
   addMapValuesDeep(_);
   addOmitDeep(_);
   addPathMatches(_);

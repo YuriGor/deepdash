@@ -4,8 +4,11 @@
 *(2020-03-21)*
 
 **Breaking Changes**
-- mapDeep renamed to [mapValuesDeep](/#mapvaluesdeep) to conform to Lodash map/mapValues pair of methods.
-- [mapDeep](/#mapdeep) re-implemented to return an array of deep values processed by iteratee.
+- mapDeep renamed to [mapValuesDeep](/#mapvaluesdeep) to conform to Lodash map/mapValues/mapKeys family of methods.
+- [mapDeep](/#mapdeep) re-implemented to return an array of deep values processed by iteratee (same as _.map in Lodash)
+
+**Features added**
+- [mapKeysDeep](/#mapkeysdeep) implemented - returns object with same values but keys modified by iteratee (same as _.mapKeys in Lodash)
 
 ## v4-6-0
 *(2020-03-21)*

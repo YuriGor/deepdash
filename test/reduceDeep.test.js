@@ -6,7 +6,7 @@ const chai = require('chai'),
   assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { demo, circular, social } = require('./object');
+var { demo, circular, social } = require('./object')();
 var { validateIteration, forLodashes } = require('./common.js');
 
 forLodashes(['reduceDeep'], (_) => {

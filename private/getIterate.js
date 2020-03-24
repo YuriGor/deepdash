@@ -125,7 +125,7 @@ function getIterate(_) {
         }
 
         if (!depth && options.rootIsChildren) {
-          if (_.isArray(value)) {
+          if (Array.isArray(value)) {
             forChildren(value);
           } else {
             _.forOwn(value, function(childValue, childKey) {
@@ -151,7 +151,7 @@ function getIterate(_) {
         }
       } else {
         _.forOwn(value, function(childValue, childKey) {
-          if (_.isArray(value)) {
+          if (Array.isArray(value)) {
             if (childValue === undefined && !(childKey in value)) {
               return; //empty slot
             }

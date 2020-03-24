@@ -20,6 +20,7 @@ Standalone or as a Lodash mixin extension
 - [paths](#paths-keysdeep) - (keysDeep) get an array of paths
 - [mapDeep](#mapdeep) - produce an array of deep values processed by iteratee.
 - [mapValuesDeep](#mapvaluesdeep) - produce an object with the same structure but with values trasformed thru iteratee.
+- [mapKeysDeep](#mapkeysdeep) - produce an object with the same values but with keys trasformed thru iteratee.
 - [reduceDeep](#reducedeep) - like reduce but deep
 - [someDeep](/#somedeep)  - returns true if found some matching deep value, otherwise false
 - [pickDeep](#pickdeep) - get object only with keys specified by names or regexes
@@ -854,7 +855,7 @@ _.mapDeep( obj, iteratee, options) => object
 
 **Example:**
 ```js
-  let res = _.mapValuesDeep(
+  let res = _.mapDeep(
     { hello: { from: { the: 'deep world', and: 'deepdash' } } },
     (v) => v.toUpperCase(),
     { leavesOnly: true }
@@ -900,6 +901,42 @@ _.mapValuesDeep( obj, iteratee, options) => object
 ```
 
 [Try it yourself ›››](https://codepen.io/yurigor/pen/yWBzGV?editors=0010)
+
+## mapKeysDeep
+
+returns an object with the same values but kyes trasformed thru iteratee.
+
+```js
+_.mapKeysDeep( obj, iteratee, options) => object
+```
+
+* `obj` - The object/array to iterate over.
+* `iteratee` (_.identity) - The function invoked per iteration with four arguments (see [iteratee subsection](#iteratee) for details)
+    - `value`
+    - `key|index`
+    - `parentValue`
+    - `context`
+    - `returns` - desired key instead of initial
+* `options` - (see [eachDeep options](#eachdeep) for details)
+    - `callbackAfterIterate` (false)
+    - `checkCircular` (false)
+    - `leavesOnly` (false)
+    - `pathFormat` ('string')
+    - `includeRoot` (!_.isArray(obj))
+    - `childrenPath` (undefined)
+    - `rootIsChildren` (!includeRoot && _.isArray(obj))
+* `returns` - object or array with the same values, but transformed keys.
+
+**Example:**
+```js
+  let res = _.mapKeysDeep(
+    { hello: { from: { the: 'deep world' } } },
+    (v, k) => k.toUpperCase()
+  );
+  // res -> { HELLO: { FROM: { THE: 'deep world' } } }
+```
+
+[Try it yourself (no yet) ›››](https://codepen.io/yurigor)
 
 ## pickDeep
 

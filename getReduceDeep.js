@@ -10,7 +10,6 @@ function getReduceDeep(_) {
     eachDeep(
       obj,
       function(value, key, parent, context) {
-        delete context['break'];
         if (!accumulatorInited) {
           accumulator = value;
           accumulatorInited = true;

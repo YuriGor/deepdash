@@ -3,7 +3,7 @@
 
 // assert = require('assert'),
 
-var { circular } = require('./object');
+var { circular } = require('./object')();
 
 var { forLodashes, it, expect } = require('./common.js');
 

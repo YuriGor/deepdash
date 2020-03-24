@@ -2,7 +2,7 @@ var rxArrIndex = /\D/;
 var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 var rxQuot = /"/g;
 
-function concatPaths(...paths) {
+function joinPaths(...paths) {
   return paths.reduce(
     (acc, p) =>
       acc ? (!p || p.startsWith('[') ? `${acc}${p}` : `${acc}.${p}`) : p,
@@ -12,9 +12,10 @@ function concatPaths(...paths) {
 
 export default function getPathToString(_) {
   function pathToString(path, ...prefixes) {
-    if (_.isString(path)) return concatPaths(...prefixes, path);
-    if (!_.isArray(path)) return undefined;
-    prefixes = concatPaths(...prefixes);
+    prefixes = prefixes.filter((p) => p !== undefined);
+    if (_.isString(path)) return joinPaths(...prefixes, path);
+    if (!Array.isArray(path)) return undefined;
+    prefixes = joinPaths(...prefixes);
     return path.reduce((acc, value) => {
       const type = typeof value;
       if (type === 'number') {

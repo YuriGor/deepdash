@@ -4,7 +4,7 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert');
-var { demo, circular } = require('./object');
+var { demo, circular } = require('./object')();
 
 var { forLodashes } = require('./common.js');
 forLodashes(['eachDeep', 'filterDeep'], (_) => {
@@ -104,7 +104,10 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
         children: [
           {
             title: 'subcategory 11',
-            children: [{ id: 2, title: 'name 2' }, { id: 3, title: 'name 3' }],
+            children: [
+              { id: 2, title: 'name 2' },
+              { id: 3, title: 'name 3' },
+            ],
           },
         ],
       },

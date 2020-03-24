@@ -4,7 +4,7 @@ const chai = require('chai'),
   should = chai.should(),
   expect = chai.expect,
   assert = require('assert');
-var { demo, circular } = require('./object');
+var { demo, circular } = require('./object')();
 var { forLodashes } = require('./common.js');
 
 forLodashes(['eachDeep', 'filterDeep'], (_) => {

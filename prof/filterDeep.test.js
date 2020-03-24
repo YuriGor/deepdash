@@ -2,7 +2,7 @@
 
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
-var { demo, circular } = require('./object');
+var { demo, circular } = require('./object')();
 
 forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   function isNS(options = {}) {

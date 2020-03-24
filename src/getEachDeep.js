@@ -7,7 +7,7 @@ export default function getEachDeep(_) {
     if (callback === undefined) callback = _.identity;
     options = _.merge(
       {
-        includeRoot: !_.isArray(obj),
+        includeRoot: !Array.isArray(obj),
         pathFormat: 'string',
         checkCircular: false,
         leavesOnly: false,
@@ -16,11 +16,11 @@ export default function getEachDeep(_) {
     );
     if (options.childrenPath !== undefined) {
       if (!options.includeRoot && options.rootIsChildren === undefined) {
-        options.rootIsChildren = _.isArray(obj);
+        options.rootIsChildren = Array.isArray(obj);
       }
       if (
         !_.isString(options.childrenPath) &&
-        !_.isArray(options.childrenPath)
+        !Array.isArray(options.childrenPath)
       ) {
         throw Error('childrenPath can be string or array');
       } else {

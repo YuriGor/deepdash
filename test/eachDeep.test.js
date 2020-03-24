@@ -6,7 +6,7 @@ const chai = require('chai'),
   assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { demo, circular } = require('./object');
+var { demo, circular } = require('./object')();
 var { validateIteration, forLodashes } = require('./common.js');
 
 forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
@@ -330,5 +330,137 @@ a.b.c.d[6].o.skip`);
       }
     });
     expect(u).to.equal(6);
+  });
+  it('afterIterate', () => {
+    const data = { a: { b: { c: { d: [[[[]]]] } } } };
+    const paths = [];
+    _.eachDeep(
+      data,
+      (v, k, p, c) => {
+        paths.push(`${!!c.afterIterate}: ${c.path}`);
+      },
+      {
+        callbackAfterIterate: true,
+      }
+    );
+    expect(paths).to.deep.equal([
+      'false: undefined',
+      'false: a',
+      'false: a.b',
+      'false: a.b.c',
+      'false: a.b.c.d',
+      'false: a.b.c.d[0]',
+      'false: a.b.c.d[0][0]',
+      'false: a.b.c.d[0][0][0]',
+      'true: a.b.c.d[0][0][0]',
+      'true: a.b.c.d[0][0]',
+      'true: a.b.c.d[0]',
+      'true: a.b.c.d',
+      'true: a.b.c',
+      'true: a.b',
+      'true: a',
+      'true: undefined',
+    ]);
+  });
+  it('afterIterate 2d-array', () => {
+    const data = [
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+      [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    ];
+    const paths = [];
+    _.eachDeep(
+      data,
+      (v, k, p, c) => {
+        paths.push(`${!!c.afterIterate}: ${c.path}`);
+      },
+      {
+        callbackAfterIterate: true,
+      }
+    );
+
+    expect(paths).to.deep.equal([
+      'false: [0]',
+      'false: [0][0]',
+      'true: [0][0]',
+      'false: [0][1]',
+      'true: [0][1]',
+      'false: [0][2]',
+      'true: [0][2]',
+      'false: [0][3]',
+      'true: [0][3]',
+      'false: [0][4]',
+      'true: [0][4]',
+      'false: [0][5]',
+      'true: [0][5]',
+      'false: [0][6]',
+      'true: [0][6]',
+      'false: [0][7]',
+      'true: [0][7]',
+      'false: [0][8]',
+      'true: [0][8]',
+      'true: [0]',
+      'false: [1]',
+      'false: [1][0]',
+      'true: [1][0]',
+      'false: [1][1]',
+      'true: [1][1]',
+      'false: [1][2]',
+      'true: [1][2]',
+      'false: [1][3]',
+      'true: [1][3]',
+      'false: [1][4]',
+      'true: [1][4]',
+      'false: [1][5]',
+      'true: [1][5]',
+      'false: [1][6]',
+      'true: [1][6]',
+      'false: [1][7]',
+      'true: [1][7]',
+      'false: [1][8]',
+      'true: [1][8]',
+      'true: [1]',
+      'false: [2]',
+      'false: [2][0]',
+      'true: [2][0]',
+      'false: [2][1]',
+      'true: [2][1]',
+      'false: [2][2]',
+      'true: [2][2]',
+      'false: [2][3]',
+      'true: [2][3]',
+      'false: [2][4]',
+      'true: [2][4]',
+      'false: [2][5]',
+      'true: [2][5]',
+      'false: [2][6]',
+      'true: [2][6]',
+      'false: [2][7]',
+      'true: [2][7]',
+      'false: [2][8]',
+      'true: [2][8]',
+      'true: [2]',
+      'false: [3]',
+      'false: [3][0]',
+      'true: [3][0]',
+      'false: [3][1]',
+      'true: [3][1]',
+      'false: [3][2]',
+      'true: [3][2]',
+      'false: [3][3]',
+      'true: [3][3]',
+      'false: [3][4]',
+      'true: [3][4]',
+      'false: [3][5]',
+      'true: [3][5]',
+      'false: [3][6]',
+      'true: [3][6]',
+      'false: [3][7]',
+      'true: [3][7]',
+      'false: [3][8]',
+      'true: [3][8]',
+      'true: [3]',
+    ]);
   });
 });
