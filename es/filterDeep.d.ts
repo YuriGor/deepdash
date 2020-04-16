@@ -27,7 +27,7 @@ export default function filterDeep(
     callbackAfterIterate?: boolean; // = false;
     replaceCircularBy?: any;
     condense?: boolean;
-    cloneDeep: (value: any) => any;
+    cloneDeep?: (value: any) => any;
     onTrue?: {
       skipChildren?: boolean;
       cloneDeep?: boolean;

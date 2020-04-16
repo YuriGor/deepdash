@@ -98,7 +98,7 @@ function getIterate(_) {
       _.isObject(value)
     ) {
       if (options.childrenPath !== undefined) {
-        function forChildren(children, cp, scp) {
+        var forChildren = function(children, cp, scp) {
           if (children && _.isObject(children)) {
             _.forOwn(children, function(childValue, childKey) {
               var childPath = (path || []).concat( (cp || []), [childKey]);
@@ -122,7 +122,7 @@ function getIterate(_) {
               });
             });
           }
-        }
+        };
 
         if (!depth && options.rootIsChildren) {
           if (Array.isArray(value)) {

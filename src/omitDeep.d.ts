@@ -6,7 +6,7 @@ export default function omitDeep(
     keepCircular?: boolean;
     replaceCircularBy?: any;
     condense?: boolean;
-    cloneDeep: (value: any) => any;
+    cloneDeep?: (value: any) => any;
     onMatch?: {
       skipChildren?: boolean;
       cloneDeep?: boolean;

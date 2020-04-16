@@ -98,7 +98,7 @@ ${context.path}`;
       _.isObject(value)
     ) {
       if (options.childrenPath !== undefined) {
-        function forChildren(children, cp, scp) {
+        const forChildren = function(children, cp, scp) {
           if (children && _.isObject(children)) {
             _.forOwn(children, function(childValue, childKey) {
               const childPath = [...(path || []), ...(cp || []), childKey];
@@ -122,7 +122,7 @@ ${context.path}`;
               });
             });
           }
-        }
+        };
 
         if (!depth && options.rootIsChildren) {
           if (Array.isArray(value)) {
