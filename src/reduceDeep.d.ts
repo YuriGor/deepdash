@@ -10,7 +10,7 @@ export default function reduceDeep(
     parentValue: any,
     context: IIterateeContext
   ) => any,
-  accumulator: any,
+  accumulator?: any,
   options?: {
     pathFormat?: "string" | "array";
     checkCircular?: boolean;
