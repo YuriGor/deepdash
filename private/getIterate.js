@@ -22,6 +22,7 @@ function getIterate(_) {
     var strChildrenPath = ref.strChildrenPath;
 
     if (options['break']) { return; }
+
     var currentObj = {
       value: value,
       key: key,
@@ -31,33 +32,23 @@ function getIterate(_) {
     };
 
     var currentParents = parents.concat( [currentObj]);
-    var isCircular;
-    var circularParentIndex = undefined;
-    var circularParent = undefined;
-    if (options.checkCircular) {
-      if (_.isObject(value) && !_.isEmpty(value)) {
-        circularParentIndex = -1;
-        var i = parents.length;
-        while (i--) {
-          if (parents[i].value === value) {
-            circularParentIndex = i;
-            break;
-          }
-        }
 
-        circularParent = parents[circularParentIndex] || null;
-      } else {
-        circularParentIndex = -1;
-        circularParent = null;
-      }
-      isCircular = circularParentIndex !== -1;
-    }
+    var ref$1 = checkCircular(
+      value,
+      options,
+      parents
+    );
+    var isCircular = ref$1.isCircular;
+    var circularParentIndex = ref$1.circularParentIndex;
+    var circularParent = ref$1.circularParent;
+
     var isLeaf =
       !_.isObject(value) ||
       _.isEmpty(value) ||
       isCircular ||
       (options.childrenPath !== undefined &&
         !hasChildren(value, options.childrenPath));
+
     var needCallback =
       (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
 
@@ -77,11 +68,13 @@ function getIterate(_) {
           return false;
         },
       };
+
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
           options.pathFormat == 'array' ? childrenPath : strChildrenPath;
         context.childrenPath = currentObj.childrenPath;
       }
+
       try {
         var res = callback(value, key, parent && parent.value, context);
       } catch (err) {
@@ -91,6 +84,7 @@ function getIterate(_) {
         throw err;
       }
     }
+
     if (
       !options['break'] &&
       res !== false &&
@@ -98,35 +92,8 @@ function getIterate(_) {
       _.isObject(value)
     ) {
       if (options.childrenPath !== undefined) {
-        // const forChildren = function (children, cp, scp) {
-        //   if (children && _.isObject(children)) {
-        //     _.forOwn(children, function (childValue, childKey) {
-        //       const childPath = [...(path || []), ...(cp || []), childKey];
-        //       const strChildPath =
-        //         options.pathFormat == 'array'
-        //           ? pathToString([childKey], strPath || '', scp || '')
-        //           : undefined;
-        //       iterate({
-        //         value: childValue,
-        //         callback,
-        //         options,
-        //         key: childKey,
-        //         path: childPath,
-        //         strPath: strChildPath,
-        //         depth: depth + 1,
-        //         parent: currentObj,
-        //         parents: currentParents,
-        //         obj,
-        //         childrenPath: cp,
-        //         strChildrenPath: scp,
-        //       });
-        //     });
-        //   }
-        // };
-
         if (!depth && options.rootIsChildren) {
           if (Array.isArray(value)) {
-            // forChildren(value);
             _.forOwn(value, function (childValue, childKey) {
               var childPath = (path || []).concat( [childKey]);
               var strChildPath =
@@ -165,7 +132,6 @@ function getIterate(_) {
         } else {
           _each(options.childrenPath, function (cp, i) {
             var children = _.get(value, cp);
-            // forChildren(children, cp, options.strChildrenPath[i]);
             var scp = options.strChildrenPath[i];
             if (children && _.isObject(children)) {
               _.forOwn(children, function (childValue, childKey) {
@@ -221,6 +187,7 @@ function getIterate(_) {
         });
       }
     }
+
     if (options.callbackAfterIterate && needCallback) {
       context.afterIterate = true;
       try {
@@ -233,7 +200,33 @@ function getIterate(_) {
       }
     }
   }
+
   return iterate;
+
+  function checkCircular(value, options, parents) {
+    var isCircular;
+    var circularParentIndex = undefined;
+    var circularParent = undefined;
+    if (options.checkCircular) {
+      if (_.isObject(value) && !_.isEmpty(value)) {
+        circularParentIndex = -1;
+        var i = parents.length;
+        while (i--) {
+          if (parents[i].value === value) {
+            circularParentIndex = i;
+            break;
+          }
+        }
+
+        circularParent = parents[circularParentIndex] || null;
+      } else {
+        circularParentIndex = -1;
+        circularParent = null;
+      }
+      isCircular = circularParentIndex !== -1;
+    }
+    return { isCircular: isCircular, circularParentIndex: circularParentIndex, circularParent: circularParent };
+  }
 }
 
 module.exports = getIterate;

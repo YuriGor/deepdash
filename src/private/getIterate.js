@@ -20,6 +20,7 @@ export default function getIterate(_) {
     strChildrenPath,
   }) {
     if (options['break']) return;
+
     const currentObj = {
       value,
       key,
@@ -29,33 +30,20 @@ export default function getIterate(_) {
     };
 
     const currentParents = [...parents, currentObj];
-    let isCircular;
-    let circularParentIndex = undefined;
-    let circularParent = undefined;
-    if (options.checkCircular) {
-      if (_.isObject(value) && !_.isEmpty(value)) {
-        circularParentIndex = -1;
-        let i = parents.length;
-        while (i--) {
-          if (parents[i].value === value) {
-            circularParentIndex = i;
-            break;
-          }
-        }
 
-        circularParent = parents[circularParentIndex] || null;
-      } else {
-        circularParentIndex = -1;
-        circularParent = null;
-      }
-      isCircular = circularParentIndex !== -1;
-    }
+    let { isCircular, circularParentIndex, circularParent } = checkCircular(
+      value,
+      options,
+      parents
+    );
+
     const isLeaf =
       !_.isObject(value) ||
       _.isEmpty(value) ||
       isCircular ||
       (options.childrenPath !== undefined &&
         !hasChildren(value, options.childrenPath));
+
     const needCallback =
       (depth || options.includeRoot) && (!options.leavesOnly || isLeaf);
 
@@ -75,11 +63,13 @@ export default function getIterate(_) {
           return false;
         },
       };
+
       if (options.childrenPath !== undefined) {
         currentObj.childrenPath =
           options.pathFormat == 'array' ? childrenPath : strChildrenPath;
         context.childrenPath = currentObj.childrenPath;
       }
+
       try {
         var res = callback(value, key, parent && parent.value, context);
       } catch (err) {
@@ -91,6 +81,7 @@ ${context.path}`;
         throw err;
       }
     }
+
     if (
       !options['break'] &&
       res !== false &&
@@ -193,6 +184,7 @@ ${context.path}`;
         });
       }
     }
+
     if (options.callbackAfterIterate && needCallback) {
       context.afterIterate = true;
       try {
@@ -207,5 +199,31 @@ ${context.path}`;
       }
     }
   }
+
   return iterate;
+
+  function checkCircular(value, options, parents) {
+    let isCircular;
+    let circularParentIndex = undefined;
+    let circularParent = undefined;
+    if (options.checkCircular) {
+      if (_.isObject(value) && !_.isEmpty(value)) {
+        circularParentIndex = -1;
+        let i = parents.length;
+        while (i--) {
+          if (parents[i].value === value) {
+            circularParentIndex = i;
+            break;
+          }
+        }
+
+        circularParent = parents[circularParentIndex] || null;
+      } else {
+        circularParentIndex = -1;
+        circularParent = null;
+      }
+      isCircular = circularParentIndex !== -1;
+    }
+    return { isCircular, circularParentIndex, circularParent };
+  }
 }
