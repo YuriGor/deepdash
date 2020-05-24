@@ -1,9 +1,9 @@
 'use strict';
 
 var getKeysDeep = require('./getKeysDeep.js');
-var keysDeep$1 = require('./deps/keysDeep.js');
+var paths = require('./deps/paths.js');
 
 /* build/tpl */
-var keysDeep = getKeysDeep(keysDeep$1);
+var keysDeep = getKeysDeep(paths);
 
 module.exports = keysDeep;

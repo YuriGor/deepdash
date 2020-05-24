@@ -1,9 +1,9 @@
 'use strict';
 
 var getSomeDeep = require('./getSomeDeep.js');
-var someDeep$1 = require('./deps/someDeep.js');
+var findDeep$1 = require('./deps/findDeep.js');
 
 /* build/tpl */
-var someDeep = getSomeDeep(someDeep$1);
+var someDeep = getSomeDeep(findDeep$1);
 
 module.exports = someDeep;

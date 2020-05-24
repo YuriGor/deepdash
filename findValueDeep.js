@@ -1,9 +1,9 @@
 'use strict';
 
 var getFindValueDeep = require('./getFindValueDeep.js');
-var findValueDeep$1 = require('./deps/findValueDeep.js');
+var findDeep$1 = require('./deps/findDeep.js');
 
 /* build/tpl */
-var findValueDeep = getFindValueDeep(findValueDeep$1);
+var findValueDeep = getFindValueDeep(findDeep$1);
 
 module.exports = findValueDeep;
