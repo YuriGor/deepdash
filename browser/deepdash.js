@@ -201,13 +201,40 @@ var deepdash = (function () {
         _.isObject(value)
       ) {
         if (options.childrenPath !== undefined) {
-          var forChildren = function(children, cp, scp) {
-            if (children && _.isObject(children)) {
-              _.forOwn(children, function(childValue, childKey) {
-                var childPath = (path || []).concat( (cp || []), [childKey]);
+          // const forChildren = function (children, cp, scp) {
+          //   if (children && _.isObject(children)) {
+          //     _.forOwn(children, function (childValue, childKey) {
+          //       const childPath = [...(path || []), ...(cp || []), childKey];
+          //       const strChildPath =
+          //         options.pathFormat == 'array'
+          //           ? pathToString([childKey], strPath || '', scp || '')
+          //           : undefined;
+          //       iterate({
+          //         value: childValue,
+          //         callback,
+          //         options,
+          //         key: childKey,
+          //         path: childPath,
+          //         strPath: strChildPath,
+          //         depth: depth + 1,
+          //         parent: currentObj,
+          //         parents: currentParents,
+          //         obj,
+          //         childrenPath: cp,
+          //         strChildrenPath: scp,
+          //       });
+          //     });
+          //   }
+          // };
+
+          if (!depth && options.rootIsChildren) {
+            if (Array.isArray(value)) {
+              // forChildren(value);
+              _.forOwn(value, function (childValue, childKey) {
+                var childPath = (path || []).concat( [childKey]);
                 var strChildPath =
                   options.pathFormat == 'array'
-                    ? pathToString([childKey], strPath || '', scp || '')
+                    ? pathToString([childKey], strPath || '')
                     : undefined;
                 iterate({
                   value: childValue,
@@ -220,18 +247,10 @@ var deepdash = (function () {
                   parent: currentObj,
                   parents: currentParents,
                   obj: obj,
-                  childrenPath: cp,
-                  strChildrenPath: scp,
                 });
               });
-            }
-          };
-
-          if (!depth && options.rootIsChildren) {
-            if (Array.isArray(value)) {
-              forChildren(value);
             } else {
-              _.forOwn(value, function(childValue, childKey) {
+              _.forOwn(value, function (childValue, childKey) {
                 iterate({
                   value: childValue,
                   callback: callback,
@@ -247,13 +266,37 @@ var deepdash = (function () {
               });
             }
           } else {
-            _each(options.childrenPath, function(cp, i) {
+            _each(options.childrenPath, function (cp, i) {
               var children = _.get(value, cp);
-              forChildren(children, cp, options.strChildrenPath[i]);
+              // forChildren(children, cp, options.strChildrenPath[i]);
+              var scp = options.strChildrenPath[i];
+              if (children && _.isObject(children)) {
+                _.forOwn(children, function (childValue, childKey) {
+                  var childPath = (path || []).concat( cp, [childKey]);
+                  var strChildPath =
+                    options.pathFormat == 'array'
+                      ? pathToString([childKey], strPath || '', scp)
+                      : undefined;
+                  iterate({
+                    value: childValue,
+                    callback: callback,
+                    options: options,
+                    key: childKey,
+                    path: childPath,
+                    strPath: strChildPath,
+                    depth: depth + 1,
+                    parent: currentObj,
+                    parents: currentParents,
+                    obj: obj,
+                    childrenPath: cp,
+                    strChildrenPath: scp,
+                  });
+                });
+              }
             });
           }
         } else {
-          _.forOwn(value, function(childValue, childKey) {
+          _.forOwn(value, function (childValue, childKey) {
             if (Array.isArray(value)) {
               if (childValue === undefined && !(childKey in value)) {
                 return; //empty slot

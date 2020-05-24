@@ -98,13 +98,40 @@ ${context.path}`;
       _.isObject(value)
     ) {
       if (options.childrenPath !== undefined) {
-        const forChildren = function(children, cp, scp) {
-          if (children && _.isObject(children)) {
-            _.forOwn(children, function(childValue, childKey) {
-              const childPath = [...(path || []), ...(cp || []), childKey];
+        // const forChildren = function (children, cp, scp) {
+        //   if (children && _.isObject(children)) {
+        //     _.forOwn(children, function (childValue, childKey) {
+        //       const childPath = [...(path || []), ...(cp || []), childKey];
+        //       const strChildPath =
+        //         options.pathFormat == 'array'
+        //           ? pathToString([childKey], strPath || '', scp || '')
+        //           : undefined;
+        //       iterate({
+        //         value: childValue,
+        //         callback,
+        //         options,
+        //         key: childKey,
+        //         path: childPath,
+        //         strPath: strChildPath,
+        //         depth: depth + 1,
+        //         parent: currentObj,
+        //         parents: currentParents,
+        //         obj,
+        //         childrenPath: cp,
+        //         strChildrenPath: scp,
+        //       });
+        //     });
+        //   }
+        // };
+
+        if (!depth && options.rootIsChildren) {
+          if (Array.isArray(value)) {
+            // forChildren(value);
+            _.forOwn(value, function (childValue, childKey) {
+              const childPath = [...(path || []), childKey];
               const strChildPath =
                 options.pathFormat == 'array'
-                  ? pathToString([childKey], strPath || '', scp || '')
+                  ? pathToString([childKey], strPath || '')
                   : undefined;
               iterate({
                 value: childValue,
@@ -117,18 +144,10 @@ ${context.path}`;
                 parent: currentObj,
                 parents: currentParents,
                 obj,
-                childrenPath: cp,
-                strChildrenPath: scp,
               });
             });
-          }
-        };
-
-        if (!depth && options.rootIsChildren) {
-          if (Array.isArray(value)) {
-            forChildren(value);
           } else {
-            _.forOwn(value, function(childValue, childKey) {
+            _.forOwn(value, function (childValue, childKey) {
               iterate({
                 value: childValue,
                 callback,
@@ -144,13 +163,37 @@ ${context.path}`;
             });
           }
         } else {
-          _each(options.childrenPath, function(cp, i) {
+          _each(options.childrenPath, function (cp, i) {
             const children = _.get(value, cp);
-            forChildren(children, cp, options.strChildrenPath[i]);
+            // forChildren(children, cp, options.strChildrenPath[i]);
+            const scp = options.strChildrenPath[i];
+            if (children && _.isObject(children)) {
+              _.forOwn(children, function (childValue, childKey) {
+                const childPath = [...(path || []), ...cp, childKey];
+                const strChildPath =
+                  options.pathFormat == 'array'
+                    ? pathToString([childKey], strPath || '', scp)
+                    : undefined;
+                iterate({
+                  value: childValue,
+                  callback,
+                  options,
+                  key: childKey,
+                  path: childPath,
+                  strPath: strChildPath,
+                  depth: depth + 1,
+                  parent: currentObj,
+                  parents: currentParents,
+                  obj,
+                  childrenPath: cp,
+                  strChildrenPath: scp,
+                });
+              });
+            }
           });
         }
       } else {
-        _.forOwn(value, function(childValue, childKey) {
+        _.forOwn(value, function (childValue, childKey) {
           if (Array.isArray(value)) {
             if (childValue === undefined && !(childKey in value)) {
               return; //empty slot
