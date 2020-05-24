@@ -1271,6 +1271,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/ventralnet"><img src="https://avatars3.githubusercontent.com/u/686309?v=4" width="100px;" alt=""/><br /><sub><b>Matthew Kirkley</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Aventralnet" title="Bug reports">🐛</a> <a href="#ideas-ventralnet" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/GaborTorma"><img src="https://avatars0.githubusercontent.com/u/11255009?v=4" width="100px;" alt=""/><br /><sub><b>Torma Gábor</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3AGaborTorma" title="Bug reports">🐛</a> <a href="#ideas-GaborTorma" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-GaborTorma" title="User Testing">📓</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://richtera.org"><img src="https://avatars2.githubusercontent.com/u/708186?v=4" width="100px;" alt=""/><br /><sub><b>Andreas Richter</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Arichtera" title="Bug reports">🐛</a> <a href="#userTesting-richtera" title="User Testing">📓</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-enable -->
