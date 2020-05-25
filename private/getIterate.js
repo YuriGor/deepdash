@@ -8,103 +8,114 @@ function getIterate(_) {
   var hasChildren = getHasChildren(_);
   var _each = _.each || _.forArray;
 
-  function iterate(args) {
-    while (args) {
-      if (args.options['break']) { break; }
-
-      defaults(args);
-
-      var scope = getScope(args);
-
-      var res = invokeCallback(args, scope);
-
-      if (res !== false) {
-        var nextLevel = getNextLevel(args, scope);
-        _each(nextLevel, iterate);
+  function iterate(item) {
+    var stack = [];
+    while (item) {
+      if (item.options['break']) { break; }
+      if (!item.inited) {
+        item.inited = true;
+        defaults(item);
+        item.scope = getScope(item);
+        item.res = invokeCallback(item);
+        if (item.res !== false) {
+          item.childrenItems = getChildrenItems(item);
+        }
+        item.currentChildIndex = -1;
       }
 
-      invokeCallback(args, scope, true);
-      break;
+      if (
+        item.childrenItems &&
+        item.currentChildIndex < item.childrenItems.length - 1
+      ) {
+        item.currentChildIndex++;
+        stack.push(item);
+        item = item.childrenItems[item.currentChildIndex];
+        continue;
+      }
+
+      invokeCallback(item, true);
+
+      item = stack.pop();
     }
   }
 
   return iterate;
 
-  function defaults(args) {
-    if (!args.depth) {
-      args.depth = 0;
+  function defaults(it) {
+    if (!it.depth) {
+      it.depth = 0;
     }
-    if (!args.parents) {
-      args.parents = [];
+    if (!it.parents) {
+      it.parents = [];
     }
   }
 
-  function getScope(args) {
+  function getScope(it) {
     var scope = {
       currentObj: {
-        value: args.value,
-        key: args.key,
+        value: it.value,
+        key: it.key,
         path:
-          args.options.pathFormat == 'array'
-            ? args.path
-            : args.strPath || pathToString(args.path),
-        parent: args.parent,
+          it.options.pathFormat == 'array'
+            ? it.path
+            : it.strPath || pathToString(it.path),
+        parent: it.parent,
       },
 
-      circular: checkCircular(args.value, args.options, args.parents),
+      circular: checkCircular(it.value, it.options, it.parents),
     };
 
     scope.isLeaf =
-      !_.isObject(args.value) ||
-      _.isEmpty(args.value) ||
+      !_.isObject(it.value) ||
+      _.isEmpty(it.value) ||
       scope.circular.isCircular ||
-      (args.options.childrenPath !== undefined &&
-        !hasChildren(args.value, args.options.childrenPath));
+      (it.options.childrenPath !== undefined &&
+        !hasChildren(it.value, it.options.childrenPath));
 
     scope.needCallback =
-      (args.depth || args.options.includeRoot) &&
-      (!args.options.leavesOnly || scope.isLeaf);
+      (it.depth || it.options.includeRoot) &&
+      (!it.options.leavesOnly || scope.isLeaf);
 
-    scope.currentParents = ( args.parents ).concat( [scope.currentObj]);
+    scope.currentParents = ( it.parents ).concat( [scope.currentObj]);
 
     if (scope.needCallback) {
       scope.context = Object.assign({}, scope.circular,
         {path: scope.currentObj.path,
-        parent: args.parent,
-        parents: args.parents,
-        obj: args.obj,
-        depth: args.depth,
+        parent: it.parent,
+        parents: it.parents,
+        obj: it.obj,
+        depth: it.depth,
         isLeaf: scope.isLeaf,
         "break": function () {
-          args.options['break'] = true;
+          it.options['break'] = true;
           return false;
         }});
 
-      if (args.options.childrenPath !== undefined) {
+      if (it.options.childrenPath !== undefined) {
         scope.currentObj.childrenPath =
-          args.options.pathFormat == 'array'
-            ? args.childrenPath
-            : args.strChildrenPath;
+          it.options.pathFormat == 'array'
+            ? it.childrenPath
+            : it.strChildrenPath;
         scope.context.childrenPath = scope.currentObj.childrenPath;
       }
     }
     return scope;
   }
 
-  function invokeCallback(args, scope, afterIterate) {
+  function invokeCallback(it, afterIterate) {
     if (
-      scope.needCallback &&
-      (!afterIterate || args.options.callbackAfterIterate)
+      it.scope.needCallback &&
+      (!afterIterate || it.options.callbackAfterIterate)
     ) {
       if (afterIterate) {
-        scope.context.afterIterate = true;
+        it.scope.context.afterIterate = true;
       }
       try {
-        return args.callback(
-          args.value,
-          args.key,
-          args.parent && args.parent.value,
-          scope.context
+        return it.callback(
+          it.value,
+          it.key,
+          it.parent && it.parent.value,
+          it.scope.context
         );
       } catch (err) {
         if (err.message) {
@@ -112,7 +123,7 @@ function getIterate(_) {
             '\ncallback failed ' +
             (afterIterate ? 'after' : 'before') +
             ' deep iterate at:\n' +
-            scope.context.path;
+            it.scope.context.path;
         }
         throw err;
       }
@@ -144,73 +155,73 @@ function getIterate(_) {
     return { isCircular: isCircular, circularParentIndex: circularParentIndex, circularParent: circularParent };
   }
 
-  function getNextLevel(args, scope) {
-    var nextLevel = [];
+  function getChildrenItems(it) {
+    var childrenItems = [];
     if (
-      !args.options['break'] &&
-      !scope.circular.isCircular &&
-      _.isObject(args.value)
+      !it.options['break'] &&
+      !it.scope.circular.isCircular &&
+      _.isObject(it.value)
     ) {
-      if (args.options.childrenPath !== undefined) {
-        if (!args.depth && args.options.rootIsChildren) {
-          if (Array.isArray(args.value)) {
-            _.forOwn(args.value, function (childValue, childKey) {
-              var childPath = (args.path || []).concat( [childKey]);
+      if (it.options.childrenPath !== undefined) {
+        if (!it.depth && it.options.rootIsChildren) {
+          if (Array.isArray(it.value)) {
+            _.forOwn(it.value, function (childValue, childKey) {
+              var childPath = (it.path || []).concat( [childKey]);
               var strChildPath =
-                args.options.pathFormat == 'array'
-                  ? pathToString([childKey], args.strPath || '')
+                it.options.pathFormat == 'array'
+                  ? pathToString([childKey], it.strPath || '')
                   : undefined;
-              nextLevel.push({
+              childrenItems.push({
                 value: childValue,
-                callback: args.callback,
-                options: args.options,
+                callback: it.callback,
+                options: it.options,
                 key: childKey,
                 path: childPath,
                 strPath: strChildPath,
-                depth: args.depth + 1,
-                parent: scope.currentObj,
-                parents: scope.currentParents,
-                obj: args.obj,
+                depth: it.depth + 1,
+                parent: it.scope.currentObj,
+                parents: it.scope.currentParents,
+                obj: it.obj,
               });
             });
           } else {
-            _.forOwn(args.value, function (childValue, childKey) {
-              nextLevel.push({
+            _.forOwn(it.value, function (childValue, childKey) {
+              childrenItems.push({
                 value: childValue,
-                callback: args.callback,
-                options: args.options,
+                callback: it.callback,
+                options: it.options,
                 key: childKey,
                 path: [childKey],
                 strPath: pathToString([childKey]),
-                depth: args.depth + 1,
-                parent: scope.currentObj,
-                parents: scope.currentParents,
-                obj: args.obj,
+                depth: it.depth + 1,
+                parent: it.scope.currentObj,
+                parents: it.scope.currentParents,
+                obj: it.obj,
               });
             });
           }
         } else {
-          _each(args.options.childrenPath, function (cp, i) {
-            var children = _.get(args.value, cp);
-            var scp = args.options.strChildrenPath[i];
+          _each(it.options.childrenPath, function (cp, i) {
+            var children = _.get(it.value, cp);
+            var scp = it.options.strChildrenPath[i];
             if (children && _.isObject(children)) {
               _.forOwn(children, function (childValue, childKey) {
-                var childPath = (args.path || []).concat( cp, [childKey]);
+                var childPath = (it.path || []).concat( cp, [childKey]);
                 var strChildPath =
-                  args.options.pathFormat == 'array'
-                    ? pathToString([childKey], args.strPath || '', scp)
+                  it.options.pathFormat == 'array'
+                    ? pathToString([childKey], it.strPath || '', scp)
                     : undefined;
-                nextLevel.push({
+                childrenItems.push({
                   value: childValue,
-                  callback: args.callback,
-                  options: args.options,
+                  callback: it.callback,
+                  options: it.options,
                   key: childKey,
                   path: childPath,
                   strPath: strChildPath,
-                  depth: args.depth + 1,
-                  parent: scope.currentObj,
-                  parents: scope.currentParents,
-                  obj: args.obj,
+                  depth: it.depth + 1,
+                  parent: it.scope.currentObj,
+                  parents: it.scope.currentParents,
+                  obj: it.obj,
                   childrenPath: cp,
                   strChildrenPath: scp,
                 });
@@ -219,34 +230,34 @@ function getIterate(_) {
           });
         }
       } else {
-        _.forOwn(args.value, function (childValue, childKey) {
-          if (Array.isArray(args.value)) {
-            if (childValue === undefined && !(childKey in args.value)) {
+        _.forOwn(it.value, function (childValue, childKey) {
+          if (Array.isArray(it.value)) {
+            if (childValue === undefined && !(childKey in it.value)) {
               return; //empty array slot
             }
           }
 
-          var childPath = (args.path || []).concat( [childKey]);
+          var childPath = (it.path || []).concat( [childKey]);
           var strChildPath =
-            args.options.pathFormat == 'array'
-              ? pathToString([childKey], args.strPath || '')
+            it.options.pathFormat == 'array'
+              ? pathToString([childKey], it.strPath || '')
               : undefined;
-          nextLevel.push({
+          childrenItems.push({
             value: childValue,
-            callback: args.callback,
-            options: args.options,
+            callback: it.callback,
+            options: it.options,
             key: childKey,
             path: childPath,
             strPath: strChildPath,
-            depth: args.depth + 1,
-            parent: scope.currentObj,
-            parents: scope.currentParents,
-            obj: args.obj,
+            depth: it.depth + 1,
+            parent: it.scope.currentObj,
+            parents: it.scope.currentParents,
+            obj: it.obj,
           });
         });
       }
     }
-    return nextLevel;
+    return childrenItems;
   }
 }
 
