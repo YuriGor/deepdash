@@ -6,13 +6,27 @@ export default function getIterate(_) {
   const hasChildren = getHasChildren(_);
   const _each = _.each || _.forArray;
 
+  /* item: {
+    value,
+    callback,
+    options,
+    key,
+    path,
+    strPath,
+    depth = 0,
+    parent,
+    parents = [],
+    obj,
+    childrenPath,
+    strChildrenPath,
+  } */
   function iterate(item) {
     const stack = [];
     while (item) {
       if (item.options['break']) break;
       if (!item.inited) {
         item.inited = true;
-        defaults(item);
+        applyDefaults(item);
         item.scope = getScope(item);
         item.res = invokeCallback(item);
         if (item.res !== false) {
@@ -39,7 +53,7 @@ export default function getIterate(_) {
 
   return iterate;
 
-  function defaults(it) {
+  function applyDefaults(it) {
     if (!it.depth) {
       it.depth = 0;
     }
@@ -156,7 +170,7 @@ export default function getIterate(_) {
   }
 
   function getChildrenItems(it) {
-    const childrenItems = [];
+    let childrenItems = [];
     if (
       !it.options['break'] &&
       !it.scope.circular.isCircular &&
@@ -164,99 +178,55 @@ export default function getIterate(_) {
     ) {
       if (it.options.childrenPath !== undefined) {
         if (!it.depth && it.options.rootIsChildren) {
-          if (Array.isArray(it.value)) {
-            _.forOwn(it.value, function (childValue, childKey) {
-              const childPath = [...(it.path || []), childKey];
-              const strChildPath =
-                it.options.pathFormat == 'array'
-                  ? pathToString([childKey], it.strPath || '')
-                  : undefined;
-              childrenItems.push({
-                value: childValue,
-                callback: it.callback,
-                options: it.options,
-                key: childKey,
-                path: childPath,
-                strPath: strChildPath,
-                depth: it.depth + 1,
-                parent: it.scope.currentObj,
-                parents: it.scope.currentParents,
-                obj: it.obj,
-              });
-            });
-          } else {
-            _.forOwn(it.value, function (childValue, childKey) {
-              childrenItems.push({
-                value: childValue,
-                callback: it.callback,
-                options: it.options,
-                key: childKey,
-                path: [childKey],
-                strPath: pathToString([childKey]),
-                depth: it.depth + 1,
-                parent: it.scope.currentObj,
-                parents: it.scope.currentParents,
-                obj: it.obj,
-              });
-            });
-          }
+          addOwnChildren(childrenItems, it, it.value);
         } else {
-          _each(it.options.childrenPath, function (cp, i) {
+          _each(it.options.childrenPath, (cp, i) => {
             const children = _.get(it.value, cp);
             const scp = it.options.strChildrenPath[i];
             if (children && _.isObject(children)) {
-              _.forOwn(children, function (childValue, childKey) {
-                const childPath = [...(it.path || []), ...cp, childKey];
-                const strChildPath =
-                  it.options.pathFormat == 'array'
-                    ? pathToString([childKey], it.strPath || '', scp)
-                    : undefined;
-                childrenItems.push({
-                  value: childValue,
-                  callback: it.callback,
-                  options: it.options,
-                  key: childKey,
-                  path: childPath,
-                  strPath: strChildPath,
-                  depth: it.depth + 1,
-                  parent: it.scope.currentObj,
-                  parents: it.scope.currentParents,
-                  obj: it.obj,
-                  childrenPath: cp,
-                  strChildrenPath: scp,
-                });
-              });
+              addOwnChildren(childrenItems, it, children, cp, scp);
             }
           });
         }
       } else {
-        _.forOwn(it.value, function (childValue, childKey) {
-          if (Array.isArray(it.value)) {
-            if (childValue === undefined && !(childKey in it.value)) {
-              return; //empty array slot
-            }
-          }
-
-          const childPath = [...(it.path || []), childKey];
-          const strChildPath =
-            it.options.pathFormat == 'array'
-              ? pathToString([childKey], it.strPath || '')
-              : undefined;
-          childrenItems.push({
-            value: childValue,
-            callback: it.callback,
-            options: it.options,
-            key: childKey,
-            path: childPath,
-            strPath: strChildPath,
-            depth: it.depth + 1,
-            parent: it.scope.currentObj,
-            parents: it.scope.currentParents,
-            obj: it.obj,
-          });
-        });
+        addOwnChildren(childrenItems, it, it.value);
       }
     }
     return childrenItems;
+  }
+
+  function addOwnChildren(
+    childrenItems,
+    it,
+    children,
+    childrenPath = [],
+    strChildrenPath = ''
+  ) {
+    _.forOwn(children, (childValue, childKey) => {
+      if (Array.isArray(children)) {
+        if (childValue === undefined && !(childKey in children)) {
+          return; //empty array slot
+        }
+      }
+      const childPath = [...(it.path || []), ...childrenPath, childKey];
+      const strChildPath =
+        it.options.pathFormat == 'array'
+          ? pathToString([childKey], it.strPath || '', strChildrenPath)
+          : undefined;
+      childrenItems.push({
+        value: childValue,
+        callback: it.callback,
+        options: it.options,
+        key: childKey,
+        path: childPath,
+        strPath: strChildPath,
+        depth: it.depth + 1,
+        parent: it.scope.currentObj,
+        parents: it.scope.currentParents,
+        obj: it.obj,
+        childrenPath: (childrenPath.length && childrenPath) || undefined,
+        strChildrenPath: strChildrenPath || undefined,
+      });
+    });
   }
 }

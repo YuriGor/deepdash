@@ -8,13 +8,27 @@ function getIterate(_) {
   var hasChildren = getHasChildren(_);
   var _each = _.each || _.forArray;
 
+  /* item: {
+    value,
+    callback,
+    options,
+    key,
+    path,
+    strPath,
+    depth = 0,
+    parent,
+    parents = [],
+    obj,
+    childrenPath,
+    strChildrenPath,
+  } */
   function iterate(item) {
     var stack = [];
     while (item) {
       if (item.options['break']) { break; }
       if (!item.inited) {
         item.inited = true;
-        defaults(item);
+        applyDefaults(item);
         item.scope = getScope(item);
         item.res = invokeCallback(item);
         if (item.res !== false) {
@@ -41,7 +55,7 @@ function getIterate(_) {
 
   return iterate;
 
-  function defaults(it) {
+  function applyDefaults(it) {
     if (!it.depth) {
       it.depth = 0;
     }
@@ -164,100 +178,59 @@ function getIterate(_) {
     ) {
       if (it.options.childrenPath !== undefined) {
         if (!it.depth && it.options.rootIsChildren) {
-          if (Array.isArray(it.value)) {
-            _.forOwn(it.value, function (childValue, childKey) {
-              var childPath = (it.path || []).concat( [childKey]);
-              var strChildPath =
-                it.options.pathFormat == 'array'
-                  ? pathToString([childKey], it.strPath || '')
-                  : undefined;
-              childrenItems.push({
-                value: childValue,
-                callback: it.callback,
-                options: it.options,
-                key: childKey,
-                path: childPath,
-                strPath: strChildPath,
-                depth: it.depth + 1,
-                parent: it.scope.currentObj,
-                parents: it.scope.currentParents,
-                obj: it.obj,
-              });
-            });
-          } else {
-            _.forOwn(it.value, function (childValue, childKey) {
-              childrenItems.push({
-                value: childValue,
-                callback: it.callback,
-                options: it.options,
-                key: childKey,
-                path: [childKey],
-                strPath: pathToString([childKey]),
-                depth: it.depth + 1,
-                parent: it.scope.currentObj,
-                parents: it.scope.currentParents,
-                obj: it.obj,
-              });
-            });
-          }
+          addOwnChildren(childrenItems, it, it.value);
         } else {
           _each(it.options.childrenPath, function (cp, i) {
             var children = _.get(it.value, cp);
             var scp = it.options.strChildrenPath[i];
             if (children && _.isObject(children)) {
-              _.forOwn(children, function (childValue, childKey) {
-                var childPath = (it.path || []).concat( cp, [childKey]);
-                var strChildPath =
-                  it.options.pathFormat == 'array'
-                    ? pathToString([childKey], it.strPath || '', scp)
-                    : undefined;
-                childrenItems.push({
-                  value: childValue,
-                  callback: it.callback,
-                  options: it.options,
-                  key: childKey,
-                  path: childPath,
-                  strPath: strChildPath,
-                  depth: it.depth + 1,
-                  parent: it.scope.currentObj,
-                  parents: it.scope.currentParents,
-                  obj: it.obj,
-                  childrenPath: cp,
-                  strChildrenPath: scp,
-                });
-              });
+              addOwnChildren(childrenItems, it, children, cp, scp);
             }
           });
         }
       } else {
-        _.forOwn(it.value, function (childValue, childKey) {
-          if (Array.isArray(it.value)) {
-            if (childValue === undefined && !(childKey in it.value)) {
-              return; //empty array slot
-            }
-          }
-
-          var childPath = (it.path || []).concat( [childKey]);
-          var strChildPath =
-            it.options.pathFormat == 'array'
-              ? pathToString([childKey], it.strPath || '')
-              : undefined;
-          childrenItems.push({
-            value: childValue,
-            callback: it.callback,
-            options: it.options,
-            key: childKey,
-            path: childPath,
-            strPath: strChildPath,
-            depth: it.depth + 1,
-            parent: it.scope.currentObj,
-            parents: it.scope.currentParents,
-            obj: it.obj,
-          });
-        });
+        addOwnChildren(childrenItems, it, it.value);
       }
     }
     return childrenItems;
+  }
+
+  function addOwnChildren(
+    childrenItems,
+    it,
+    children,
+    childrenPath,
+    strChildrenPath
+  ) {
+    if ( childrenPath === void 0 ) childrenPath = [];
+    if ( strChildrenPath === void 0 ) strChildrenPath = '';
+
+    _.forOwn(children, function (childValue, childKey) {
+      if (Array.isArray(children)) {
+        if (childValue === undefined && !(childKey in children)) {
+          return; //empty array slot
+        }
+      }
+      var childPath = (it.path || []).concat( childrenPath, [childKey]);
+      var strChildPath =
+        it.options.pathFormat == 'array'
+          ? pathToString([childKey], it.strPath || '', strChildrenPath)
+          : undefined;
+      childrenItems.push({
+        value: childValue,
+        callback: it.callback,
+        options: it.options,
+        key: childKey,
+        path: childPath,
+        strPath: strChildPath,
+        depth: it.depth + 1,
+        parent: it.scope.currentObj,
+        parents: it.scope.currentParents,
+        obj: it.obj,
+        childrenPath: (childrenPath.length && childrenPath) || undefined,
+        strChildrenPath: strChildrenPath || undefined,
+      });
+    });
   }
 }
 
