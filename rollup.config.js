@@ -32,7 +32,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), buble(), terser()],
+    plugins: [resolve(), commonjs(), buble({ objectAssign: true }), terser()],
   },
   {
     input: 'es/deepdash.js',
@@ -44,7 +44,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), buble()],
+    plugins: [resolve(), commonjs(), buble({ objectAssign: true })],
   },
   {
     input: 'es/standalone.js',
@@ -56,7 +56,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), buble()],
+    plugins: [resolve(), commonjs(), buble({ objectAssign: true })],
   },
   {
     input: 'es/standalone.js',
@@ -68,7 +68,7 @@ export default [
       sourcemap: true,
       interop: false,
     },
-    plugins: [resolve(), commonjs(), buble(), terser()],
+    plugins: [resolve(), commonjs(), buble({ objectAssign: true }), terser()],
   },
   {
     input,
@@ -83,7 +83,7 @@ export default [
           'lodash-es': 'lodash',
         },
       }),
-      buble(),
+      buble({ objectAssign: true }),
       postprocess([
         [
           /function\s_interopDefault.+$/gm,
