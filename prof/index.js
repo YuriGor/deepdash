@@ -23,8 +23,8 @@ console.log('index');
 require('./index.test.js');
 console.log('issues');
 require('./issues.test.js');
-console.log('mapValuesDeep');
-require('./mapValuesDeep.test.js');
+console.log('mapDeep');
+require('./mapDeep.test.js');
 console.log('noroom');
 require('./noroom.test.js');
 console.log('omitDeep');
@@ -52,3 +52,4 @@ require('./stringPath.test.js');
 
 const hrend = process.hrtime(hrstart);
 console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
+console.log(global.perf);

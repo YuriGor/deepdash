@@ -2576,93 +2576,6 @@ var deepdash = (function (exports) {
     return true;
   }
 
-  /**
-   * Creates an array of the own enumerable property names of `object`.
-   *
-   * **Note:** Non-object values are coerced to objects. See the
-   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-   * for more details.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Object
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.keys(new Foo);
-   * // => ['a', 'b'] (iteration order is not guaranteed)
-   *
-   * _.keys('hi');
-   * // => ['0', '1']
-   */
-  function keys(object) {
-    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
-  }
-
-  /**
-   * The base implementation of `_.forOwn` without support for iteratee shorthands.
-   *
-   * @private
-   * @param {Object} object The object to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Object} Returns `object`.
-   */
-  function baseForOwn(object, iteratee) {
-    return object && baseFor(object, iteratee, keys);
-  }
-
-  /**
-   * Casts `value` to `identity` if it's not a function.
-   *
-   * @private
-   * @param {*} value The value to inspect.
-   * @returns {Function} Returns cast function.
-   */
-  function castFunction(value) {
-    return typeof value == 'function' ? value : identity;
-  }
-
-  /**
-   * Iterates over own enumerable string keyed properties of an object and
-   * invokes `iteratee` for each property. The iteratee is invoked with three
-   * arguments: (value, key, object). Iteratee functions may exit iteration
-   * early by explicitly returning `false`.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.3.0
-   * @category Object
-   * @param {Object} object The object to iterate over.
-   * @param {Function} [iteratee=_.identity] The function invoked per iteration.
-   * @returns {Object} Returns `object`.
-   * @see _.forOwnRight
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.forOwn(new Foo, function(value, key) {
-   *   console.log(key);
-   * });
-   * // => Logs 'a' then 'b' (iteration order is not guaranteed).
-   */
-  function forOwn(object, iteratee) {
-    return object && baseForOwn(object, castFunction(iteratee));
-  }
-
   /** Used to match property names within property paths. */
   var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
       reIsPlainProp = /^\w*$/;
@@ -2754,26 +2667,112 @@ var deepdash = (function (exports) {
   }
 
   /**
-   * A specialized version of `_.some` for arrays without support for iteratee
-   * shorthands.
+   * A specialized version of `_.reduce` for arrays without support for
+   * iteratee shorthands.
    *
    * @private
    * @param {Array} [array] The array to iterate over.
-   * @param {Function} predicate The function invoked per iteration.
-   * @returns {boolean} Returns `true` if any element passes the predicate check,
-   *  else `false`.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @param {*} [accumulator] The initial value.
+   * @param {boolean} [initAccum] Specify using the first element of `array` as
+   *  the initial value.
+   * @returns {*} Returns the accumulated value.
    */
-  function arraySome(array, predicate) {
+  function arrayReduce(array, iteratee, accumulator, initAccum) {
     var index = -1,
         length = array == null ? 0 : array.length;
 
-    while (++index < length) {
-      if (predicate(array[index], index, array)) {
-        return true;
-      }
+    if (initAccum && length) {
+      accumulator = array[++index];
     }
-    return false;
+    while (++index < length) {
+      accumulator = iteratee(accumulator, array[index], index, array);
+    }
+    return accumulator;
   }
+
+  /**
+   * Creates an array of the own enumerable property names of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects. See the
+   * [ES spec](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+   * for more details.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.keys(new Foo);
+   * // => ['a', 'b'] (iteration order is not guaranteed)
+   *
+   * _.keys('hi');
+   * // => ['0', '1']
+   */
+  function keys(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object) : baseKeys(object);
+  }
+
+  /**
+   * The base implementation of `_.forOwn` without support for iteratee shorthands.
+   *
+   * @private
+   * @param {Object} object The object to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Object} Returns `object`.
+   */
+  function baseForOwn(object, iteratee) {
+    return object && baseFor(object, iteratee, keys);
+  }
+
+  /**
+   * Creates a `baseEach` or `baseEachRight` function.
+   *
+   * @private
+   * @param {Function} eachFunc The function to iterate over a collection.
+   * @param {boolean} [fromRight] Specify iterating from right to left.
+   * @returns {Function} Returns the new base function.
+   */
+  function createBaseEach(eachFunc, fromRight) {
+    return function(collection, iteratee) {
+      if (collection == null) {
+        return collection;
+      }
+      if (!isArrayLike(collection)) {
+        return eachFunc(collection, iteratee);
+      }
+      var length = collection.length,
+          index = fromRight ? length : -1,
+          iterable = Object(collection);
+
+      while ((fromRight ? index-- : ++index < length)) {
+        if (iteratee(iterable[index], index, iterable) === false) {
+          break;
+        }
+      }
+      return collection;
+    };
+  }
+
+  /**
+   * The base implementation of `_.forEach` without support for iteratee shorthands.
+   *
+   * @private
+   * @param {Array|Object} collection The collection to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Array|Object} Returns `collection`.
+   */
+  var baseEach = createBaseEach(baseForOwn);
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED$2 = '__lodash_hash_undefined__';
@@ -2827,6 +2826,28 @@ var deepdash = (function (exports) {
   // Add methods to `SetCache`.
   SetCache.prototype.add = SetCache.prototype.push = setCacheAdd;
   SetCache.prototype.has = setCacheHas;
+
+  /**
+   * A specialized version of `_.some` for arrays without support for iteratee
+   * shorthands.
+   *
+   * @private
+   * @param {Array} [array] The array to iterate over.
+   * @param {Function} predicate The function invoked per iteration.
+   * @returns {boolean} Returns `true` if any element passes the predicate check,
+   *  else `false`.
+   */
+  function arraySome(array, predicate) {
+    var index = -1,
+        length = array == null ? 0 : array.length;
+
+    while (++index < length) {
+      if (predicate(array[index], index, array)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   /**
    * Checks if a `cache` value for `key` exists.
@@ -3657,139 +3678,6 @@ var deepdash = (function (exports) {
   }
 
   /**
-   * Creates a `baseEach` or `baseEachRight` function.
-   *
-   * @private
-   * @param {Function} eachFunc The function to iterate over a collection.
-   * @param {boolean} [fromRight] Specify iterating from right to left.
-   * @returns {Function} Returns the new base function.
-   */
-  function createBaseEach(eachFunc, fromRight) {
-    return function(collection, iteratee) {
-      if (collection == null) {
-        return collection;
-      }
-      if (!isArrayLike(collection)) {
-        return eachFunc(collection, iteratee);
-      }
-      var length = collection.length,
-          index = fromRight ? length : -1,
-          iterable = Object(collection);
-
-      while ((fromRight ? index-- : ++index < length)) {
-        if (iteratee(iterable[index], index, iterable) === false) {
-          break;
-        }
-      }
-      return collection;
-    };
-  }
-
-  /**
-   * The base implementation of `_.forEach` without support for iteratee shorthands.
-   *
-   * @private
-   * @param {Array|Object} collection The collection to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Array|Object} Returns `collection`.
-   */
-  var baseEach = createBaseEach(baseForOwn);
-
-  /**
-   * The base implementation of `_.some` without support for iteratee shorthands.
-   *
-   * @private
-   * @param {Array|Object} collection The collection to iterate over.
-   * @param {Function} predicate The function invoked per iteration.
-   * @returns {boolean} Returns `true` if any element passes the predicate check,
-   *  else `false`.
-   */
-  function baseSome(collection, predicate) {
-    var result;
-
-    baseEach(collection, function(value, index, collection) {
-      result = predicate(value, index, collection);
-      return !result;
-    });
-    return !!result;
-  }
-
-  /**
-   * Checks if `predicate` returns truthy for **any** element of `collection`.
-   * Iteration is stopped once `predicate` returns truthy. The predicate is
-   * invoked with three arguments: (value, index|key, collection).
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Collection
-   * @param {Array|Object} collection The collection to iterate over.
-   * @param {Function} [predicate=_.identity] The function invoked per iteration.
-   * @param- {Object} [guard] Enables use as an iteratee for methods like `_.map`.
-   * @returns {boolean} Returns `true` if any element passes the predicate check,
-   *  else `false`.
-   * @example
-   *
-   * _.some([null, 0, 'yes', false], Boolean);
-   * // => true
-   *
-   * var users = [
-   *   { 'user': 'barney', 'active': true },
-   *   { 'user': 'fred',   'active': false }
-   * ];
-   *
-   * // The `_.matches` iteratee shorthand.
-   * _.some(users, { 'user': 'barney', 'active': false });
-   * // => false
-   *
-   * // The `_.matchesProperty` iteratee shorthand.
-   * _.some(users, ['active', false]);
-   * // => true
-   *
-   * // The `_.property` iteratee shorthand.
-   * _.some(users, 'active');
-   * // => true
-   */
-  function some(collection, predicate, guard) {
-    var func = isArray(collection) ? arraySome : baseSome;
-    if (guard && isIterateeCall(collection, predicate, guard)) {
-      predicate = undefined;
-    }
-    return func(collection, baseIteratee(predicate));
-  }
-
-  var deps$1 = {
-    some: some,
-    get: get,
-    isEmpty: isEmpty,
-  };
-
-  /**
-   * A specialized version of `_.reduce` for arrays without support for
-   * iteratee shorthands.
-   *
-   * @private
-   * @param {Array} [array] The array to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @param {*} [accumulator] The initial value.
-   * @param {boolean} [initAccum] Specify using the first element of `array` as
-   *  the initial value.
-   * @returns {*} Returns the accumulated value.
-   */
-  function arrayReduce(array, iteratee, accumulator, initAccum) {
-    var index = -1,
-        length = array == null ? 0 : array.length;
-
-    if (initAccum && length) {
-      accumulator = array[++index];
-    }
-    while (++index < length) {
-      accumulator = iteratee(accumulator, array[index], index, array);
-    }
-    return accumulator;
-  }
-
-  /**
    * The base implementation of `_.reduce` and `_.reduceRight`, without support
    * for iteratee shorthands, which iterates over `collection` using `eachFunc`.
    *
@@ -3855,40 +3743,38 @@ var deepdash = (function (exports) {
     return func(collection, baseIteratee(iteratee), accumulator, initAccum, baseEach);
   }
 
-  var deps$2 = {
+  var deps$1 = {
     isString: isString,
     reduce: reduce,
   };
 
-  var deps$3 = merge(
+  var deps$2 = merge(
     {
       isObject: isObject,
       isEmpty: isEmpty,
-      forOwn: forOwn,
-      forArray: forArray,
       get: get,
     },
-    deps$2,
     deps$1
+    // hasChildrenDeps
   );
 
-  var deps$4 = merge(
+  var deps$3 = merge(
     {
       identity: identity,
       merge: merge,
       isString: isString,
       toPath: toPath,
     },
-    deps$3
+    deps$2
   );
 
-  var deps$5 = merge(
+  var deps$4 = merge(
     {
       merge: merge,
       forArray: forArray,
     },
     deps,
-    deps$4
+    deps$3
   );
 
   var rxArrIndex = /\D/;
@@ -3945,243 +3831,315 @@ var deepdash = (function (exports) {
 
   getPathToString.notChainable = true;
 
-  function getHasChildren(_) {
-    function hasChildren(obj, childrenPath) {
-      return _.some(childrenPath, function (cp) {
-        var children = _.get(obj, cp);
-        return !_.isEmpty(children);
-      });
-    }
-    return hasChildren;
-  }
+  // if (!global.perf) {
+  //   global.perf = {};
+  // }
+  // const perf = global.perf;
 
   function getIterate(_) {
+    // if (!perf.iterate) {
+    // perf.iterate = {
+    //     currentObj: 0,
+    //     currentObj_c: 0,
+    //     checkCircular: 0,
+    //     checkCircular_c: 0,
+    //     children: 0,
+    //     children_c: 0,
+    //     isLeaf: 0,
+    //     isLeaf_c: 0,
+    //     needCallback: 0,
+    //     needCallback_c: 0,
+    //     currentParents: 0,
+    //     currentParents_c: 0,
+    //     context: 0,
+    //     context_c: 0,
+    //     invokeCallback: 0,
+    //     invokeCallback_c: 0,
+    //     addOwnChildren: 0,
+    //     addOwnChildren_c: 0,
+    //     push: 0,
+    //     push_c: 0,
+    //   };
+    // perf.invokeCallback = {
+    //     before: 0,
+    //     before_c: 0,
+    //   };
+    // perf.addOwnChildren = {
+    //     emptySlot: 0,
+    //     emptySlot_c: 0,
+    //     childPath: 0,
+    //     childPath_c: 0,
+    //     strChildPath: 0,
+    //     strChildPath_c: 0,
+    //     push: 0,
+    //     push_c: 0,
+    //   };
+    // }
     var pathToString = getPathToString(_);
-    var hasChildren = getHasChildren(_);
-    var _each = _.each || _.forArray;
 
-    /* item: {
-      value,
-      callback,
-      options,
-      key,
-      path,
-      strPath,
-      depth = 0,
-      parent,
-      parents = [],
-      obj,
-      childrenPath,
-      strChildrenPath,
-    } */
     function iterate(item) {
-      var stack = [];
-      while (item) {
-        if (item.options['break']) { break; }
-        if (!item.inited) {
-          item.inited = true;
-          applyDefaults(item);
-          item.scope = getScope(item);
-          item.res = invokeCallback(item);
-          if (item.res !== false) {
-            item.childrenItems = getChildrenItems(item);
-          }
-          item.currentChildIndex = -1;
-        }
+      var options = item.options;
+      var obj = item.obj;
+      var callback = item.callback;
+      options.pathFormatArray = options.pathFormat == 'array';
+      if (options.pathFormatArray) {
+        item.strPath = pathToString(item.path);
+      }
+      item.depth = 0;
+      item.parents = [];
 
+      var broken = false;
+      var breakIt = function () {
+        broken = true;
+        return false;
+      };
+
+      // let start;
+      while (item) {
+        if (broken) { break; }
+        if (!item.inited) {
+          // start = Date.now();
+          item.inited = true;
+          var itemIsObject = _.isObject(item.value);
+          var itemIsEmpty = _.isEmpty(item.value);
+
+          item.currentObj = {
+            value: item.value,
+            key: item.key,
+            path: options.pathFormatArray ? item.path : item.strPath,
+            parent: item.parent,
+          };
+          // perf.iterate.currentObj += Date.now() - start;
+          // perf.iterate.currentObj_c++;
+          // start = Date.now();
+          if (options.checkCircular) {
+            item.circularParentIndex = -1;
+            item.circularParent = null;
+            item.isCircular = false;
+            if (itemIsObject && !itemIsEmpty) {
+              var i = item.parents.length;
+              while (i--) {
+                if (item.parents[i].value === item.value) {
+                  item.circularParentIndex = i;
+                  item.circularParent = item.parents[i];
+                  item.isCircular = true;
+                  break;
+                }
+              }
+            }
+          }
+          // perf.iterate.checkCircular += Date.now() - start;
+          // perf.iterate.checkCircular_c++;
+          // start = Date.now();
+          item.children = [];
+          if (options.childrenPath) {
+            options.childrenPath.forEach(function (cp, i) {
+              var children = _.get(item.value, cp);
+              if (!_.isEmpty(children)) {
+                item.children.push([cp, options.strChildrenPath[i], children]);
+              }
+            });
+          }
+          // perf.iterate.children += Date.now() - start;
+          // perf.iterate.children_c++;
+          // start = Date.now();
+          item.isLeaf =
+            item.isCircular ||
+            (options.childrenPath !== undefined && !item.children.length) ||
+            !itemIsObject ||
+            itemIsEmpty;
+
+          // perf.iterate.isLeaf += Date.now() - start;
+          // perf.iterate.isLeaf_c++;
+          // start = Date.now();
+          item.needCallback =
+            (item.depth || options.includeRoot) &&
+            (!options.leavesOnly || item.isLeaf);
+
+          // perf.iterate.needCallback += Date.now() - start;
+          // perf.iterate.needCallback_c++;
+          // start = Date.now();
+
+          item.currentParents = ( item.parents ).concat( [item.currentObj]);
+
+          // perf.iterate.currentParents += Date.now() - start;
+          // perf.iterate.currentParents_c++;
+          // start = Date.now();
+
+          if (item.needCallback) {
+            item.context = {
+              path: item.currentObj.path,
+              parent: item.parent,
+              parents: item.parents,
+              obj: obj,
+              depth: item.depth,
+              isLeaf: item.isLeaf,
+              isCircular: item.isCircular,
+              circularParentIndex: item.circularParentIndex,
+              circularParent: item.circularParent,
+              "break": breakIt,
+            };
+
+            if (options.childrenPath !== undefined) {
+              item.context.childrenPath = options.pathFormatArray
+                ? item.childrenPath
+                : item.strChildrenPath;
+            }
+          }
+
+          // perf.iterate.context += Date.now() - start;
+          // perf.iterate.context_c++;
+          // start = Date.now();
+
+          if (item.needCallback) {
+            try {
+              item.res = callback(
+                item.value,
+                item.key,
+                item.parent && item.parent.value,
+                item.context
+              );
+            } catch (err) {
+              if (err.message) {
+                err.message +=
+                  '\ncallback failed before deep iterate at:\n' +
+                  item.context.path;
+              }
+
+              throw err;
+            }
+          }
+
+          // perf.iterate.invokeCallback += Date.now() - start;
+          // perf.iterate.invokeCallback_c++;
+          if (broken) {
+            break;
+          }
+          // start = Date.now();
+
+          if (item.res !== false) {
+            item.childrenItems = [];
+            if (!broken && !item.isCircular && itemIsObject) {
+              if (
+                options.childrenPath !== undefined &&
+                (item.depth || !options.rootIsChildren)
+              ) {
+                if (item.children.length) {
+                  item.children.forEach(function (ref) {
+                    var cp = ref[0];
+                    var scp = ref[1];
+                    var children = ref[2];
+
+                    if (_.isObject(children)) {
+                      addOwnChildren(
+                        item.childrenItems,
+                        item,
+                        children,
+                        options,
+                        cp,
+                        scp
+                      );
+                    }
+                  });
+                }
+              } else {
+                addOwnChildren(
+                  item.childrenItems,
+                  item,
+                  item.value,
+                  options,
+                  [],
+                  ''
+                );
+              }
+            }
+          }
+
+          item.currentChildIndex = -1;
+          // perf.iterate.addOwnChildren += Date.now() - start;
+          // perf.iterate.addOwnChildren_c++;
+        }
+        // start = Date.now();
         if (
           item.childrenItems &&
           item.currentChildIndex < item.childrenItems.length - 1
         ) {
           item.currentChildIndex++;
-          stack.push(item);
+          item.childrenItems[item.currentChildIndex].parentItem = item;
           item = item.childrenItems[item.currentChildIndex];
+          // perf.iterate.push += Date.now() - start;
+          // perf.iterate.push_c++;
           continue;
         }
+        // perf.iterate.push += Date.now() - start;
+        // perf.iterate.push_c++;
+        // start = Date.now();
 
-        invokeCallback(item, true);
+        if (item.needCallback && options.callbackAfterIterate) {
+          item.context.afterIterate = true;
 
-        item = stack.pop();
+          try {
+            callback(
+              item.value,
+              item.key,
+              item.parent && item.parent.value,
+              item.context
+            );
+          } catch (err) {
+            if (err.message) {
+              err.message +=
+                '\ncallback failed after deep iterate at:\n' + item.context.path;
+            }
+
+            throw err;
+          }
+        }
+        // perf.iterate.invokeCallback += Date.now() - start;
+        // perf.iterate.invokeCallback_c++;
+        item = item.parentItem;
       }
     }
 
     return iterate;
 
-    function applyDefaults(it) {
-      if (!it.depth) {
-        it.depth = 0;
-      }
-      if (!it.parents) {
-        it.parents = [];
-      }
-    }
-
-    function getScope(it) {
-      var scope = {
-        currentObj: {
-          value: it.value,
-          key: it.key,
-          path:
-            it.options.pathFormat == 'array'
-              ? it.path
-              : it.strPath || pathToString(it.path),
-          parent: it.parent,
-        },
-
-        circular: checkCircular(it.value, it.options, it.parents),
-      };
-
-      scope.isLeaf =
-        !_.isObject(it.value) ||
-        _.isEmpty(it.value) ||
-        scope.circular.isCircular ||
-        (it.options.childrenPath !== undefined &&
-          !hasChildren(it.value, it.options.childrenPath));
-
-      scope.needCallback =
-        (it.depth || it.options.includeRoot) &&
-        (!it.options.leavesOnly || scope.isLeaf);
-
-      scope.currentParents = ( it.parents ).concat( [scope.currentObj]);
-
-      if (scope.needCallback) {
-        scope.context = Object.assign({}, scope.circular,
-          {path: scope.currentObj.path,
-          parent: it.parent,
-          parents: it.parents,
-          obj: it.obj,
-          depth: it.depth,
-          isLeaf: scope.isLeaf,
-          "break": function () {
-            it.options['break'] = true;
-            return false;
-          }});
-
-        if (it.options.childrenPath !== undefined) {
-          scope.currentObj.childrenPath =
-            it.options.pathFormat == 'array'
-              ? it.childrenPath
-              : it.strChildrenPath;
-          scope.context.childrenPath = scope.currentObj.childrenPath;
-        }
-      }
-      return scope;
-    }
-
-    function invokeCallback(it, afterIterate) {
-      if (
-        it.scope.needCallback &&
-        (!afterIterate || it.options.callbackAfterIterate)
-      ) {
-        if (afterIterate) {
-          it.scope.context.afterIterate = true;
-        }
-        try {
-          return it.callback(
-            it.value,
-            it.key,
-            it.parent && it.parent.value,
-            it.scope.context
-          );
-        } catch (err) {
-          if (err.message) {
-            err.message +=
-              '\ncallback failed ' +
-              (afterIterate ? 'after' : 'before') +
-              ' deep iterate at:\n' +
-              it.scope.context.path;
-          }
-          throw err;
-        }
-      }
-    }
-
-    function checkCircular(value, options, parents) {
-      var isCircular;
-      var circularParentIndex = undefined;
-      var circularParent = undefined;
-      if (options.checkCircular) {
-        if (_.isObject(value) && !_.isEmpty(value)) {
-          circularParentIndex = -1;
-          var i = parents.length;
-          while (i--) {
-            if (parents[i].value === value) {
-              circularParentIndex = i;
-              break;
-            }
-          }
-
-          circularParent = parents[circularParentIndex] || null;
-        } else {
-          circularParentIndex = -1;
-          circularParent = null;
-        }
-        isCircular = circularParentIndex !== -1;
-      }
-      return { isCircular: isCircular, circularParentIndex: circularParentIndex, circularParent: circularParent };
-    }
-
-    function getChildrenItems(it) {
-      var childrenItems = [];
-      if (
-        !it.options['break'] &&
-        !it.scope.circular.isCircular &&
-        _.isObject(it.value)
-      ) {
-        if (it.options.childrenPath !== undefined) {
-          if (!it.depth && it.options.rootIsChildren) {
-            addOwnChildren(childrenItems, it, it.value);
-          } else {
-            _each(it.options.childrenPath, function (cp, i) {
-              var children = _.get(it.value, cp);
-              var scp = it.options.strChildrenPath[i];
-              if (children && _.isObject(children)) {
-                addOwnChildren(childrenItems, it, children, cp, scp);
-              }
-            });
-          }
-        } else {
-          addOwnChildren(childrenItems, it, it.value);
-        }
-      }
-      return childrenItems;
-    }
-
     function addOwnChildren(
       childrenItems,
-      it,
+      item,
       children,
+      options,
       childrenPath,
       strChildrenPath
     ) {
-      if ( childrenPath === void 0 ) childrenPath = [];
-      if ( strChildrenPath === void 0 ) strChildrenPath = '';
-
-      _.forOwn(children, function (childValue, childKey) {
-        if (Array.isArray(children)) {
-          if (childValue === undefined && !(childKey in children)) {
-            return; //empty array slot
-          }
-        }
-        var childPath = (it.path || []).concat( childrenPath, [childKey]);
-        var strChildPath =
-          it.options.pathFormat == 'array'
-            ? pathToString([childKey], it.strPath || '', strChildrenPath)
-            : undefined;
+      var keys = Object.keys(children);
+      keys.forEach(function (childKey) {
+        // let start = Date.now();
+        var childValue = children[childKey];
+        // perf.addOwnChildren.emptySlot += Date.now() - start;
+        // perf.addOwnChildren.emptySlot_c++;
+        // start = Date.now();
+        var childPath = (item.path || []).concat( childrenPath, [childKey]);
+        // perf.addOwnChildren.childPath += Date.now() - start;
+        // perf.addOwnChildren.childPath_c++;
+        // start = Date.now();
+        var strChildPath = options.pathFormatArray
+          ? undefined
+          : pathToString([childKey], item.strPath, strChildrenPath);
+        // perf.addOwnChildren.strChildPath += Date.now() - start;
+        // perf.addOwnChildren.strChildPath_c++;
+        // start = Date.now();
         childrenItems.push({
           value: childValue,
-          callback: it.callback,
-          options: it.options,
           key: childKey,
           path: childPath,
           strPath: strChildPath,
-          depth: it.depth + 1,
-          parent: it.scope.currentObj,
-          parents: it.scope.currentParents,
-          obj: it.obj,
+          depth: item.depth + 1,
+          parent: item.currentObj,
+          parents: item.currentParents,
           childrenPath: (childrenPath.length && childrenPath) || undefined,
           strChildrenPath: strChildrenPath || undefined,
         });
+        // perf.addOwnChildren.push += Date.now() - start;
+        // perf.addOwnChildren.push_c++;
       });
     }
   }
@@ -4262,10 +4220,10 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var condenseDeep = getCondenseDeep(deps$5);
+  var condenseDeep = getCondenseDeep(deps$4);
 
   /* build/tpl */
-  var eachDeep = getEachDeep(deps$4);
+  var eachDeep = getEachDeep(deps$3);
 
   /**
    * A specialized version of `_.forEach` for arrays without support for
@@ -4755,7 +4713,7 @@ var deepdash = (function (exports) {
     return baseClone(value, CLONE_SYMBOLS_FLAG$1);
   }
 
-  var deps$6 = {
+  var deps$5 = {
     clone: clone,
     toPath: toPath,
     get: get,
@@ -4774,7 +4732,7 @@ var deepdash = (function (exports) {
   getExists.notChainable = true;
 
   /* build/tpl */
-  var exists = getExists(deps$6);
+  var exists = getExists(deps$5);
 
   /** Used to compose bitmasks for cloning. */
   var CLONE_DEEP_FLAG$1 = 1,
@@ -4800,6 +4758,17 @@ var deepdash = (function (exports) {
    */
   function cloneDeep(value) {
     return baseClone(value, CLONE_DEEP_FLAG$1 | CLONE_SYMBOLS_FLAG$2);
+  }
+
+  /**
+   * Casts `value` to `identity` if it's not a function.
+   *
+   * @private
+   * @param {*} value The value to inspect.
+   * @returns {Function} Returns cast function.
+   */
+  function castFunction(value) {
+    return typeof value == 'function' ? value : identity;
   }
 
   /**
@@ -5192,7 +5161,7 @@ var deepdash = (function (exports) {
     return baseIteratee(typeof func == 'function' ? func : baseClone(func, CLONE_DEEP_FLAG$2));
   }
 
-  var deps$7 = merge(
+  var deps$6 = merge(
     {
       merge: merge,
       clone: clone,
@@ -5207,10 +5176,10 @@ var deepdash = (function (exports) {
       iteratee: iteratee,
       get: get,
     },
+    deps$3,
+    deps$1,
     deps$4,
-    deps$2,
-    deps$5,
-    deps$6
+    deps$5
   );
 
   function getFilterDeep(_) {
@@ -5447,15 +5416,15 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var filterDeep = getFilterDeep(deps$7);
+  var filterDeep = getFilterDeep(deps$6);
 
-  var deps$8 = merge(
+  var deps$7 = merge(
     {
       iteratee: iteratee,
       cloneDeep: cloneDeep,
       merge: merge,
     },
-    deps$4
+    deps$3
   );
 
   function getFindDeep(_) {
@@ -5509,7 +5478,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var findDeep = getFindDeep(deps$8);
+  var findDeep = getFindDeep(deps$7);
 
   function getFindPathDeep(_) {
     var findDeep = getFindDeep(_);
@@ -5521,7 +5490,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var findPathDeep = getFindPathDeep(deps$8);
+  var findPathDeep = getFindPathDeep(deps$7);
 
   function getFindValueDeep(_) {
     var findDeep = getFindDeep(_);
@@ -5533,16 +5502,16 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var findValueDeep = getFindValueDeep(deps$8);
+  var findValueDeep = getFindValueDeep(deps$7);
 
   function getForEachDeep(_) {
     return getEachDeep(_);
   }
 
   /* build/tpl */
-  var forEachDeep = getForEachDeep(deps$4);
+  var forEachDeep = getForEachDeep(deps$3);
 
-  var deps$9 = merge({ merge: merge }, deps$4);
+  var deps$8 = merge({ merge: merge }, deps$3);
 
   function getIndex(_) {
     var eachDeep = getEachDeep(_);
@@ -5585,13 +5554,13 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var index = getIndex(deps$9);
+  var index = getIndex(deps$8);
 
-  var deps$a = merge(
+  var deps$9 = merge(
     {
       merge: merge,
     },
-    deps$4
+    deps$3
   );
 
   function getPaths(_) {
@@ -5639,13 +5608,13 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var keysDeep = getKeysDeep(deps$a);
+  var keysDeep = getKeysDeep(deps$9);
 
-  var deps$b = merge(
+  var deps$a = merge(
     {
       iteratee: iteratee,
     },
-    deps$4
+    deps$3
   );
 
   function getReduceDeep(_) {
@@ -5689,25 +5658,25 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var mapDeep = getMapDeep(deps$b);
+  var mapDeep = getMapDeep(deps$a);
 
-  var deps$c = merge(
+  var deps$b = merge(
     {
       iteratee: iteratee,
       isObject: isObject,
       clone: clone,
       set: set,
     },
-    deps$4
+    deps$3
   );
 
-  var deps$d = merge(
+  var deps$c = merge(
     {
       cloneDeep: cloneDeep,
       has: has,
       unset: unset,
     },
-    deps$c
+    deps$b
   );
 
   function getMapKeysDeep(_) {
@@ -5795,7 +5764,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var mapKeysDeep = getMapKeysDeep(deps$d);
+  var mapKeysDeep = getMapKeysDeep(deps$c);
 
   function getMapValuesDeep(_) {
     var eachDeep = getEachDeep(_);
@@ -5821,7 +5790,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var mapValuesDeep = getMapValuesDeep(deps$c);
+  var mapValuesDeep = getMapValuesDeep(deps$b);
 
   /**
    * Performs a deep comparison between two values to determine if they are
@@ -6024,7 +5993,7 @@ var deepdash = (function (exports) {
     return baseSlice(array, n < 0 ? 0 : n, length);
   }
 
-  var deps$e = merge(
+  var deps$d = merge(
     {
       isString: isString,
       toPath: toPath,
@@ -6032,10 +6001,10 @@ var deepdash = (function (exports) {
       takeRight: takeRight,
       cloneDeep: cloneDeep,
     },
-    deps$2
+    deps$1
   );
 
-  var deps$f = merge({ merge: merge }, deps$e, deps$7);
+  var deps$e = merge({ merge: merge }, deps$d, deps$6);
 
   function getPathMatches(_) {
     var pathToString = getPathToString(_);
@@ -6136,18 +6105,18 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var omitDeep = getOmitDeep(deps$f);
+  var omitDeep = getOmitDeep(deps$e);
 
   /* build/tpl */
-  var pathMatches = getPathMatches(deps$e);
+  var pathMatches = getPathMatches(deps$d);
 
   /* build/tpl */
-  var pathToString = getPathToString(deps$2);
+  var pathToString = getPathToString(deps$1);
 
   /* build/tpl */
-  var paths = getPaths(deps$a);
+  var paths = getPaths(deps$9);
 
-  var deps$g = merge({ merge: merge }, deps$f);
+  var deps$f = merge({ merge: merge }, deps$e);
 
   function getPickDeep(_) {
     var omitDeep = getOmitDeep(_);
@@ -6165,10 +6134,10 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var pickDeep = getPickDeep(deps$g);
+  var pickDeep = getPickDeep(deps$f);
 
   /* build/tpl */
-  var reduceDeep = getReduceDeep(deps$4);
+  var reduceDeep = getReduceDeep(deps$3);
 
   function getSomeDeep(_) {
     var findDeep = getFindDeep(_);
@@ -6179,7 +6148,7 @@ var deepdash = (function (exports) {
   }
 
   /* build/tpl */
-  var someDeep = getSomeDeep(deps$8);
+  var someDeep = getSomeDeep(deps$7);
 
   exports.condense = condense;
   exports.condenseDeep = condenseDeep;

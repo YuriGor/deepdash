@@ -6,7 +6,7 @@ const chai = require('chai'),
   assert = require('assert');
 const asserttype = require('chai-asserttype');
 chai.use(asserttype);
-var { demo, circular } = require('./object')();
+var { demo, circular, children } = require('./object')();
 var { validateIteration, forLodashes } = require('./common.js');
 
 forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
@@ -42,6 +42,28 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
     expect(JSON.stringify(keys)).equal(
       '[null,"a","b","c","d","0","i","1","i","2","i","3","i","4","i","5","i","6","o","d","f","skip"]'
     );
+  });
+
+  it('eachDeep break after', () => {
+    let keys = [];
+    _.eachDeep(
+      children,
+      (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx);
+        if (!ctx.afterIterate && key == 'name') {
+          keys.push(value);
+        }
+        if (value.name == 'parent 1.1' && ctx.afterIterate) return ctx.break();
+      },
+      { callbackAfterIterate: true }
+    );
+    // console.log(keys);
+    expect(keys).to.deep.equal([
+      'grand 1',
+      'parent 1.1',
+      'child 1.1.1',
+      'child 1.1.2',
+    ]);
   });
 
   it('eachDeep break for childs', () => {
@@ -174,9 +196,7 @@ a.b.c.d[6].o.skip`);
     let c = _.forEachDeep(demo);
     expect(c).equal(demo);
     if (!_.v) {
-      c = _(demo)
-        .forEachDeep()
-        .value();
+      c = _(demo).forEachDeep().value();
       expect(c).equal(demo);
     }
   });
@@ -274,7 +294,7 @@ a.b.c.d[6].o.skip`);
     expect(paths).deep.equal(['[0]', '[2]', '[4]']);
   });
   it('generated string paths are correct', () => {
-    _.eachDeep(demo, function(value, key, parent, ctx) {
+    _.eachDeep(demo, function (value, key, parent, ctx) {
       validateIteration(value, key, parent, ctx);
       if (parent) {
         assert(_.has(demo, ctx.path), 'Incorrect path: ' + ctx.path);
@@ -285,7 +305,7 @@ a.b.c.d[6].o.skip`);
     let options = { pathFormat: 'array' };
     _.eachDeep(
       demo,
-      function(value, key, parent, ctx) {
+      function (value, key, parent, ctx) {
         validateIteration(value, key, parent, ctx, options);
         assert(
           (ctx.path !== undefined ? _.get(demo, ctx.path) : demo) === value,

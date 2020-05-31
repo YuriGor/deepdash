@@ -849,4 +849,38 @@ callback failed after deep iterate at:
       '[0].feedback.replies[1].feedback.replies[0]',
     ]);
   });
+  it('non object children', () => {
+    let visited = [];
+    let options = { childrenPath: 'children', rootIsChildren: true };
+    _.eachDeep(
+      {
+        a: {
+          children: ['a1', 'a2', 'a3'],
+        },
+        b: {
+          children: 'b1,b2,b3',
+        },
+        c: {
+          children: ['c1', 'c2', 'c3'],
+        },
+      },
+      (value, key, parent, ctx) => {
+        validateIteration(value, key, parent, ctx, options);
+        visited.push(ctx.path);
+      },
+      options
+    );
+    expect(visited).to.deep.equal([
+      undefined,
+      'a',
+      'a.children[0]',
+      'a.children[1]',
+      'a.children[2]',
+      'b',
+      'c',
+      'c.children[0]',
+      'c.children[1]',
+      'c.children[2]',
+    ]);
+  });
 });

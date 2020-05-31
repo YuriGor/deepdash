@@ -1,232 +1,307 @@
 import getPathToString from './../getPathToString';
-import getHasChildren from './getHasChildren';
+// if (!global.perf) {
+//   global.perf = {};
+// }
+// const perf = global.perf;
 
 export default function getIterate(_) {
+  // if (!perf.iterate) {
+  // perf.iterate = {
+  //     currentObj: 0,
+  //     currentObj_c: 0,
+  //     checkCircular: 0,
+  //     checkCircular_c: 0,
+  //     children: 0,
+  //     children_c: 0,
+  //     isLeaf: 0,
+  //     isLeaf_c: 0,
+  //     needCallback: 0,
+  //     needCallback_c: 0,
+  //     currentParents: 0,
+  //     currentParents_c: 0,
+  //     context: 0,
+  //     context_c: 0,
+  //     invokeCallback: 0,
+  //     invokeCallback_c: 0,
+  //     addOwnChildren: 0,
+  //     addOwnChildren_c: 0,
+  //     push: 0,
+  //     push_c: 0,
+  //   };
+  // perf.invokeCallback = {
+  //     before: 0,
+  //     before_c: 0,
+  //   };
+  // perf.addOwnChildren = {
+  //     emptySlot: 0,
+  //     emptySlot_c: 0,
+  //     childPath: 0,
+  //     childPath_c: 0,
+  //     strChildPath: 0,
+  //     strChildPath_c: 0,
+  //     push: 0,
+  //     push_c: 0,
+  //   };
+  // }
   const pathToString = getPathToString(_);
-  const hasChildren = getHasChildren(_);
-  const _each = _.each || _.forArray;
 
-  /* item: {
-    value,
-    callback,
-    options,
-    key,
-    path,
-    strPath,
-    depth = 0,
-    parent,
-    parents = [],
-    obj,
-    childrenPath,
-    strChildrenPath,
-  } */
   function iterate(item) {
-    const stack = [];
-    while (item) {
-      if (item.options['break']) break;
-      if (!item.inited) {
-        item.inited = true;
-        applyDefaults(item);
-        item.scope = getScope(item);
-        item.res = invokeCallback(item);
-        if (item.res !== false) {
-          item.childrenItems = getChildrenItems(item);
-        }
-        item.currentChildIndex = -1;
-      }
+    const { options, obj, callback } = item;
+    options.pathFormatArray = options.pathFormat == 'array';
+    if (options.pathFormatArray) {
+      item.strPath = pathToString(item.path);
+    }
+    item.depth = 0;
+    item.parents = [];
 
+    let broken = false;
+    const breakIt = () => {
+      broken = true;
+      return false;
+    };
+
+    // let start;
+    while (item) {
+      if (broken) break;
+      if (!item.inited) {
+        // start = Date.now();
+        item.inited = true;
+        const itemIsObject = _.isObject(item.value);
+        const itemIsEmpty = _.isEmpty(item.value);
+
+        item.currentObj = {
+          value: item.value,
+          key: item.key,
+          path: options.pathFormatArray ? item.path : item.strPath,
+          parent: item.parent,
+        };
+        // perf.iterate.currentObj += Date.now() - start;
+        // perf.iterate.currentObj_c++;
+        // start = Date.now();
+        if (options.checkCircular) {
+          item.circularParentIndex = -1;
+          item.circularParent = null;
+          item.isCircular = false;
+          if (itemIsObject && !itemIsEmpty) {
+            let i = item.parents.length;
+            while (i--) {
+              if (item.parents[i].value === item.value) {
+                item.circularParentIndex = i;
+                item.circularParent = item.parents[i];
+                item.isCircular = true;
+                break;
+              }
+            }
+          }
+        }
+        // perf.iterate.checkCircular += Date.now() - start;
+        // perf.iterate.checkCircular_c++;
+        // start = Date.now();
+        item.children = [];
+        if (options.childrenPath) {
+          options.childrenPath.forEach((cp, i) => {
+            var children = _.get(item.value, cp);
+            if (!_.isEmpty(children)) {
+              item.children.push([cp, options.strChildrenPath[i], children]);
+            }
+          });
+        }
+        // perf.iterate.children += Date.now() - start;
+        // perf.iterate.children_c++;
+        // start = Date.now();
+        item.isLeaf =
+          item.isCircular ||
+          (options.childrenPath !== undefined && !item.children.length) ||
+          !itemIsObject ||
+          itemIsEmpty;
+
+        // perf.iterate.isLeaf += Date.now() - start;
+        // perf.iterate.isLeaf_c++;
+        // start = Date.now();
+        item.needCallback =
+          (item.depth || options.includeRoot) &&
+          (!options.leavesOnly || item.isLeaf);
+
+        // perf.iterate.needCallback += Date.now() - start;
+        // perf.iterate.needCallback_c++;
+        // start = Date.now();
+
+        item.currentParents = [...item.parents, item.currentObj];
+
+        // perf.iterate.currentParents += Date.now() - start;
+        // perf.iterate.currentParents_c++;
+        // start = Date.now();
+
+        if (item.needCallback) {
+          item.context = {
+            path: item.currentObj.path,
+            parent: item.parent,
+            parents: item.parents,
+            obj,
+            depth: item.depth,
+            isLeaf: item.isLeaf,
+            isCircular: item.isCircular,
+            circularParentIndex: item.circularParentIndex,
+            circularParent: item.circularParent,
+            "break": breakIt,
+          };
+
+          if (options.childrenPath !== undefined) {
+            item.context.childrenPath = options.pathFormatArray
+              ? item.childrenPath
+              : item.strChildrenPath;
+          }
+        }
+
+        // perf.iterate.context += Date.now() - start;
+        // perf.iterate.context_c++;
+        // start = Date.now();
+
+        if (item.needCallback) {
+          try {
+            item.res = callback(
+              item.value,
+              item.key,
+              item.parent && item.parent.value,
+              item.context
+            );
+          } catch (err) {
+            if (err.message) {
+              err.message +=
+                '\ncallback failed before deep iterate at:\n' +
+                item.context.path;
+            }
+
+            throw err;
+          }
+        }
+
+        // perf.iterate.invokeCallback += Date.now() - start;
+        // perf.iterate.invokeCallback_c++;
+        if (broken) {
+          break;
+        }
+        // start = Date.now();
+
+        if (item.res !== false) {
+          item.childrenItems = [];
+          if (!broken && !item.isCircular && itemIsObject) {
+            if (
+              options.childrenPath !== undefined &&
+              (item.depth || !options.rootIsChildren)
+            ) {
+              if (item.children.length) {
+                item.children.forEach(([cp, scp, children]) => {
+                  if (_.isObject(children)) {
+                    addOwnChildren(
+                      item.childrenItems,
+                      item,
+                      children,
+                      options,
+                      cp,
+                      scp
+                    );
+                  }
+                });
+              }
+            } else {
+              addOwnChildren(
+                item.childrenItems,
+                item,
+                item.value,
+                options,
+                [],
+                ''
+              );
+            }
+          }
+        }
+
+        item.currentChildIndex = -1;
+        // perf.iterate.addOwnChildren += Date.now() - start;
+        // perf.iterate.addOwnChildren_c++;
+      }
+      // start = Date.now();
       if (
         item.childrenItems &&
         item.currentChildIndex < item.childrenItems.length - 1
       ) {
         item.currentChildIndex++;
-        stack.push(item);
+        item.childrenItems[item.currentChildIndex].parentItem = item;
         item = item.childrenItems[item.currentChildIndex];
+        // perf.iterate.push += Date.now() - start;
+        // perf.iterate.push_c++;
         continue;
       }
+      // perf.iterate.push += Date.now() - start;
+      // perf.iterate.push_c++;
+      // start = Date.now();
 
-      invokeCallback(item, true);
+      if (item.needCallback && options.callbackAfterIterate) {
+        item.context.afterIterate = true;
 
-      item = stack.pop();
+        try {
+          callback(
+            item.value,
+            item.key,
+            item.parent && item.parent.value,
+            item.context
+          );
+        } catch (err) {
+          if (err.message) {
+            err.message +=
+              '\ncallback failed after deep iterate at:\n' + item.context.path;
+          }
+
+          throw err;
+        }
+      }
+      // perf.iterate.invokeCallback += Date.now() - start;
+      // perf.iterate.invokeCallback_c++;
+      item = item.parentItem;
     }
   }
 
   return iterate;
 
-  function applyDefaults(it) {
-    if (!it.depth) {
-      it.depth = 0;
-    }
-    if (!it.parents) {
-      it.parents = [];
-    }
-  }
-
-  function getScope(it) {
-    const scope = {
-      currentObj: {
-        value: it.value,
-        key: it.key,
-        path:
-          it.options.pathFormat == 'array'
-            ? it.path
-            : it.strPath || pathToString(it.path),
-        parent: it.parent,
-      },
-
-      circular: checkCircular(it.value, it.options, it.parents),
-    };
-
-    scope.isLeaf =
-      !_.isObject(it.value) ||
-      _.isEmpty(it.value) ||
-      scope.circular.isCircular ||
-      (it.options.childrenPath !== undefined &&
-        !hasChildren(it.value, it.options.childrenPath));
-
-    scope.needCallback =
-      (it.depth || it.options.includeRoot) &&
-      (!it.options.leavesOnly || scope.isLeaf);
-
-    scope.currentParents = [...it.parents, scope.currentObj];
-
-    if (scope.needCallback) {
-      scope.context = {
-        ...scope.circular,
-        path: scope.currentObj.path,
-        parent: it.parent,
-        parents: it.parents,
-        obj: it.obj,
-        depth: it.depth,
-        isLeaf: scope.isLeaf,
-        "break": () => {
-          it.options['break'] = true;
-          return false;
-        },
-      };
-
-      if (it.options.childrenPath !== undefined) {
-        scope.currentObj.childrenPath =
-          it.options.pathFormat == 'array'
-            ? it.childrenPath
-            : it.strChildrenPath;
-        scope.context.childrenPath = scope.currentObj.childrenPath;
-      }
-    }
-    return scope;
-  }
-
-  function invokeCallback(it, afterIterate) {
-    if (
-      it.scope.needCallback &&
-      (!afterIterate || it.options.callbackAfterIterate)
-    ) {
-      if (afterIterate) {
-        it.scope.context.afterIterate = true;
-      }
-      try {
-        return it.callback(
-          it.value,
-          it.key,
-          it.parent && it.parent.value,
-          it.scope.context
-        );
-      } catch (err) {
-        if (err.message) {
-          err.message +=
-            '\ncallback failed ' +
-            (afterIterate ? 'after' : 'before') +
-            ' deep iterate at:\n' +
-            it.scope.context.path;
-        }
-        throw err;
-      }
-    }
-  }
-
-  function checkCircular(value, options, parents) {
-    let isCircular;
-    let circularParentIndex = undefined;
-    let circularParent = undefined;
-    if (options.checkCircular) {
-      if (_.isObject(value) && !_.isEmpty(value)) {
-        circularParentIndex = -1;
-        let i = parents.length;
-        while (i--) {
-          if (parents[i].value === value) {
-            circularParentIndex = i;
-            break;
-          }
-        }
-
-        circularParent = parents[circularParentIndex] || null;
-      } else {
-        circularParentIndex = -1;
-        circularParent = null;
-      }
-      isCircular = circularParentIndex !== -1;
-    }
-    return { isCircular, circularParentIndex, circularParent };
-  }
-
-  function getChildrenItems(it) {
-    let childrenItems = [];
-    if (
-      !it.options['break'] &&
-      !it.scope.circular.isCircular &&
-      _.isObject(it.value)
-    ) {
-      if (it.options.childrenPath !== undefined) {
-        if (!it.depth && it.options.rootIsChildren) {
-          addOwnChildren(childrenItems, it, it.value);
-        } else {
-          _each(it.options.childrenPath, (cp, i) => {
-            const children = _.get(it.value, cp);
-            const scp = it.options.strChildrenPath[i];
-            if (children && _.isObject(children)) {
-              addOwnChildren(childrenItems, it, children, cp, scp);
-            }
-          });
-        }
-      } else {
-        addOwnChildren(childrenItems, it, it.value);
-      }
-    }
-    return childrenItems;
-  }
-
   function addOwnChildren(
     childrenItems,
-    it,
+    item,
     children,
-    childrenPath = [],
-    strChildrenPath = ''
+    options,
+    childrenPath,
+    strChildrenPath
   ) {
-    _.forOwn(children, (childValue, childKey) => {
-      if (Array.isArray(children)) {
-        if (childValue === undefined && !(childKey in children)) {
-          return; //empty array slot
-        }
-      }
-      const childPath = [...(it.path || []), ...childrenPath, childKey];
-      const strChildPath =
-        it.options.pathFormat == 'array'
-          ? pathToString([childKey], it.strPath || '', strChildrenPath)
-          : undefined;
+    const keys = Object.keys(children);
+    keys.forEach((childKey) => {
+      // let start = Date.now();
+      const childValue = children[childKey];
+      // perf.addOwnChildren.emptySlot += Date.now() - start;
+      // perf.addOwnChildren.emptySlot_c++;
+      // start = Date.now();
+      const childPath = [...(item.path || []), ...childrenPath, childKey];
+      // perf.addOwnChildren.childPath += Date.now() - start;
+      // perf.addOwnChildren.childPath_c++;
+      // start = Date.now();
+      const strChildPath = options.pathFormatArray
+        ? undefined
+        : pathToString([childKey], item.strPath, strChildrenPath);
+      // perf.addOwnChildren.strChildPath += Date.now() - start;
+      // perf.addOwnChildren.strChildPath_c++;
+      // start = Date.now();
       childrenItems.push({
         value: childValue,
-        callback: it.callback,
-        options: it.options,
         key: childKey,
         path: childPath,
         strPath: strChildPath,
-        depth: it.depth + 1,
-        parent: it.scope.currentObj,
-        parents: it.scope.currentParents,
-        obj: it.obj,
+        depth: item.depth + 1,
+        parent: item.currentObj,
+        parents: item.currentParents,
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
       });
+      // perf.addOwnChildren.push += Date.now() - start;
+      // perf.addOwnChildren.push_c++;
     });
   }
 }
