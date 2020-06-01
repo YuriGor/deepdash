@@ -156,6 +156,18 @@
         "bug",
         "userTesting"
       ]
+    },
+    {
+      "login": "jwhitmarsh",
+      "name": "James",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/8026009?v=4",
+      "profile": "https://github.com/jwhitmarsh",
+      "contributions": [
+        "bug",
+        "code",
+        "doc",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7

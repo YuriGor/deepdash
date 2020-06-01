@@ -1273,6 +1273,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://richtera.org"><img src="https://avatars2.githubusercontent.com/u/708186?v=4" width="100px;" alt=""/><br /><sub><b>Andreas Richter</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Arichtera" title="Bug reports">🐛</a> <a href="#userTesting-richtera" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://github.com/jwhitmarsh"><img src="https://avatars2.githubusercontent.com/u/8026009?v=4" width="100px;" alt=""/><br /><sub><b>James</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Ajwhitmarsh" title="Bug reports">🐛</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=jwhitmarsh" title="Code">💻</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=jwhitmarsh" title="Documentation">📖</a> <a href="#userTesting-jwhitmarsh" title="User Testing">📓</a></td>
   </tr>
 </table>
 
