@@ -85,29 +85,24 @@ export default function getIterate(_) {
         }
 
         if (item.res !== false) {
-          item.childrenItems = [];
           if (!broken && !item.isCircular && itemIsObject) {
             if (
               options.childrenPath !== undefined &&
               (item.depth || !options.rootIsChildren)
             ) {
+              item.childrenItems = [];
               if (item.children.length) {
                 item.children.forEach(([cp, scp, children]) => {
                   if (_.isObject(children)) {
-                    addOwnChildren(
-                      item.childrenItems,
-                      item,
-                      children,
-                      options,
-                      cp,
-                      scp
-                    );
+                    item.childrenItems = [
+                      ...item.childrenItems,
+                      ...getOwnChildren(item, children, options, cp, scp),
+                    ];
                   }
                 });
               }
             } else {
-              addOwnChildren(
-                item.childrenItems,
+              item.childrenItems = getOwnChildren(
                 item,
                 item.value,
                 options,
@@ -156,19 +151,18 @@ export default function getIterate(_) {
 
   return iterate;
 
-  function addOwnChildren(
-    childrenItems,
+  function getOwnChildren(
     item,
     children,
     options,
     childrenPath,
     strChildrenPath
   ) {
-    Object.entries(children).forEach(([childKey, childValue]) => {
+    return Object.entries(children).map(([childKey, childValue]) => {
       const strChildPath = options.pathFormatArray
         ? undefined
         : pathToString([childKey], item.strPath, strChildrenPath);
-      childrenItems.push({
+      return {
         value: childValue,
         key: childKey,
         path: [...(item.path || []), ...childrenPath, childKey],
@@ -183,7 +177,7 @@ export default function getIterate(_) {
         },
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
-      });
+      };
     });
   }
 }
