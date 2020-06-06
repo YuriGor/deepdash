@@ -3856,14 +3856,6 @@ var deepdash = (function (exports) {
           var itemIsObject = _.isObject(item.value);
           var itemIsEmpty = _.isEmpty(item.value);
 
-          item.currentObj = {
-            value: item.value,
-            key: item.key,
-            path: options.pathFormatArray ? item.path : item.strPath,
-            parent: item.parent,
-            depth: item.depth,
-          };
-
           if (options.checkCircular) {
             item.circularParentIndex = -1;
             item.circularParent = null;
@@ -3915,7 +3907,7 @@ var deepdash = (function (exports) {
               if (err.message) {
                 err.message +=
                   '\ncallback failed before deep iterate at:\n' +
-                  item.currentObj.path;
+                  pathToString(item.path);
               }
 
               throw err;
@@ -3990,7 +3982,7 @@ var deepdash = (function (exports) {
             if (err.message) {
               err.message +=
                 '\ncallback failed after deep iterate at:\n' +
-                item.currentObj.path;
+                pathToString(item.path);
             }
 
             throw err;
@@ -4014,17 +4006,22 @@ var deepdash = (function (exports) {
         var childKey = ref[0];
         var childValue = ref[1];
 
-        var childPath = (item.path || []).concat( childrenPath, [childKey]);
         var strChildPath = options.pathFormatArray
           ? undefined
           : pathToString([childKey], item.strPath, strChildrenPath);
         childrenItems.push({
           value: childValue,
           key: childKey,
-          path: childPath,
+          path: (item.path || []).concat( childrenPath, [childKey]),
           strPath: strChildPath,
           depth: item.depth + 1,
-          parent: item.currentObj,
+          parent: {
+            value: item.value,
+            key: item.key,
+            path: options.pathFormatArray ? item.path : item.strPath,
+            parent: item.parent,
+            depth: item.depth,
+          },
           childrenPath: (childrenPath.length && childrenPath) || undefined,
           strChildrenPath: strChildrenPath || undefined,
         });
@@ -4042,10 +4039,9 @@ var deepdash = (function (exports) {
   ContextReader.prototype.setItem = function setItem (item, afterIterate) {
     this._item = item;
     this.afterIterate = afterIterate;
-    this._parents = undefined;
   };
   prototypeAccessors.path.get = function () {
-    return this._item.currentObj.path;
+    return this._options.pathFormatArray ? this._item.path : this._item.strPath;
   };
 
   prototypeAccessors.parent.get = function () {
@@ -4053,15 +4049,15 @@ var deepdash = (function (exports) {
   };
 
   prototypeAccessors.parents.get = function () {
-    if (!this._parents) {
-      this._parents = [];
+    if (!this._item._parents) {
+      this._item._parents = [];
       var curParent = this._item.parent;
       while (curParent) {
-        this._parents[curParent.depth] = curParent;
+        this._item._parents[curParent.depth] = curParent;
         curParent = curParent.parent;
       }
     }
-    return this._parents;
+    return this._item._parents;
   };
   prototypeAccessors.depth.get = function () {
     return this._item.depth;

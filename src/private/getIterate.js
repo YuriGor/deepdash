@@ -22,14 +22,6 @@ export default function getIterate(_) {
         const itemIsObject = _.isObject(item.value);
         const itemIsEmpty = _.isEmpty(item.value);
 
-        item.currentObj = {
-          value: item.value,
-          key: item.key,
-          path: options.pathFormatArray ? item.path : item.strPath,
-          parent: item.parent,
-          depth: item.depth,
-        };
-
         if (options.checkCircular) {
           item.circularParentIndex = -1;
           item.circularParent = null;
@@ -81,7 +73,7 @@ export default function getIterate(_) {
             if (err.message) {
               err.message +=
                 '\ncallback failed before deep iterate at:\n' +
-                item.currentObj.path;
+                pathToString(item.path);
             }
 
             throw err;
@@ -152,7 +144,7 @@ export default function getIterate(_) {
           if (err.message) {
             err.message +=
               '\ncallback failed after deep iterate at:\n' +
-              item.currentObj.path;
+              pathToString(item.path);
           }
 
           throw err;
@@ -173,17 +165,22 @@ export default function getIterate(_) {
     strChildrenPath
   ) {
     Object.entries(children).forEach(([childKey, childValue]) => {
-      const childPath = [...(item.path || []), ...childrenPath, childKey];
       const strChildPath = options.pathFormatArray
         ? undefined
         : pathToString([childKey], item.strPath, strChildrenPath);
       childrenItems.push({
         value: childValue,
         key: childKey,
-        path: childPath,
+        path: [...(item.path || []), ...childrenPath, childKey],
         strPath: strChildPath,
         depth: item.depth + 1,
-        parent: item.currentObj,
+        parent: {
+          value: item.value,
+          key: item.key,
+          path: options.pathFormatArray ? item.path : item.strPath,
+          parent: item.parent,
+          depth: item.depth,
+        },
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
       });
@@ -200,10 +197,9 @@ class ContextReader {
   setItem(item, afterIterate) {
     this._item = item;
     this.afterIterate = afterIterate;
-    this._parents = undefined;
   }
   get path() {
-    return this._item.currentObj.path;
+    return this._options.pathFormatArray ? this._item.path : this._item.strPath;
   }
 
   get parent() {
@@ -211,15 +207,15 @@ class ContextReader {
   }
 
   get parents() {
-    if (!this._parents) {
-      this._parents = [];
+    if (!this._item._parents) {
+      this._item._parents = [];
       let curParent = this._item.parent;
       while (curParent) {
-        this._parents[curParent.depth] = curParent;
+        this._item._parents[curParent.depth] = curParent;
         curParent = curParent.parent;
       }
     }
-    return this._parents;
+    return this._item._parents;
   }
   get depth() {
     return this._item.depth;
