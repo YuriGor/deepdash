@@ -3831,6 +3831,9 @@ var deepdash = (function (exports) {
 
   getPathToString.notChainable = true;
 
+  var rxVarName$1 = /^[a-zA-Z_$]+([\w_$]*)$/;
+  var rxQuot$1 = /"/g;
+
   function getIterate(_) {
     var pathToString = getPathToString(_);
 
@@ -3993,13 +3996,42 @@ var deepdash = (function (exports) {
       childrenPath,
       strChildrenPath
     ) {
+      var strChildPathPrefix;
+      var childrenIsArray;
+      if (!options.pathFormatArray) {
+        strChildPathPrefix = item.strPath || '';
+
+        if (
+          strChildrenPath &&
+          strChildPathPrefix &&
+          !strChildrenPath.startsWith('[')
+        ) {
+          strChildPathPrefix += '.';
+        }
+        strChildPathPrefix += strChildrenPath || '';
+        childrenIsArray = Array.isArray(children);
+      }
       return Object.entries(children).map(function (ref) {
         var childKey = ref[0];
         var childValue = ref[1];
 
-        var strChildPath = options.pathFormatArray
-          ? undefined
-          : pathToString([childKey], item.strPath, strChildrenPath);
+        var strChildPath;
+        if (!options.pathFormatArray) {
+          if (childrenIsArray) {
+            strChildPath = strChildPathPrefix + "[" + childKey + "]";
+          } else if (rxVarName$1.test(childKey)) {
+            if (strChildPathPrefix) {
+              strChildPath = strChildPathPrefix + "." + childKey;
+            } else {
+              strChildPath = "" + childKey;
+            }
+          } else {
+            strChildPath = strChildPathPrefix + "[\"" + (childKey.replace(
+              rxQuot$1,
+              '\\"'
+            )) + "\"]";
+          }
+        }
         return {
           value: childValue,
           key: childKey,

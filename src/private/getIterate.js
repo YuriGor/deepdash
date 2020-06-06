@@ -1,4 +1,7 @@
 import getPathToString from './../getPathToString';
+var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
+var rxQuot = /"/g;
+
 export default function getIterate(_) {
   const pathToString = getPathToString(_);
 
@@ -158,10 +161,39 @@ export default function getIterate(_) {
     childrenPath,
     strChildrenPath
   ) {
+    let strChildPathPrefix;
+    let childrenIsArray;
+    if (!options.pathFormatArray) {
+      strChildPathPrefix = item.strPath || '';
+
+      if (
+        strChildrenPath &&
+        strChildPathPrefix &&
+        !strChildrenPath.startsWith('[')
+      ) {
+        strChildPathPrefix += '.';
+      }
+      strChildPathPrefix += strChildrenPath || '';
+      childrenIsArray = Array.isArray(children);
+    }
     return Object.entries(children).map(([childKey, childValue]) => {
-      const strChildPath = options.pathFormatArray
-        ? undefined
-        : pathToString([childKey], item.strPath, strChildrenPath);
+      let strChildPath;
+      if (!options.pathFormatArray) {
+        if (childrenIsArray) {
+          strChildPath = `${strChildPathPrefix}[${childKey}]`;
+        } else if (rxVarName.test(childKey)) {
+          if (strChildPathPrefix) {
+            strChildPath = `${strChildPathPrefix}.${childKey}`;
+          } else {
+            strChildPath = `${childKey}`;
+          }
+        } else {
+          strChildPath = `${strChildPathPrefix}["${childKey.replace(
+            rxQuot,
+            '\\"'
+          )}"]`;
+        }
+      }
       return {
         value: childValue,
         key: childKey,

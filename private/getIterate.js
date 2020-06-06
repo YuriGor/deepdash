@@ -2,6 +2,9 @@
 
 var getPathToString = require('../getPathToString.js');
 
+var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
+var rxQuot = /"/g;
+
 function getIterate(_) {
   var pathToString = getPathToString(_);
 
@@ -164,13 +167,42 @@ function getIterate(_) {
     childrenPath,
     strChildrenPath
   ) {
+    var strChildPathPrefix;
+    var childrenIsArray;
+    if (!options.pathFormatArray) {
+      strChildPathPrefix = item.strPath || '';
+
+      if (
+        strChildrenPath &&
+        strChildPathPrefix &&
+        !strChildrenPath.startsWith('[')
+      ) {
+        strChildPathPrefix += '.';
+      }
+      strChildPathPrefix += strChildrenPath || '';
+      childrenIsArray = Array.isArray(children);
+    }
     return Object.entries(children).map(function (ref) {
       var childKey = ref[0];
       var childValue = ref[1];
 
-      var strChildPath = options.pathFormatArray
-        ? undefined
-        : pathToString([childKey], item.strPath, strChildrenPath);
+      var strChildPath;
+      if (!options.pathFormatArray) {
+        if (childrenIsArray) {
+          strChildPath = strChildPathPrefix + "[" + childKey + "]";
+        } else if (rxVarName.test(childKey)) {
+          if (strChildPathPrefix) {
+            strChildPath = strChildPathPrefix + "." + childKey;
+          } else {
+            strChildPath = "" + childKey;
+          }
+        } else {
+          strChildPath = strChildPathPrefix + "[\"" + (childKey.replace(
+            rxQuot,
+            '\\"'
+          )) + "\"]";
+        }
+      }
       return {
         value: childValue,
         key: childKey,
