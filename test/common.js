@@ -38,13 +38,13 @@ module.exports = {
     ];
     // console.log('standalone:', standalone.filterDeep);
 
-    lodashes.forEach(function(dd) {
+    lodashes.forEach(function (dd) {
       describe((dd.v || '') + ' ' + (title || methods.join(' + ')), () => {
         test(dd);
       });
     });
   },
-  validateIteration: function(value, key, parentVal, context, options) {
+  validateIteration: function (value, key, parentVal, context, options) {
     options = _.merge({}, options || {});
     if (options.method === 'filterDeep') {
       options.callbackAfterIterate = true;
@@ -269,8 +269,10 @@ module.exports = {
             : parentVal)[key] != value
         )
           throw new Error('child value doesnt match one got by key');
-        if (_.get(context.obj, context.path) !== value)
+        if (_.get(context.obj, context.path) !== value) {
+          console.log({ key: key, value, path: context.path });
           throw new Error('value doesnt match one got by path');
+        }
         if (
           context.parent.path !== undefined &&
           _.get(context.obj, context.parent.path) !== parentVal

@@ -1,11 +1,10 @@
 // const _ = require('../deepdash')(require('lodash'));
-// let obj = {
-//   good1: true,
-//   bad1: false,
-//   good2: { good3: true, bad3: true },
-//   bad2: { good: true },
-//   good4: [{ good5: true, bad5: true }],
-//   bad4: [],
-// };
-// let clean = _.pickDeep(obj, /\.?good\d*$/);
-// console.log(clean);
+// var { children } = require('./object')();
+// _.eachDeep(
+//   children,
+//   (value, key, parent, ctx) => {
+//     const eq = value === _.get(ctx.obj, ctx.path);
+//     console.log(ctx.afterIterate ? '<' : '>', key, ctx.path, eq);
+//   },
+//   { callbackAfterIterate: true }
+// );

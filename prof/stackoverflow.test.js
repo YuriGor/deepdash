@@ -88,7 +88,7 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     var idList = [2, 3];
     var found = _.filterDeep(
       obj,
-      function(value) {
+      function (value) {
         return _.indexOf(idList, value.id) !== -1;
       },
       { childrenPath: 'children' }
@@ -156,7 +156,7 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
         ],
       },
     ];
-    var filtrate = _.filterDeep(types, function(value, key, parent) {
+    var filtrate = _.filterDeep(types, function (value, key, parent) {
       if (parent.checked) return true;
     });
 
@@ -206,16 +206,16 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     ];
     var children = _.filterDeep(
       obj,
-      function(value, key, parent) {
+      function (value, key, parent) {
         if (key == 'children' && parent.id == 6 && value.length) return true;
       },
       { leavesOnly: false }
     );
-    expect(children.length);
+    expect(children);
     // console.log(children);
   });
   // https://stackoverflow.com/questions/42167573/filtering-array-based-on-value-in-deeply-nested-object-in-javascript
-  it('filtering-array-based-on-value-in-deeply-nested-object-in-javascript', function() {
+  it('filtering-array-based-on-value-in-deeply-nested-object-in-javascript', function () {
     var obj = [
       {
         id: 1,
@@ -282,7 +282,7 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     var endsWith = 'foo';
     var foundFoo = _.filterDeep(
       obj,
-      function(value, key) {
+      function (value, key) {
         return _.endsWith(value.name, endsWith);
       },
       { childrenPath: ['sub_categories', 'indicators'] }
@@ -332,7 +332,7 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     var keyword = 'Hit';
     var foundHit = _.filterDeep(
       input,
-      function(value) {
+      function (value) {
         return value.value.includes(keyword);
       },
       {
@@ -368,7 +368,7 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
       state: true,
       zip: true,
     };
-    var filtrate = _.filterDeep(data, function(value, key, parent, ctx) {
+    var filtrate = _.filterDeep(data, function (value, key, parent, ctx) {
       return _.has(controlObject, ctx.path);
     });
     expect(filtrate);
