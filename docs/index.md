@@ -1,6 +1,6 @@
 # Deepdash
 
-> v5.0.0 - [see changes](/changelog#v5-0-0)
+> v5.1.0 - [see changes](/changelog#v5-1-0)
 
 eachDeep, filterDeep, findDeep, someDeep, omitDeep, pickDeep, keysDeep etc..
 Tree traversal library written in Underscore/Lodash fashion.
@@ -868,6 +868,7 @@ _.mapDeep( obj, iteratee, options) => object
 ## mapValuesDeep
 
 returns an object with the same structure with values trasformed thru iteratee.
+if some value changed type from/to array - children will be skipped and given value will be used as is
 
 ```js
 _.mapValuesDeep( obj, iteratee, options) => object
@@ -879,6 +880,7 @@ _.mapValuesDeep( obj, iteratee, options) => object
     - `key|index`
     - `parentValue`
     - `context`
+        - `skipChildren(boolean)` - use this method to override default skip children behavior. Note: children values will be placed by original paths even if parent changed type from / to array.
     - `returns` - desired value instead of initial to be set at the same path
 * `options` - (see [eachDeep options](#eachdeep) for details)
     - `callbackAfterIterate` (false)

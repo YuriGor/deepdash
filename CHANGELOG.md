@@ -1,5 +1,14 @@
 # Change Log
 
+## v5-1-0
+*(2020-06-07)*
+
+**Features added**
+- [mapValuesDeep](/#mapvaluesdeep) - context.skipChildren added to let user override default behavior
+
+**Bugs fixed**
+- [mapValuesDeep](/#mapvaluesdeep) - method will skip children if value changed type from/to array and use given value as is (#60)
+
 ## v5-0-0
 *(2020-03-21)*
 
