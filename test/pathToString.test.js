@@ -19,7 +19,9 @@ forLodashes(['pathToString'], (_) => {
     );
   });
   it('escape double quote', () => {
-    expect(_.pathToString(['"', '"', '"'])).to.equal('["\\""]["\\""]["\\""]');
+    expect(_.pathToString(['"', '"', '"', ''])).to.equal(
+      '["\\""]["\\""]["\\""][""]'
+    );
   });
   it('return string as is', () => {
     expect(_.pathToString('it.s.a.string')).to.equal('it.s.a.string');
