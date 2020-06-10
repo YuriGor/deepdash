@@ -4,12 +4,16 @@ rollup.config.js
 .nyc_output
 coverage
 examples
+prof
 node_modules
 es
 test
 txt
 .coverals.yml
 .eslintrc.js
+tslint.json
+.all-contributorsrc
+.clinic
 .gitignore
 .npmignore
 .travis.yml
