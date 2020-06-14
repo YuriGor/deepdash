@@ -1,6 +1,7 @@
 'use strict';
 
 var { forLodashes, it, expect } = require('./common.js');
+var hrstart = process.hrtime();
 forLodashes(['index'], (_) => {
   it('[.]\'"', () => {
     let o = { a: { '[': 'c', '"\'': 'd', '.': 'e' } };
@@ -16,3 +17,5 @@ forLodashes(['index'], (_) => {
     });
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

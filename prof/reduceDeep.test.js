@@ -2,7 +2,7 @@
 
 var { demo, circular, social } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['reduceDeep'], (_) => {
   it('defaults', () => {
     let res = _.reduceDeep(
@@ -81,3 +81,5 @@ forLodashes(['reduceDeep'], (_) => {
     expect(names);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

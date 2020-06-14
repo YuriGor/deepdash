@@ -2,7 +2,7 @@
 
 var { demo, circular } = require('./object')();
 var { forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['eachDeep', 'filterDeep'], (_) => {
   //https://github.com/lodash/lodash/issues/591
   it('deep filtering & deep finding', () => {
@@ -64,9 +64,11 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     var obj = {
       a: { b: { c: [{ x: 1, y: 2, z: 3, __typename: 'nobodyCares' }] } },
     };
-    var clean = _.filterDeep(obj, function(value, key) {
+    var clean = _.filterDeep(obj, function (value, key) {
       return key != '__typename';
     });
     expect(clean);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

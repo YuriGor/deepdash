@@ -7,6 +7,8 @@ var { circular } = require('./object')();
 
 var { forLodashes, it, expect } = require('./common.js');
 
+var hrstart = process.hrtime();
+
 forLodashes('condense', (_) => {
   it('slot 0', () => {
     var arr = [, 'b', 'c', 'd', 'e'];
@@ -73,3 +75,6 @@ forLodashes(['condenseDeep', 'paths'], (_) => {
     expect(_.paths(obj, { checkCircular: true, leavesOnly: false }).length);
   });
 });
+
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

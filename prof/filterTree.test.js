@@ -10,7 +10,7 @@ var {
   badChildren,
 } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['filterDeep'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(comments);
@@ -186,7 +186,7 @@ forLodashes(['filterDeep'], (_) => {
     };
     var filtrate = _.filterDeep(
       input,
-      function(value, key, parent, ctx) {
+      function (value, key, parent, ctx) {
         validateIteration(value, key, parent, ctx, options);
         if (value.value && value.value.includes(keyword)) return true;
       },
@@ -196,3 +196,5 @@ forLodashes(['filterDeep'], (_) => {
     expect(filtrate);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

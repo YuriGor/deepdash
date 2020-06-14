@@ -1,7 +1,7 @@
 'use strict';
 
 var { forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes('exists', (_) => {
   it('slot 0', () => {
     var arr = [, 'b', , 'd', 'e'];
@@ -31,3 +31,5 @@ forLodashes('exists', (_) => {
     expect(_.exists(arr, [0, 4]));
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

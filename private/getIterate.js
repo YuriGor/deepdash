@@ -27,6 +27,7 @@ function getIterate(_) {
       if (broken) { break; }
       if (!item.inited) {
         item.inited = true;
+        item.info = {};
         var itemIsObject = _.isObject(item.value);
         var itemIsEmpty = _.isEmpty(item.value);
 
@@ -215,6 +216,7 @@ function getIterate(_) {
           path: options.pathFormatArray ? item.path : item.strPath,
           parent: item.parent,
           depth: item.depth,
+          info: item.info,
         },
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
@@ -229,7 +231,7 @@ var ContextReader = function ContextReader(obj, options, breakIt) {
   this['break'] = breakIt;
 };
 
-var prototypeAccessors = { path: { configurable: true },parent: { configurable: true },parents: { configurable: true },depth: { configurable: true },isLeaf: { configurable: true },isCircular: { configurable: true },circularParentIndex: { configurable: true },circularParent: { configurable: true },childrenPath: { configurable: true } };
+var prototypeAccessors = { path: { configurable: true },parent: { configurable: true },parents: { configurable: true },depth: { configurable: true },isLeaf: { configurable: true },isCircular: { configurable: true },circularParentIndex: { configurable: true },circularParent: { configurable: true },childrenPath: { configurable: true },info: { configurable: true } };
 ContextReader.prototype.setItem = function setItem (item, afterIterate) {
   this._item = item;
   this.afterIterate = afterIterate;
@@ -281,6 +283,10 @@ prototypeAccessors.childrenPath.get = function () {
         : this._item.strChildrenPath)) ||
     undefined
   );
+};
+
+prototypeAccessors.info.get = function () {
+  return this._item.info;
 };
 
 Object.defineProperties( ContextReader.prototype, prototypeAccessors );

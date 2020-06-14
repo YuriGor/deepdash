@@ -2,7 +2,7 @@
 
 var { demo, circular } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
@@ -146,9 +146,7 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
     let c = _.forEachDeep(demo);
     expect(c);
     if (!_.v) {
-      c = _(demo)
-        .forEachDeep()
-        .value();
+      c = _(demo).forEachDeep().value();
       expect(c);
     }
   });
@@ -240,7 +238,7 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
     expect(paths);
   });
   it('generated string paths are correct', () => {
-    _.eachDeep(demo, function(value, key, parent, ctx) {
+    _.eachDeep(demo, function (value, key, parent, ctx) {
       validateIteration(value, key, parent, ctx);
     });
   });
@@ -248,7 +246,7 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
     let options = { pathFormat: 'array' };
     _.eachDeep(
       demo,
-      function(value, key, parent, ctx) {
+      function (value, key, parent, ctx) {
         validateIteration(value, key, parent, ctx, options);
       },
       options
@@ -291,3 +289,5 @@ forLodashes(['eachDeep', 'forEachDeep', 'pathToString'], (_) => {
     expect(u);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

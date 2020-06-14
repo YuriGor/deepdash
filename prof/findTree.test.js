@@ -10,7 +10,7 @@ var {
   badChildren,
 } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['findDeep'], (_) => {
   it('findTree by field', () => {
     let found = _.findDeep(comments, 'verified', {
@@ -77,3 +77,5 @@ forLodashes(['findDeep'], (_) => {
     expect(found.context.path);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

@@ -3,6 +3,7 @@
 var { demo, circular } = require('./object')();
 
 var { forLodashes, it, expect } = require('./common.js');
+var hrstart = process.hrtime();
 forLodashes(['eachDeep', 'filterDeep'], (_) => {
   // https://stackoverflow.com/questions/41610948/lodash-find-deep-in-array-of-object
   it('lodash-find-deep-in-array-of-object', () => {
@@ -643,3 +644,5 @@ forLodashes(['eachDeep', 'filterDeep'], (_) => {
     expect(arr);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

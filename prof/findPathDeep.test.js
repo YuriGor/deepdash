@@ -3,7 +3,7 @@
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
 var { demo, circular } = require('./object')();
-
+var hrstart = process.hrtime();
 forLodashes(['findPathDeep', 'omitDeep', 'paths'], (_) => {
   function isNS(options = {}) {
     return (value, key, parent, ctx) => {
@@ -312,3 +312,5 @@ forLodashes(['findPathDeep', 'omitDeep', 'paths'], (_) => {
     expect(found);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

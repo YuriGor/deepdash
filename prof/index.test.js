@@ -2,6 +2,7 @@
 
 var { demo, circular, children } = require('./object')();
 var { forLodashes, it, expect } = require('./common.js');
+var hrstart = process.hrtime();
 forLodashes(['index'], (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(demo);
@@ -34,9 +35,7 @@ forLodashes(['index'], (_) => {
   });
   if (!_.v) {
     it('Chaining', () => {
-      let index = _(demo)
-        .index({ leavesOnly: false })
-        .value();
+      let index = _(demo).index({ leavesOnly: false }).value();
       expect(_.size(index));
     });
   }
@@ -116,3 +115,5 @@ forLodashes(['index'], (_) => {
     expect(index);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

@@ -2,7 +2,7 @@
 
 var { demo, children } = require('./object')();
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
-
+var hrstart = process.hrtime();
 forLodashes(['mapValuesDeep'], (_) => {
   it('defaults', () => {
     let res = _.mapValuesDeep(demo, (value, key, parent, ctx) => {
@@ -72,3 +72,5 @@ forLodashes(['mapValuesDeep'], (_) => {
     expect(JSON.stringify(res));
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

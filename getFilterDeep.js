@@ -1,16 +1,12 @@
 'use strict';
 
-var getPathToString = require('./getPathToString.js');
 var getEachDeep = require('./getEachDeep.js');
 var getCondenseDeep = require('./getCondenseDeep.js');
-var getExists = require('./getExists.js');
 
 function getFilterDeep(_) {
   // console.log('getFilterDeep:', _);
   var eachDeep = getEachDeep(_);
-  var pathToString = getPathToString(_);
   var condenseDeep = getCondenseDeep(_);
-  var exists = getExists(_);
 
   function filterDeep(obj, predicate, options) {
     predicate = _.iteratee(predicate);
@@ -87,18 +83,12 @@ function getFilterDeep(_) {
     };
 
     var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
-    var replies = {};
-    var rootReply;
-    var foundCircular = [];
-    // console.log('filterDeep → eachDeep', eachDeepOptions);
+
     eachDeep(
       obj,
-      function(value, key, parent, context) {
-        // delete context['break'];
-        var curPath = pathToString(context.path);
+      function (value, key, parent, context) {
         if (!context.afterIterate) {
           if (!context.isCircular) {
-            // console.log(context.path, { leaf: context.isLeaf });
             var reply =
               !options.leavesOnly || context.isLeaf
                 ? predicate(value, key, parent, context)
@@ -116,33 +106,9 @@ function getFilterDeep(_) {
             if (reply.empty === undefined) {
               reply.empty = true;
             }
-            // console.log(context.path + '?', reply);
-            if (curPath !== undefined) {
-              replies[curPath] = reply;
 
-              // _.eachRight(context.parents, function(parent) {
-              //   var p = pathToString(parent.path);
-              //   if (p !== undefined && !replies[p]) {
-              //     replies[p] = _.clone(options.onUndefined);
-              //     replies[p].empty = reply.empty;
-              //   } else {
-              //     return false;
-              //   }
-              // });
+            context.info.reply = reply;
 
-              if (!rootReply) {
-                rootReply = {
-                  skipChildren: false,
-                  cloneDeep: false,
-                  keepIfEmpty: false,
-                  empty: reply.empty,
-                };
-              }
-            } else {
-              rootReply = reply;
-              // console.log('root reply', reply);
-            }
-            // console.log('→', replies);
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
                 if (context.path !== undefined) {
@@ -155,16 +121,12 @@ function getFilterDeep(_) {
                   _.set(
                     res,
                     context.path,
-                    Array.isArray(value)
-                      ? []
-                      : _.isPlainObject(value)
-                      ? {}
-                      : value
+                    Array.isArray(value) ? [] : _.isObject(value) ? {} : value
                   );
                 } else {
                   res = Array.isArray(value)
                     ? []
-                    : _.isPlainObject(value)
+                    : _.isObject(value)
                     ? {}
                     : value;
                 }
@@ -172,63 +134,51 @@ function getFilterDeep(_) {
             }
             return !reply.skipChildren;
           } else {
-            // console.log('fc: ', context.path);
-            _.unset(res, context.path);
-
-            if (options.keepCircular) {
-              foundCircular.push([context.path, context.circularParent.path]);
+            if (!options.keepCircular) {
+              _.unset(res, context.path);
+            } else {
+              _.set(
+                res,
+                context.path,
+                _.has(options, 'replaceCircularBy')
+                  ? options.replaceCircularBy
+                  : context.circularParent.path !== undefined
+                  ? _.get(res, context.circularParent.path)
+                  : res
+              );
             }
             return false;
           }
         } else if (context.afterIterate && !context.isCircular) {
-          // console.log('ai: ', context.path);
-          if (
-            curPath === undefined &&
-            rootReply.empty &&
-            !rootReply.keepIfEmpty
-          ) {
-            res = null;
-          } else if (
-            curPath !== undefined &&
-            replies[curPath].empty &&
-            !replies[curPath].keepIfEmpty
-          ) {
-            // console.log('remove ' + context.path);
-            _.unset(res, context.path);
+          var reply$1 = context.info.reply;
+
+          if (reply$1.empty && !reply$1.keepIfEmpty) {
+            if (context.path === undefined) {
+              res = null;
+            } else {
+              _.unset(res, context.path);
+            }
           } else {
-            _.eachRight(context.parents, function(parent) {
-              var p = pathToString(parent.path);
-              if (p !== undefined && replies[p].empty) {
-                replies[p].empty = false;
-              } else {
-                return false;
+            var parent$1 = context.parent;
+            while (parent$1) {
+              if (!parent$1.info.reply) {
+                parent$1.info.reply = _.clone(options.onUndefined);
               }
-            });
-            rootReply.empty = false;
+              if (!parent$1.info.reply.empty) {
+                break;
+              }
+              parent$1.info.reply.empty = false;
+              parent$1 = parent$1.parent;
+            }
           }
-          // console.log('←', replies);
+
           return;
         }
       },
       eachDeepOptions
     );
-    if (rootReply && rootReply.empty && !rootReply.keepIfEmpty) {
-      res = null;
-    }
-    _.each(foundCircular, function(c) {
-      var cv;
-      var found = c[1] === undefined || exists(res, c[1]);
-      if (!found) { return; }
-      // console.log('circular: ', c[0], c[1]);
-      if (_.has(options, 'replaceCircularBy')) {
-        cv = options.replaceCircularBy;
-      } else {
-        cv = c[1] !== undefined ? _.get(res, c[1]) : res;
-      }
-      _.set(res, c[0], cv);
-    });
+
     if (options.condense) {
-      //console.log('filterDeep → condenseDeep');
       res = condenseDeep(res, { checkCircular: options.checkCircular });
     }
     if (Array.isArray(res) && !res.length && !eachDeepOptions.includeRoot)

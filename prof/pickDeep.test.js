@@ -3,6 +3,7 @@
 var { demo } = require('./object')();
 
 var { forLodashes, it, expect } = require('./common.js');
+var hrstart = process.hrtime();
 forLodashes(['pickDeep'], (_) => {
   it('pickDeep no mutation', () => {
     let orig = _.cloneDeep(demo);
@@ -55,3 +56,5 @@ forLodashes(['pickDeep'], (_) => {
     expect(clean);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

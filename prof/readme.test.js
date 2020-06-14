@@ -1,6 +1,7 @@
 'use strict';
 
 var { forLodashes, it, expect } = require('./common.js');
+var hrstart = process.hrtime();
 forLodashes(
   [
     'eachDeep',
@@ -33,7 +34,7 @@ forLodashes(
                 {
                   o: {
                     d: new Date(),
-                    f: function() {},
+                    f: function () {},
                     skip: {
                       please: {
                         dont: {
@@ -487,3 +488,5 @@ forLodashes(
     });
   }
 );
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

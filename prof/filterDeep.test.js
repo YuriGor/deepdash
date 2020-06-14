@@ -3,7 +3,7 @@
 var { validateIteration, forLodashes, it, expect } = require('./common.js');
 
 var { demo, circular } = require('./object')();
-
+var hrstart = process.hrtime();
 forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   function isNS(options = {}) {
     return (value, key, parent, ctx) => {
@@ -22,9 +22,7 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   });
   if (!_.v) {
     it('filter object - defaults', () => {
-      let filtrate = _(demo)
-        .filterDeep(isNS())
-        .value();
+      let filtrate = _(demo).filterDeep(isNS()).value();
       // console.log(filtrate);
       expect(JSON.stringify(filtrate));
     });
@@ -500,3 +498,5 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
     expect(filtrate);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

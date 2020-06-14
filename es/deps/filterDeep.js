@@ -11,9 +11,7 @@ import _isPlainObject from 'lodash-es/isPlainObject';
 import _iteratee from 'lodash-es/iteratee';
 import _get from 'lodash-es/get';
 import eachDeepDeps from './eachDeep';
-import pathToStringDeps from './pathToString';
 import condenseDeepDeps from './condenseDeep';
-import existsDeps from './exists';
 
 var deps = _merge(
   {
@@ -31,9 +29,7 @@ var deps = _merge(
     get: _get,
   },
   eachDeepDeps,
-  pathToStringDeps,
-  condenseDeepDeps,
-  existsDeps
+  condenseDeepDeps
 );
 
 export default deps;

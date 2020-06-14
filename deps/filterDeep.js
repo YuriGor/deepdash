@@ -3,11 +3,9 @@
 var _merge = require('lodash/merge');
 var _isObject = require('lodash/isObject');
 var _get = require('lodash/get');
-var pathToString = require('./pathToString.js');
 var eachDeep$1 = require('./eachDeep.js');
 var condenseDeep$1 = require('./condenseDeep.js');
 var _clone = require('lodash/clone');
-var exists$1 = require('./exists.js');
 var _cloneDeep = require('lodash/cloneDeep');
 var _each = require('lodash/each');
 var _eachRight = require('lodash/eachRight');
@@ -33,9 +31,7 @@ var deps = _merge(
     get: _get,
   },
   eachDeep$1,
-  pathToString,
-  condenseDeep$1,
-  exists$1
+  condenseDeep$1
 );
 
 module.exports = deps;

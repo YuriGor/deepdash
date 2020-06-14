@@ -8,7 +8,7 @@ var {
   deeperComments,
   deeperCommentsCircular,
 } = require('./object')();
-
+var hrstart = process.hrtime();
 forLodashes('eachDeep', (_) => {
   it('no mutation', () => {
     let orig = _.cloneDeep(comments);
@@ -532,3 +532,5 @@ forLodashes('eachDeep', (_) => {
     expect(circluarPath);
   });
 });
+const hrend = process.hrtime(hrstart);
+console.info('✓ %ds %dms', hrend[0], hrend[1] / 1000000);

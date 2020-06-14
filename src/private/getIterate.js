@@ -22,6 +22,7 @@ export default function getIterate(_) {
       if (broken) break;
       if (!item.inited) {
         item.inited = true;
+        item.info = {};
         const itemIsObject = _.isObject(item.value);
         const itemIsEmpty = _.isEmpty(item.value);
 
@@ -206,6 +207,7 @@ export default function getIterate(_) {
           path: options.pathFormatArray ? item.path : item.strPath,
           parent: item.parent,
           depth: item.depth,
+          info: item.info,
         },
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
@@ -271,5 +273,9 @@ class ContextReader {
           : this._item.strChildrenPath)) ||
       undefined
     );
+  }
+
+  get info() {
+    return this._item.info;
   }
 }
