@@ -94,18 +94,15 @@ export default function getFilterDeep(_) {
 
             if (!_.isObject(reply)) {
               if (reply === undefined) {
-                reply = _.clone(options.onUndefined);
+                reply = options.onUndefined;
               } else if (reply) {
-                reply = _.clone(options.onTrue);
+                reply = options.onTrue;
               } else {
-                reply = _.clone(options.onFalse);
+                reply = options.onFalse;
               }
             }
-            if (reply.empty === undefined) {
-              reply.empty = true;
-            }
-
             context.info.reply = reply;
+            context.info.empty = reply.empty === undefined ? true : reply.empty;
 
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
@@ -150,7 +147,7 @@ export default function getFilterDeep(_) {
         } else if (context.afterIterate && !context.isCircular) {
           const reply = context.info.reply;
 
-          if (reply.empty && !reply.keepIfEmpty) {
+          if (context.info.empty && !reply.keepIfEmpty) {
             if (context.path === undefined) {
               res = null;
             } else {
@@ -162,16 +159,15 @@ export default function getFilterDeep(_) {
               if (!parent.info.reply) {
                 parent.info.reply = _.clone(options.onUndefined);
               }
-              if (!parent.info.reply.empty) {
+              if (!parent.info.empty) {
                 break;
               }
-              parent.info.reply.empty = false;
+              parent.info.empty = false;
               parent = parent.parent;
             }
           }
 
           return;
-        } else {
         }
       },
       eachDeepOptions

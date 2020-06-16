@@ -5249,18 +5249,15 @@ var deepdash = (function (exports) {
 
               if (!_.isObject(reply)) {
                 if (reply === undefined) {
-                  reply = _.clone(options.onUndefined);
+                  reply = options.onUndefined;
                 } else if (reply) {
-                  reply = _.clone(options.onTrue);
+                  reply = options.onTrue;
                 } else {
-                  reply = _.clone(options.onFalse);
+                  reply = options.onFalse;
                 }
               }
-              if (reply.empty === undefined) {
-                reply.empty = true;
-              }
-
               context.info.reply = reply;
+              context.info.empty = reply.empty === undefined ? true : reply.empty;
 
               if (reply.keepIfEmpty || !reply.skipChildren) {
                 if (options.cloneDeep && reply.cloneDeep) {
@@ -5305,7 +5302,7 @@ var deepdash = (function (exports) {
           } else if (context.afterIterate && !context.isCircular) {
             var reply$1 = context.info.reply;
 
-            if (reply$1.empty && !reply$1.keepIfEmpty) {
+            if (context.info.empty && !reply$1.keepIfEmpty) {
               if (context.path === undefined) {
                 res = null;
               } else {
@@ -5317,10 +5314,10 @@ var deepdash = (function (exports) {
                 if (!parent$1.info.reply) {
                   parent$1.info.reply = _.clone(options.onUndefined);
                 }
-                if (!parent$1.info.reply.empty) {
+                if (!parent$1.info.empty) {
                   break;
                 }
-                parent$1.info.reply.empty = false;
+                parent$1.info.empty = false;
                 parent$1 = parent$1.parent;
               }
             }
