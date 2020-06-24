@@ -82,6 +82,7 @@ function getFilterDeep(_) {
       leavesOnly: false,
     };
 
+    // make sure to use this as a root in takeResultParent
     var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
 
     eachDeep(
@@ -109,19 +110,22 @@ function getFilterDeep(_) {
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
                 if (context.path !== undefined) {
-                  _.set(res, context.path, options.cloneDeep(value));
+                  var parent$1 = takeResultParent(context, res);
+                  context.info.res = parent$1[key] = options.cloneDeep(value);
+                  // _.set(res, context.path, options.cloneDeep(value));
                 } else {
-                  res = options.cloneDeep(value);
+                  context.info.res = res = options.cloneDeep(value);
                 }
               } else {
                 if (context.path !== undefined) {
-                  _.set(
-                    res,
-                    context.path,
-                    Array.isArray(value) ? [] : _.isObject(value) ? {} : value
-                  );
+                  var parent$2 = takeResultParent(context, res);
+                  context.info.res = parent$2[key] = Array.isArray(value)
+                    ? []
+                    : _.isObject(value)
+                    ? {}
+                    : value;
                 } else {
-                  res = Array.isArray(value)
+                  context.info.res = res = Array.isArray(value)
                     ? []
                     : _.isObject(value)
                     ? {}
@@ -131,18 +135,16 @@ function getFilterDeep(_) {
             }
             return !reply.skipChildren;
           } else {
+            var parent$3 = takeResultParent(context, res);
             if (!options.keepCircular) {
-              _.unset(res, context.path);
+              delete parent$3[key];
             } else {
-              _.set(
-                res,
-                context.path,
-                _.has(options, 'replaceCircularBy')
+              context.info.res = parent$3[key] =
+                'replaceCircularBy' in options
                   ? options.replaceCircularBy
                   : context.circularParent.path !== undefined
-                  ? _.get(res, context.circularParent.path)
-                  : res
-              );
+                  ? context.circularParent.info.res
+                  : res;
             }
             return false;
           }
@@ -153,19 +155,20 @@ function getFilterDeep(_) {
             if (context.path === undefined) {
               res = null;
             } else {
-              _.unset(res, context.path);
+              var parent$4 = takeResultParent(context, res);
+              delete parent$4[key];
             }
           } else {
-            var parent$1 = context.parent;
-            while (parent$1) {
-              if (!parent$1.info.reply) {
-                parent$1.info.reply = _.clone(options.onUndefined);
+            var parent$5 = context.parent;
+            while (parent$5) {
+              if (!parent$5.info.reply) {
+                parent$5.info.reply = _.clone(options.onUndefined);
               }
-              if (!parent$1.info.empty) {
+              if (!parent$5.info.empty) {
                 break;
               }
-              parent$1.info.empty = false;
-              parent$1 = parent$1.parent;
+              parent$5.info.empty = false;
+              parent$5 = parent$5.parent;
             }
           }
 
@@ -183,6 +186,31 @@ function getFilterDeep(_) {
     return res;
   }
   return filterDeep;
+
+  function takeResultParent(context, res) {
+    var parent = context.parent.info.res;
+    if (parent === undefined) {
+      //if (!context.parent.parent) {
+      parent = context.parent.info.res = res;
+      // } else {
+      //   parent = context.parent.info.res = Array.isArray(context.parent.value)
+      //     ? []
+      //     : {};
+      // }
+    }
+    if (context._item.childrenPath) {
+      var oParent = context.parent.value;
+      for (var i = 0; i < context._item.childrenPath.length; i++) {
+        var childKey = context._item.childrenPath[i];
+        oParent = oParent[childKey];
+        if (!parent[childKey]) {
+          parent[childKey] = Array.isArray(oParent) ? [] : {};
+        }
+        parent = parent[childKey];
+      }
+    }
+    return parent;
+  }
 }
 
 module.exports = getFilterDeep;

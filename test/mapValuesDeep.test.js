@@ -34,7 +34,7 @@ forLodashes(['mapValuesDeep'], (_) => {
               {
                 o: {
                   d: 'DATE SKIPPED',
-                  f: 'FUNCTION() {}',
+                  f: 'FUNCTION () {}',
                   skip: { please: { dont: { go: { here: 'SKIP IT' } } } },
                 },
               },
@@ -61,7 +61,7 @@ forLodashes(['mapValuesDeep'], (_) => {
     );
     // console.log(JSON.stringify(res));
     expect(JSON.stringify(res)).equal(
-      '{"a":{"b":{"c":{"d":[{"i":"0"},{"i":"1"},{"i":"2"},{"i":"3"},{"i":"4"},{"i":"5"},{"o":{"d":"DATE SKIPPED","f":"FUNCTION() {}","skip":{"please":{"dont":{"go":{"here":"SKIP IT"}}}}}}],"s":"HELLO"},"b":"TRUE"},"n":"12345","u":"UNDEFINED"},"nl":"NULL"}'
+      '{"a":{"b":{"c":{"d":[{"i":"0"},{"i":"1"},{"i":"2"},{"i":"3"},{"i":"4"},{"i":"5"},{"o":{"d":"DATE SKIPPED","f":"FUNCTION () {}","skip":{"please":{"dont":{"go":{"here":"SKIP IT"}}}}}}],"s":"HELLO"},"b":"TRUE"},"n":"12345","u":"UNDEFINED"},"nl":"NULL"}'
     );
   });
 
@@ -77,7 +77,7 @@ forLodashes(['mapValuesDeep'], (_) => {
     );
     // console.log(JSON.stringify(res));
     expect(JSON.stringify(res)).equal(
-      '[{"a":{"b":{"c":{"d":[{"i":"0"},{"i":"1"},{"i":"2"},{"i":"3"},{"i":"4"},{"i":"5"},{"o":{"d":"DATE SKIPPED","f":"FUNCTION() {}","skip":{"please":{"dont":{"go":{"here":"SKIP IT"}}}}}}],"s":"HELLO"},"b":"TRUE"},"n":"12345","u":"UNDEFINED"},"nl":"NULL"}]'
+      '[{"a":{"b":{"c":{"d":[{"i":"0"},{"i":"1"},{"i":"2"},{"i":"3"},{"i":"4"},{"i":"5"},{"o":{"d":"DATE SKIPPED","f":"FUNCTION () {}","skip":{"please":{"dont":{"go":{"here":"SKIP IT"}}}}}}],"s":"HELLO"},"b":"TRUE"},"n":"12345","u":"UNDEFINED"},"nl":"NULL"}]'
     );
   });
 

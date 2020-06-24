@@ -29,9 +29,7 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   });
   if (!_.v) {
     it('filter object - defaults', () => {
-      let filtrate = _(demo)
-        .filterDeep(isNS())
-        .value();
+      let filtrate = _(demo).filterDeep(isNS()).value();
       // console.log(filtrate);
       expect(JSON.stringify(filtrate)).equal(
         '{"a":{"b":{"c":{"d":[{"i":0},{"i":1},{"i":2},{"i":3},{"i":4},{"i":5},{"o":{"skip":{"please":{"dont":{"go":{"here":"skip it"}}}}}}],"s":"hello"}},"n":12345}}'
@@ -403,7 +401,7 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
       leavesOnly: true,
     };
     let filtrate = _.filterDeep(circular, isNS(options), options);
-
+    // console.log(filtrate.a);
     filtrate.should.have.nested.property('a.b.c.e').and.equal(filtrate.a.b);
     filtrate.should.have.nested.property('i[5][0]').and.equal(filtrate);
     filtrate.should.have.nested

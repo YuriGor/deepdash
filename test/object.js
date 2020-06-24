@@ -16,7 +16,7 @@ module.exports = () => {
               {
                 o: {
                   d: new Date(Date.parse('Mon Dec 04 1995 01:00:00 GMT')), //1995-12-04T01:00:00.000Z
-                  f: function() {},
+                  f: function () {},
                   skip: {
                     please: {
                       dont: {
@@ -66,6 +66,98 @@ module.exports = () => {
         ],
       },
     ],
+    objectChildren: {
+      c1: {
+        name: 'grand 1',
+        children: {
+          c1: {
+            name: 'parent 1.1',
+            children: {
+              c1: { name: 'child 1.1.1' },
+              c2: { name: 'child 1.1.2' },
+            },
+          },
+          c2: {
+            name: 'parent 1.2',
+            children: {
+              c1: { name: 'child 1.2.1' },
+              c2: { name: 'child 1.2.2' },
+            },
+          },
+        },
+      },
+      c2: {
+        name: 'grand 2',
+        children: {
+          c1: {
+            name: 'parent 2.1',
+            children: {
+              c1: { name: 'child 2.1.1' },
+              c2: { name: 'child 2.1.2' },
+            },
+          },
+          c2: {
+            name: 'parent 2.2',
+            children: {
+              c1: { name: 'child 2.2.1' },
+              c2: { name: 'child 2.2.2' },
+            },
+          },
+        },
+      },
+    },
+    objectChildrenDeeper: {
+      c1: {
+        name: 'grand 1',
+        children: {
+          values: {
+            c1: {
+              name: 'parent 1.1',
+              children: {
+                values: {
+                  c1: { name: 'child 1.1.1' },
+                  c2: { name: 'child 1.1.2' },
+                },
+              },
+            },
+            c2: {
+              name: 'parent 1.2',
+              children: {
+                values: {
+                  c1: { name: 'child 1.2.1' },
+                  c2: { name: 'child 1.2.2' },
+                },
+              },
+            },
+          },
+        },
+      },
+      c2: {
+        name: 'grand 2',
+        children: {
+          values: {
+            c1: {
+              name: 'parent 2.1',
+              children: {
+                values: {
+                  c1: { name: 'child 2.1.1' },
+                  c2: { name: 'child 2.1.2' },
+                },
+              },
+            },
+            c2: {
+              name: 'parent 2.2',
+              children: {
+                values: {
+                  c1: { name: 'child 2.2.1' },
+                  c2: { name: 'child 2.2.2' },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     comments: [
       {
         name: 'Bob',

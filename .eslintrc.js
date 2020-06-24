@@ -25,6 +25,7 @@ module.exports = {
         trailingComma: 'es5',
         arrowParens: 'always',
         printWidth: 80,
+        spaceBeforeFunctionParen: false,
       },
     ],
   },

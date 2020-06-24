@@ -80,6 +80,7 @@ export default function getFilterDeep(_) {
       leavesOnly: false,
     };
 
+    // make sure to use this as a root in takeResultParent
     var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
 
     eachDeep(
@@ -107,19 +108,22 @@ export default function getFilterDeep(_) {
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
                 if (context.path !== undefined) {
-                  _.set(res, context.path, options.cloneDeep(value));
+                  let parent = takeResultParent(context, res);
+                  context.info.res = parent[key] = options.cloneDeep(value);
+                  // _.set(res, context.path, options.cloneDeep(value));
                 } else {
-                  res = options.cloneDeep(value);
+                  context.info.res = res = options.cloneDeep(value);
                 }
               } else {
                 if (context.path !== undefined) {
-                  _.set(
-                    res,
-                    context.path,
-                    Array.isArray(value) ? [] : _.isObject(value) ? {} : value
-                  );
+                  let parent = takeResultParent(context, res);
+                  context.info.res = parent[key] = Array.isArray(value)
+                    ? []
+                    : _.isObject(value)
+                    ? {}
+                    : value;
                 } else {
-                  res = Array.isArray(value)
+                  context.info.res = res = Array.isArray(value)
                     ? []
                     : _.isObject(value)
                     ? {}
@@ -129,18 +133,16 @@ export default function getFilterDeep(_) {
             }
             return !reply.skipChildren;
           } else {
+            let parent = takeResultParent(context, res);
             if (!options.keepCircular) {
-              _.unset(res, context.path);
+              delete parent[key];
             } else {
-              _.set(
-                res,
-                context.path,
-                _.has(options, 'replaceCircularBy')
+              context.info.res = parent[key] =
+                'replaceCircularBy' in options
                   ? options.replaceCircularBy
                   : context.circularParent.path !== undefined
-                  ? _.get(res, context.circularParent.path)
-                  : res
-              );
+                  ? context.circularParent.info.res
+                  : res;
             }
             return false;
           }
@@ -151,7 +153,8 @@ export default function getFilterDeep(_) {
             if (context.path === undefined) {
               res = null;
             } else {
-              _.unset(res, context.path);
+              let parent = takeResultParent(context, res);
+              delete parent[key];
             }
           } else {
             let parent = context.parent;
@@ -181,4 +184,29 @@ export default function getFilterDeep(_) {
     return res;
   }
   return filterDeep;
+
+  function takeResultParent(context, res) {
+    let parent = context.parent.info.res;
+    if (parent === undefined) {
+      //if (!context.parent.parent) {
+      parent = context.parent.info.res = res;
+      // } else {
+      //   parent = context.parent.info.res = Array.isArray(context.parent.value)
+      //     ? []
+      //     : {};
+      // }
+    }
+    if (context._item.childrenPath) {
+      let oParent = context.parent.value;
+      for (var i = 0; i < context._item.childrenPath.length; i++) {
+        const childKey = context._item.childrenPath[i];
+        oParent = oParent[childKey];
+        if (!parent[childKey]) {
+          parent[childKey] = Array.isArray(oParent) ? [] : {};
+        }
+        parent = parent[childKey];
+      }
+    }
+    return parent;
+  }
 }

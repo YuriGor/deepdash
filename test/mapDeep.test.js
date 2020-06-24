@@ -38,7 +38,7 @@ forLodashes(['mapDeep'], (_) => {
     );
     // console.log(JSON.stringify(res));
     expect(JSON.stringify(res)).equal(
-      '["0","1","2","3","4","5","DATE SKIPPED","FUNCTION() {}","SKIP IT","HELLO","TRUE","12345","UNDEFINED","NULL"]'
+      '["0","1","2","3","4","5","DATE SKIPPED","FUNCTION () {}","SKIP IT","HELLO","TRUE","12345","UNDEFINED","NULL"]'
     );
   });
 
@@ -54,7 +54,7 @@ forLodashes(['mapDeep'], (_) => {
     );
     // console.log(JSON.stringify(res));
     expect(JSON.stringify(res)).equal(
-      '["0","1","2","3","4","5","DATE SKIPPED","FUNCTION() {}","SKIP IT","HELLO","TRUE","12345","UNDEFINED","NULL"]'
+      '["0","1","2","3","4","5","DATE SKIPPED","FUNCTION () {}","SKIP IT","HELLO","TRUE","12345","UNDEFINED","NULL"]'
     );
   });
 

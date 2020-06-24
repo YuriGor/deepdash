@@ -9,6 +9,8 @@ chai.use(asserttype);
 
 var {
   children,
+  objectChildren,
+  objectChildrenDeeper,
   childrenCircular,
   comments,
   verifiedComments,
@@ -69,6 +71,118 @@ forLodashes(['filterDeep'], (_) => {
         ],
       },
     ]);
+  });
+
+  it('default objectChildren', () => {
+    let filtrate = _.filterDeep(
+      { children: objectChildren },
+      ['name', 'child 1.2.1'],
+      {
+        childrenPath: 'children',
+      }
+    );
+    expect(filtrate).to.deep.equal({
+      children: {
+        c1: {
+          name: 'grand 1',
+          children: {
+            c2: {
+              name: 'parent 1.2',
+              children: { c1: { name: 'child 1.2.1' } },
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('rootIsChildren objectChildren', () => {
+    let filtrate = _.filterDeep(objectChildren, ['name', 'child 1.2.1'], {
+      childrenPath: 'children',
+      rootIsChildren: true,
+    });
+    expect(filtrate).to.deep.equal({
+      c1: {
+        name: 'grand 1',
+        children: {
+          c2: {
+            name: 'parent 1.2',
+            children: { c1: { name: 'child 1.2.1' } },
+          },
+        },
+      },
+    });
+  });
+
+  it('default objectChildrenDeeper', () => {
+    let filtrate = _.filterDeep(
+      {
+        children: {
+          values: objectChildrenDeeper,
+        },
+      },
+      ['name', 'child 1.2.1'],
+      {
+        childrenPath: 'children.values',
+      }
+    );
+    expect(filtrate).to.deep.equal({
+      children: {
+        values: {
+          c1: {
+            name: 'grand 1',
+            children: {
+              values: {
+                c2: {
+                  name: 'parent 1.2',
+                  children: { values: { c1: { name: 'child 1.2.1' } } },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('rootIsChildren objectChildrenDeeper', () => {
+    let filtrate = _.filterDeep(objectChildrenDeeper, ['name', 'child 1.2.1'], {
+      childrenPath: 'children.values',
+      rootIsChildren: true,
+    });
+    expect(filtrate).to.deep.equal({
+      c1: {
+        name: 'grand 1',
+        children: {
+          values: {
+            c2: {
+              name: 'parent 1.2',
+              children: { values: { c1: { name: 'child 1.2.1' } } },
+            },
+          },
+        },
+      },
+    });
+  });
+
+  it('rootIsChildren no clone objectChildrenDeeper', () => {
+    let filtrate = _.filterDeep(objectChildrenDeeper, ['name', 'child 1.2.1'], {
+      childrenPath: 'children.values',
+      rootIsChildren: true,
+      onUndefined: { cloneDeep: false },
+      onFalse: { cloneDeep: false },
+    });
+    expect(filtrate).to.deep.equal({
+      c1: {
+        children: {
+          values: {
+            c2: {
+              children: { values: { c1: { name: 'child 1.2.1' } } },
+            },
+          },
+        },
+      },
+    });
   });
 
   it('rootIsChildren', () => {
@@ -457,7 +571,7 @@ forLodashes(['filterDeep'], (_) => {
     };
     var filtrate = _.filterDeep(
       input,
-      function(value, key, parent, ctx) {
+      function (value, key, parent, ctx) {
         validateIteration(value, key, parent, ctx, options);
         if (value.value && value.value.includes(keyword)) return true;
       },
@@ -486,4 +600,5 @@ forLodashes(['filterDeep'], (_) => {
       },
     ]);
   });
+  it('Object children', () => {});
 });
