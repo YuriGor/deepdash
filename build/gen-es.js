@@ -96,9 +96,7 @@ async function main() {
     log.done(`${methodName}.js`);
   }
 
-  getters = (await readdir(privateDir)).filter(
-    (fn) => _.startsWith(fn, 'get') && fn.endsWith('.js')
-  );
+  getters = (await readdir(privateDir)).filter((fn) => fn.endsWith('.js'));
 
   for (const getter of getters) {
     let upMethodName = getter.substr(3, getter.length - 6);

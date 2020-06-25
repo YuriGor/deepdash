@@ -1,4 +1,5 @@
 import getPathToString from './../getPathToString';
+import isObject from './isObject';
 var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 var rxQuot = /"/g;
 
@@ -22,15 +23,13 @@ export default function getIterate(_) {
       if (broken) break;
       if (!item.inited) {
         item.inited = true;
-        item.info = {};
-        const itemIsObject = _.isObject(item.value);
-        const itemIsEmpty = _.isEmpty(item.value);
+        item.info = describeValue(item.value);
 
         if (options.checkCircular) {
           item.circularParentIndex = -1;
           item.circularParent = null;
           item.isCircular = false;
-          if (itemIsObject && !itemIsEmpty) {
+          if (item.info.isObject && !item.info.isEmpty) {
             let parent = item.parent;
             while (parent) {
               if (parent.value === item.value) {
@@ -47,9 +46,15 @@ export default function getIterate(_) {
         item.children = [];
         if (options.childrenPath) {
           options.childrenPath.forEach((cp, i) => {
-            var children = _.get(item.value, cp);
-            if (!_.isEmpty(children)) {
-              item.children.push([cp, options.strChildrenPath[i], children]);
+            const children = _.get(item.value, cp);
+            const info = describeValue(children);
+            if (!info.isEmpty) {
+              item.children.push([
+                cp,
+                options.strChildrenPath[i],
+                children,
+                info,
+              ]);
             }
           });
         }
@@ -57,8 +62,8 @@ export default function getIterate(_) {
         item.isLeaf =
           item.isCircular ||
           (options.childrenPath !== undefined && !item.children.length) ||
-          !itemIsObject ||
-          itemIsEmpty;
+          !item.info.isObject ||
+          item.info.isEmpty;
 
         item.needCallback =
           (item.depth || options.includeRoot) &&
@@ -89,30 +94,28 @@ export default function getIterate(_) {
         }
 
         if (item.res !== false) {
-          if (!broken && !item.isCircular && itemIsObject) {
+          if (!broken && !item.isCircular && item.info.isObject) {
             if (
               options.childrenPath !== undefined &&
               (item.depth || !options.rootIsChildren)
             ) {
               item.childrenItems = [];
               if (item.children.length) {
-                item.children.forEach(([cp, scp, children]) => {
-                  if (_.isObject(children)) {
+                item.children.forEach(([cp, scp, children, info]) => {
+                  if (isObject(children)) {
                     item.childrenItems = [
                       ...item.childrenItems,
-                      ...getOwnChildren(item, children, options, cp, scp),
+                      ...(info.isArray
+                        ? getElements(item, children, options, cp, scp)
+                        : getOwnChildren(item, children, options, cp, scp)),
                     ];
                   }
                 });
               }
             } else {
-              item.childrenItems = getOwnChildren(
-                item,
-                item.value,
-                options,
-                [],
-                ''
-              );
+              item.childrenItems = item.info.isArray
+                ? getElements(item, item.value, options, [], '')
+                : getOwnChildren(item, item.value, options, [], '');
             }
           }
         }
@@ -155,15 +158,8 @@ export default function getIterate(_) {
 
   return iterate;
 
-  function getOwnChildren(
-    item,
-    children,
-    options,
-    childrenPath,
-    strChildrenPath
-  ) {
+  function getElements(item, children, options, childrenPath, strChildrenPath) {
     let strChildPathPrefix;
-    let childrenIsArray;
     if (!options.pathFormatArray) {
       strChildPathPrefix = item.strPath || '';
 
@@ -175,14 +171,70 @@ export default function getIterate(_) {
         strChildPathPrefix += '.';
       }
       strChildPathPrefix += strChildrenPath || '';
-      childrenIsArray = Array.isArray(children);
     }
-    return Object.entries(children).map(([childKey, childValue]) => {
+    const res = [];
+    for (var i = 0; i < children.length; i++) {
+      const val = children[i];
+      if (val === undefined && !(i in children)) {
+        continue;
+      }
       let strChildPath;
-      if (!options.pathFormatArray) {
-        if (childrenIsArray) {
-          strChildPath = `${strChildPathPrefix}[${childKey}]`;
-        } else if (rxVarName.test(childKey)) {
+      const pathFormatString = !options.pathFormatArray;
+      if (pathFormatString) {
+        strChildPath = `${strChildPathPrefix}[${i}]`;
+      }
+      res.push({
+        value: val,
+        key: i + '',
+        path: [...(item.path || []), ...childrenPath, i + ''],
+        strPath: strChildPath,
+        depth: item.depth + 1,
+        parent: {
+          value: item.value,
+          key: item.key,
+          path: pathFormatString ? item.strPath : item.path,
+          parent: item.parent,
+          depth: item.depth,
+          info: item.info,
+        },
+        childrenPath: (childrenPath.length && childrenPath) || undefined,
+        strChildrenPath: strChildrenPath || undefined,
+      });
+    }
+    return res;
+  }
+
+  function getOwnChildren(
+    item,
+    children,
+    options,
+    childrenPath,
+    strChildrenPath
+  ) {
+    let strChildPathPrefix;
+    if (!options.pathFormatArray) {
+      strChildPathPrefix = item.strPath || '';
+
+      if (
+        strChildrenPath &&
+        strChildPathPrefix &&
+        !strChildrenPath.startsWith('[')
+      ) {
+        strChildPathPrefix += '.';
+      }
+      strChildPathPrefix += strChildrenPath || '';
+    }
+    const res = [];
+    const has = Object.prototype.hasOwnProperty;
+    const pathFormatString = !options.pathFormatArray;
+    for (var childKey in children) {
+      if (!has.call(children, childKey)) {
+        continue;
+      }
+
+      let strChildPath;
+      if (pathFormatString) {
+        if (rxVarName.test(childKey)) {
           if (strChildPathPrefix) {
             strChildPath = `${strChildPathPrefix}.${childKey}`;
           } else {
@@ -195,8 +247,9 @@ export default function getIterate(_) {
           )}"]`;
         }
       }
-      return {
-        value: childValue,
+
+      res.push({
+        value: children[childKey],
         key: childKey,
         path: [...(item.path || []), ...childrenPath, childKey],
         strPath: strChildPath,
@@ -204,15 +257,17 @@ export default function getIterate(_) {
         parent: {
           value: item.value,
           key: item.key,
-          path: options.pathFormatArray ? item.path : item.strPath,
+          path: pathFormatString ? item.strPath : item.path,
           parent: item.parent,
           depth: item.depth,
           info: item.info,
         },
         childrenPath: (childrenPath.length && childrenPath) || undefined,
         strChildrenPath: strChildrenPath || undefined,
-      };
-    });
+      });
+    }
+
+    return res;
   }
 }
 
@@ -278,4 +333,25 @@ class ContextReader {
   get info() {
     return this._item.info;
   }
+}
+
+function isObjectEmpty(value) {
+  for (var key in value) {
+    if (Object.prototype.hasOwnProperty.call(value, key)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function describeValue(value) {
+  const res = { isObject: isObject(value) };
+  res.isArray = res.isObject && Array.isArray(value);
+  res.isEmpty = res.isArray
+    ? !value.length
+    : res.isObject
+    ? isObjectEmpty(value)
+    : true;
+
+  return res;
 }

@@ -50,6 +50,6 @@ require('./stackoverflow.test.js');
 console.log('stringPath');
 require('./stringPath.test.js');
 
-const hrend = process.hrtime(hrstart);
+var hrend = process.hrtime(hrstart);
 console.info('Execution time (hr): %ds %dms', hrend[0], hrend[1] / 1000000);
 console.log(global.perf);

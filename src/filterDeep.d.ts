@@ -9,7 +9,7 @@ export default function filterDeep(
     parentValue: any,
     context: IIterateeContext
   ) =>
-    | void
+    void
     | boolean
     | {
         skipChildren: boolean;
