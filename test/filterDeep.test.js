@@ -9,15 +9,15 @@ const asserttype = require('chai-asserttype');
 chai.use(asserttype);
 var { validateIteration, forLodashes } = require('./common.js');
 
-var { demo, circular } = require('./object')();
+var { demo, circular, circularArrayParent } = require('./object')();
 
 forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
   function isNS(options = {}) {
     return (value, key, parent, ctx) => {
-      // console.log(`@${ctx.path}`);
       options = _.merge({ method: 'filterDeep' }, options);
       validateIteration(value, key, parent, ctx, options);
       let t = typeof value;
+      //console.log(`@${ctx.path}`, t);
       return t == 'number' || t == 'string';
     };
   }
@@ -425,6 +425,34 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
     ]);
   });
 
+  it('Circular array', () => {
+    let options = {
+      checkCircular: true,
+      leavesOnly: true,
+    };
+    let filtrate = _.filterDeep(
+      circularArrayParent,
+      (v, k, p, x) => x.isCircular || isNS(options)(v, k, p, x),
+      options
+    );
+    filtrate.should.have.nested.property('[1][1]').and.equal(filtrate[1]);
+
+    filtrate = _.paths(filtrate, options);
+    // console.log(filtrate);
+
+    expect(filtrate).to.deep.equal([
+      '[0][0][0]',
+      '[0][1][0]',
+      '[0][2][0]',
+      '[1][0][0]',
+      '[1][1]',
+      '[1][2][0]',
+      '[2][0][0]',
+      '[2][1][0]',
+      '[2][2][0]',
+    ]);
+  });
+
   it("Don't keep circular", () => {
     let options = {
       checkCircular: true,
@@ -440,6 +468,37 @@ forLodashes(['filterDeep', 'omitDeep', 'paths'], (_) => {
     }
     expect(err).equal(undefined);
   });
+
+  it('Dont keep Circular array', () => {
+    let options = {
+      checkCircular: true,
+      keepCircular: false,
+      leavesOnly: true,
+    };
+    let filtrate = _.filterDeep(
+      circularArrayParent,
+      (v, k, p, x) => (x.isCircular || isNS(options)(v, k, p, x)) && v !== 1,
+      options
+    );
+    filtrate = _.paths(filtrate, options);
+    // console.log(filtrate);
+    let err;
+    try {
+      JSON.stringify(filtrate);
+    } catch (exc) {
+      err = exc;
+    }
+    expect(err).equal(undefined);
+    expect(filtrate).to.deep.equal([
+      '[0][0][0]',
+      '[0][1][0]',
+      '[1][0][0]',
+      '[1][1][0]',
+      '[2][0][0]',
+      '[2][1][0]',
+    ]);
+  });
+
   it('Not matched circular ', () => {
     let obj = { a: { b: {} } };
     obj.a.b.c = obj;

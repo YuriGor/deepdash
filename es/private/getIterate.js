@@ -102,14 +102,12 @@ export default function getIterate(_) {
               item.childrenItems = [];
               if (item.children.length) {
                 item.children.forEach(([cp, scp, children, info]) => {
-                  if (isObject(children)) {
-                    item.childrenItems = [
-                      ...item.childrenItems,
-                      ...(info.isArray
-                        ? getElements(item, children, options, cp, scp)
-                        : getOwnChildren(item, children, options, cp, scp)),
-                    ];
-                  }
+                  item.childrenItems = [
+                    ...item.childrenItems,
+                    ...(info.isArray
+                      ? getElements(item, children, options, cp, scp)
+                      : getOwnChildren(item, children, options, cp, scp)),
+                  ];
                 });
               }
             } else {
@@ -225,12 +223,12 @@ export default function getIterate(_) {
       strChildPathPrefix += strChildrenPath || '';
     }
     const res = [];
-    const has = Object.prototype.hasOwnProperty;
+    //const has = Object.prototype.hasOwnProperty;
     const pathFormatString = !options.pathFormatArray;
     for (var childKey in children) {
-      if (!has.call(children, childKey)) {
-        continue;
-      }
+      // if (!has.call(children, childKey)) {
+      //   continue;
+      // }
 
       let strChildPath;
       if (pathFormatString) {
@@ -337,9 +335,9 @@ class ContextReader {
 
 function isObjectEmpty(value) {
   for (var key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      return false;
-    }
+    //if (Object.prototype.hasOwnProperty.call(value, key)) {
+    return false;
+    //}
   }
   return true;
 }

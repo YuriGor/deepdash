@@ -1,12 +1,12 @@
 'use strict';
 
+var getCondense = require('./getCondense.js');
+var isObject = require('./private/isObject.js');
 var getEachDeep = require('./getEachDeep.js');
-var getCondenseDeep = require('./getCondenseDeep.js');
 
 function getFilterDeep(_) {
-  // console.log('getFilterDeep:', _);
   var eachDeep = getEachDeep(_);
-  var condenseDeep = getCondenseDeep(_);
+  var condense = getCondense();
 
   function filterDeep(obj, predicate, options) {
     predicate = _.iteratee(predicate);
@@ -81,21 +81,21 @@ function getFilterDeep(_) {
       callbackAfterIterate: true,
       leavesOnly: false,
     };
-
-    // make sure to use this as a root in takeResultParent
-    var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
-
+    var resIsArray = Array.isArray(obj);
+    var res = resIsArray ? [] : isObject(obj) ? {} : null;
+    var toCondense = options.condense ? [] : false;
     eachDeep(
       obj,
       function (value, key, parent, context) {
         if (!context.afterIterate) {
+          context.info._filterDeep = {};
           if (!context.isCircular) {
             var reply =
               !options.leavesOnly || context.isLeaf
                 ? predicate(value, key, parent, context)
                 : undefined;
 
-            if (!_.isObject(reply)) {
+            if (!isObject(reply)) {
               if (reply === undefined) {
                 reply = options.onUndefined;
               } else if (reply) {
@@ -104,30 +104,33 @@ function getFilterDeep(_) {
                 reply = options.onFalse;
               }
             }
-            context.info.reply = reply;
-            context.info.empty = reply.empty === undefined ? true : reply.empty;
+            context.info._filterDeep.reply = reply;
+            context.info._filterDeep.empty =
+              reply.empty === undefined ? true : reply.empty;
 
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
                 if (context.path !== undefined) {
-                  var parent$1 = takeResultParent(context, res);
-                  context.info.res = parent$1[key] = options.cloneDeep(value);
-                  // _.set(res, context.path, options.cloneDeep(value));
+                  var children = takeResultParent(context, res);
+                  context.info._filterDeep.res = children[
+                    key
+                  ] = options.cloneDeep(value);
                 } else {
-                  context.info.res = res = options.cloneDeep(value);
+                  context.info._filterDeep.res = res = options.cloneDeep(value);
                 }
               } else {
                 if (context.path !== undefined) {
-                  var parent$2 = takeResultParent(context, res);
-                  context.info.res = parent$2[key] = Array.isArray(value)
+                  var children$1 = takeResultParent(context, res);
+                  context.info._filterDeep.res = children$1[key] = context.info
+                    .isArray
                     ? []
-                    : _.isObject(value)
+                    : context.info.isObject
                     ? {}
                     : value;
                 } else {
-                  context.info.res = res = Array.isArray(value)
+                  context.info._filterDeep.res = res = context.info.isArray
                     ? []
-                    : _.isObject(value)
+                    : context.info.isObject
                     ? {}
                     : value;
                 }
@@ -135,40 +138,66 @@ function getFilterDeep(_) {
             }
             return !reply.skipChildren;
           } else {
-            var parent$3 = takeResultParent(context, res);
+            var children$2 = takeResultParent(context, res);
             if (!options.keepCircular) {
-              delete parent$3[key];
+              delete children$2[key];
+              if (
+                toCondense &&
+                ((children$2 === context.parent.info._filterDeep.res &&
+                  context.parent.info.isArray) ||
+                  Array.isArray(children$2)) &&
+                !context.parent.info._filterDeep.isSparse
+              ) {
+                context.parent.info._filterDeep.isSparse = true;
+                toCondense.push(context.parent.info);
+              }
+
+              context.info._filterDeep.excluded = true;
             } else {
-              context.info.res = parent$3[key] =
+              context.info._filterDeep.res = children$2[key] =
                 'replaceCircularBy' in options
                   ? options.replaceCircularBy
                   : context.circularParent.path !== undefined
-                  ? context.circularParent.info.res
+                  ? context.circularParent.info._filterDeep.res
                   : res;
             }
             return false;
           }
         } else if (context.afterIterate && !context.isCircular) {
-          var reply$1 = context.info.reply;
+          var reply$1 = context.info._filterDeep.reply;
 
-          if (context.info.empty && !reply$1.keepIfEmpty) {
+          if (context.info._filterDeep.empty && !reply$1.keepIfEmpty) {
             if (context.path === undefined) {
               res = null;
             } else {
-              var parent$4 = takeResultParent(context, res);
-              delete parent$4[key];
+              var children$3 = takeResultParent(context, res);
+              delete children$3[key];
+              if (
+                toCondense &&
+                ((children$3 === context.parent.info._filterDeep.res &&
+                  context.parent.info.isArray) ||
+                  Array.isArray(children$3)) &&
+                !context.parent.info._filterDeep.isSparse
+              ) {
+                context.parent.info._filterDeep.isSparse = true;
+                toCondense.push(context.parent.info);
+              }
+              context.info._filterDeep.excluded = true;
             }
           } else {
-            var parent$5 = context.parent;
-            while (parent$5) {
-              if (!parent$5.info.reply) {
-                parent$5.info.reply = _.clone(options.onUndefined);
+            var parent$1 = context.parent;
+            while (parent$1) {
+              // if (!parent.info._filterDeep) {
+              //   parent.info._filterDeep = {};
+              // }
+              if (!parent$1.info._filterDeep.reply) {
+                parent$1.info._filterDeep.reply = options.onUndefined;
               }
-              if (!parent$5.info.empty) {
+              if (!parent$1.info._filterDeep.empty) {
                 break;
               }
-              parent$5.info.empty = false;
-              parent$5 = parent$5.parent;
+              parent$1.info._filterDeep.empty = false;
+              parent$1 = parent$1.parent;
             }
           }
 
@@ -178,22 +207,38 @@ function getFilterDeep(_) {
       eachDeepOptions
     );
 
-    if (options.condense) {
-      res = condenseDeep(res, { checkCircular: options.checkCircular });
+    if (toCondense) {
+      for (var i = 0; i < toCondense.length; i++) {
+        var info = toCondense[i];
+        if (info._filterDeep.isSparse && !info._filterDeep.excluded) {
+          condense(info.children);
+        }
+      }
+      if (resIsArray) {
+        condense(res);
+      }
     }
-    if (Array.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
-      { return null; }
+    if (resIsArray && !res.length && !eachDeepOptions.includeRoot) {
+      return null;
+    }
+
     return res;
   }
   return filterDeep;
 
   function takeResultParent(context, res) {
-    var parent = context.parent.info.res;
+    if (context.parent.info.children) {
+      return context.parent.info.children;
+    }
+    if (!context.parent.info._filterDeep) {
+      context.parent.info._filterDeep = {};
+    }
+    var parent = context.parent.info._filterDeep.res;
     if (parent === undefined) {
       //if (!context.parent.parent) {
-      parent = context.parent.info.res = res;
+      parent = context.parent.info._filterDeep.res = res;
       // } else {
-      //   parent = context.parent.info.res = Array.isArray(context.parent.value)
+      //   parent = context.parent.info._filterDeep.res = Array.isArray(context.parent.value)
       //     ? []
       //     : {};
       // }
@@ -209,6 +254,7 @@ function getFilterDeep(_) {
         parent = parent[childKey];
       }
     }
+    context.parent.info.children = parent;
     return parent;
   }
 }

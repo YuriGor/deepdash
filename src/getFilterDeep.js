@@ -1,10 +1,10 @@
+import isObject from './private/isObject';
 import getEachDeep from './getEachDeep';
-import getCondenseDeep from './getCondenseDeep';
+import getCondense from './getCondense';
 
 export default function getFilterDeep(_) {
-  // console.log('getFilterDeep:', _);
-  var eachDeep = getEachDeep(_);
-  var condenseDeep = getCondenseDeep(_);
+  const eachDeep = getEachDeep(_);
+  const condense = getCondense(_);
 
   function filterDeep(obj, predicate, options) {
     predicate = _.iteratee(predicate);
@@ -70,7 +70,7 @@ export default function getFilterDeep(_) {
       options
     );
 
-    var eachDeepOptions = {
+    const eachDeepOptions = {
       pathFormat: options.pathFormat,
       checkCircular: options.checkCircular,
       childrenPath: options.childrenPath,
@@ -79,21 +79,21 @@ export default function getFilterDeep(_) {
       callbackAfterIterate: true,
       leavesOnly: false,
     };
-
-    // make sure to use this as a root in takeResultParent
-    var res = Array.isArray(obj) ? [] : _.isObject(obj) ? {} : null;
-
+    const resIsArray = Array.isArray(obj);
+    let res = resIsArray ? [] : isObject(obj) ? {} : null;
+    const toCondense = options.condense ? [] : false;
     eachDeep(
       obj,
       function (value, key, parent, context) {
         if (!context.afterIterate) {
+          context.info._filterDeep = {};
           if (!context.isCircular) {
-            var reply =
+            let reply =
               !options.leavesOnly || context.isLeaf
                 ? predicate(value, key, parent, context)
                 : undefined;
 
-            if (!_.isObject(reply)) {
+            if (!isObject(reply)) {
               if (reply === undefined) {
                 reply = options.onUndefined;
               } else if (reply) {
@@ -102,30 +102,33 @@ export default function getFilterDeep(_) {
                 reply = options.onFalse;
               }
             }
-            context.info.reply = reply;
-            context.info.empty = reply.empty === undefined ? true : reply.empty;
+            context.info._filterDeep.reply = reply;
+            context.info._filterDeep.empty =
+              reply.empty === undefined ? true : reply.empty;
 
             if (reply.keepIfEmpty || !reply.skipChildren) {
               if (options.cloneDeep && reply.cloneDeep) {
                 if (context.path !== undefined) {
-                  let parent = takeResultParent(context, res);
-                  context.info.res = parent[key] = options.cloneDeep(value);
-                  // _.set(res, context.path, options.cloneDeep(value));
+                  let children = takeResultParent(context, res);
+                  context.info._filterDeep.res = children[
+                    key
+                  ] = options.cloneDeep(value);
                 } else {
-                  context.info.res = res = options.cloneDeep(value);
+                  context.info._filterDeep.res = res = options.cloneDeep(value);
                 }
               } else {
                 if (context.path !== undefined) {
-                  let parent = takeResultParent(context, res);
-                  context.info.res = parent[key] = Array.isArray(value)
+                  let children = takeResultParent(context, res);
+                  context.info._filterDeep.res = children[key] = context.info
+                    .isArray
                     ? []
-                    : _.isObject(value)
+                    : context.info.isObject
                     ? {}
                     : value;
                 } else {
-                  context.info.res = res = Array.isArray(value)
+                  context.info._filterDeep.res = res = context.info.isArray
                     ? []
-                    : _.isObject(value)
+                    : context.info.isObject
                     ? {}
                     : value;
                 }
@@ -133,39 +136,65 @@ export default function getFilterDeep(_) {
             }
             return !reply.skipChildren;
           } else {
-            let parent = takeResultParent(context, res);
+            let children = takeResultParent(context, res);
             if (!options.keepCircular) {
-              delete parent[key];
+              delete children[key];
+              if (
+                toCondense &&
+                ((children === context.parent.info._filterDeep.res &&
+                  context.parent.info.isArray) ||
+                  Array.isArray(children)) &&
+                !context.parent.info._filterDeep.isSparse
+              ) {
+                context.parent.info._filterDeep.isSparse = true;
+                toCondense.push(context.parent.info);
+              }
+
+              context.info._filterDeep.excluded = true;
             } else {
-              context.info.res = parent[key] =
+              context.info._filterDeep.res = children[key] =
                 'replaceCircularBy' in options
                   ? options.replaceCircularBy
                   : context.circularParent.path !== undefined
-                  ? context.circularParent.info.res
+                  ? context.circularParent.info._filterDeep.res
                   : res;
             }
             return false;
           }
         } else if (context.afterIterate && !context.isCircular) {
-          const reply = context.info.reply;
+          const reply = context.info._filterDeep.reply;
 
-          if (context.info.empty && !reply.keepIfEmpty) {
+          if (context.info._filterDeep.empty && !reply.keepIfEmpty) {
             if (context.path === undefined) {
               res = null;
             } else {
-              let parent = takeResultParent(context, res);
-              delete parent[key];
+              let children = takeResultParent(context, res);
+              delete children[key];
+              if (
+                toCondense &&
+                ((children === context.parent.info._filterDeep.res &&
+                  context.parent.info.isArray) ||
+                  Array.isArray(children)) &&
+                !context.parent.info._filterDeep.isSparse
+              ) {
+                context.parent.info._filterDeep.isSparse = true;
+                toCondense.push(context.parent.info);
+              }
+              context.info._filterDeep.excluded = true;
             }
           } else {
             let parent = context.parent;
             while (parent) {
-              if (!parent.info.reply) {
-                parent.info.reply = _.clone(options.onUndefined);
+              // if (!parent.info._filterDeep) {
+              //   parent.info._filterDeep = {};
+              // }
+              if (!parent.info._filterDeep.reply) {
+                parent.info._filterDeep.reply = options.onUndefined;
               }
-              if (!parent.info.empty) {
+              if (!parent.info._filterDeep.empty) {
                 break;
               }
-              parent.info.empty = false;
+              parent.info._filterDeep.empty = false;
               parent = parent.parent;
             }
           }
@@ -176,29 +205,45 @@ export default function getFilterDeep(_) {
       eachDeepOptions
     );
 
-    if (options.condense) {
-      res = condenseDeep(res, { checkCircular: options.checkCircular });
+    if (toCondense) {
+      for (var i = 0; i < toCondense.length; i++) {
+        const info = toCondense[i];
+        if (info._filterDeep.isSparse && !info._filterDeep.excluded) {
+          condense(info.children);
+        }
+      }
+      if (resIsArray) {
+        condense(res);
+      }
     }
-    if (Array.isArray(res) && !res.length && !eachDeepOptions.includeRoot)
+    if (resIsArray && !res.length && !eachDeepOptions.includeRoot) {
       return null;
+    }
+
     return res;
   }
   return filterDeep;
 
   function takeResultParent(context, res) {
-    let parent = context.parent.info.res;
+    if (context.parent.info.children) {
+      return context.parent.info.children;
+    }
+    if (!context.parent.info._filterDeep) {
+      context.parent.info._filterDeep = {};
+    }
+    let parent = context.parent.info._filterDeep.res;
     if (parent === undefined) {
       //if (!context.parent.parent) {
-      parent = context.parent.info.res = res;
+      parent = context.parent.info._filterDeep.res = res;
       // } else {
-      //   parent = context.parent.info.res = Array.isArray(context.parent.value)
+      //   parent = context.parent.info._filterDeep.res = Array.isArray(context.parent.value)
       //     ? []
       //     : {};
       // }
     }
     if (context._item.childrenPath) {
       let oParent = context.parent.value;
-      for (var i = 0; i < context._item.childrenPath.length; i++) {
+      for (let i = 0; i < context._item.childrenPath.length; i++) {
         const childKey = context._item.childrenPath[i];
         oParent = oParent[childKey];
         if (!parent[childKey]) {
@@ -207,6 +252,7 @@ export default function getFilterDeep(_) {
         parent = parent[childKey];
       }
     }
+    context.parent.info.children = parent;
     return parent;
   }
 }

@@ -692,5 +692,13 @@ module.exports = () => {
     },
   ];
 
+  obj.circularArrayParent = [
+    [[0], [1], [2]],
+    [[0], [1], [2]],
+    [[0], [1], [2]],
+  ];
+
+  obj.circularArrayParent[1][1] = obj.circularArrayParent[1];
+
   return obj;
 };

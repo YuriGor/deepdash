@@ -33,7 +33,7 @@ forLodashes(['filterDeep'], (_) => {
     let filtrate = _.filterDeep(comments, 'verified', {
       childrenPath: 'replies',
     });
-    //console.log(JSON.stringify(filtrate, null, 2));
+    // console.log(JSON.stringify(filtrate, null, 2));
     expect(filtrate).deep.equal(verifiedComments);
   });
   it('filter by field - pathFormat: array', () => {

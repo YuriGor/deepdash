@@ -111,11 +111,9 @@ function getIterate(_) {
                   var children = ref[2];
                   var info = ref[3];
 
-                  if (isObject(children)) {
-                    item.childrenItems = ( item.childrenItems ).concat( (info.isArray
-                        ? getElements(item, children, options, cp, scp)
-                        : getOwnChildren(item, children, options, cp, scp)) );
-                  }
+                  item.childrenItems = ( item.childrenItems ).concat( (info.isArray
+                      ? getElements(item, children, options, cp, scp)
+                      : getOwnChildren(item, children, options, cp, scp)) );
                 });
               }
             } else {
@@ -231,12 +229,12 @@ function getIterate(_) {
       strChildPathPrefix += strChildrenPath || '';
     }
     var res = [];
-    var has = Object.prototype.hasOwnProperty;
+    //const has = Object.prototype.hasOwnProperty;
     var pathFormatString = !options.pathFormatArray;
     for (var childKey in children) {
-      if (!has.call(children, childKey)) {
-        continue;
-      }
+      // if (!has.call(children, childKey)) {
+      //   continue;
+      // }
 
       var strChildPath = (void 0);
       if (pathFormatString) {
@@ -345,9 +343,9 @@ Object.defineProperties( ContextReader.prototype, prototypeAccessors );
 
 function isObjectEmpty(value) {
   for (var key in value) {
-    if (Object.prototype.hasOwnProperty.call(value, key)) {
-      return false;
-    }
+    //if (Object.prototype.hasOwnProperty.call(value, key)) {
+    return false;
+    //}
   }
   return true;
 }
