@@ -2,6 +2,7 @@
 const _ = require('lodash');
 module.exports = () => {
   const obj = {
+    Node,
     demo: {
       a: {
         b: {
@@ -702,3 +703,30 @@ module.exports = () => {
 
   return obj;
 };
+
+function Node(name, parent) {
+  if (!Node.prototype.root) {
+    Node.prototype.root = this;
+    Node.prototype.list = [];
+  }
+  Node.prototype.list.push(this);
+  if (!parent && this.root !== this) {
+    parent = this.root;
+  }
+
+  this.name = name;
+  this.children = [];
+  this.empty = Object.create({ nothing: true });
+  this.parent = parent;
+  if (parent) {
+    parent.children.push(this);
+  }
+}
+
+const root = new Node('root');
+for (let i = 0; i < 2; i++) {
+  const child = new Node('child-' + i);
+  for (let k = 0; k < 2; k++) {
+    new Node('child-' + i + '-' + k, child);
+  }
+}

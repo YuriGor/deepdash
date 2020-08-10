@@ -13,6 +13,7 @@ function getEachDeep(_) {
         pathFormat: 'string',
         checkCircular: false,
         leavesOnly: false,
+        ownPropertiesOnly: true, //
       },
       options || {}
     );

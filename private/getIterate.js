@@ -5,6 +5,7 @@ var isObject = require('./isObject.js');
 
 var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 var rxQuot = /"/g;
+var has = Object.prototype.hasOwnProperty;
 
 function getIterate(_) {
   var pathToString = getPathToString(_);
@@ -28,7 +29,7 @@ function getIterate(_) {
       if (broken) { break; }
       if (!item.inited) {
         item.inited = true;
-        item.info = describeValue(item.value);
+        item.info = describeValue(item.value, options.ownPropertiesOnly);
 
         if (options.checkCircular) {
           item.circularParentIndex = -1;
@@ -52,7 +53,7 @@ function getIterate(_) {
         if (options.childrenPath) {
           options.childrenPath.forEach(function (cp, i) {
             var children = _.get(item.value, cp);
-            var info = describeValue(children);
+            var info = describeValue(children, options.ownPropertiesOnly);
             if (!info.isEmpty) {
               item.children.push([
                 cp,
@@ -229,12 +230,11 @@ function getIterate(_) {
       strChildPathPrefix += strChildrenPath || '';
     }
     var res = [];
-    //const has = Object.prototype.hasOwnProperty;
     var pathFormatString = !options.pathFormatArray;
     for (var childKey in children) {
-      // if (!has.call(children, childKey)) {
-      //   continue;
-      // }
+      if (options.ownPropertiesOnly && !has.call(children, childKey)) {
+        continue;
+      }
 
       var strChildPath = (void 0);
       if (pathFormatString) {
@@ -341,22 +341,22 @@ prototypeAccessors.info.get = function () {
 
 Object.defineProperties( ContextReader.prototype, prototypeAccessors );
 
-function isObjectEmpty(value) {
+function isObjectEmpty(value, ownPropertiesOnly) {
   for (var key in value) {
-    //if (Object.prototype.hasOwnProperty.call(value, key)) {
-    return false;
-    //}
+    if (!ownPropertiesOnly || has.call(value, key)) {
+      return false;
+    }
   }
   return true;
 }
 
-function describeValue(value) {
+function describeValue(value, ownPropertiesOnly) {
   var res = { isObject: isObject(value) };
   res.isArray = res.isObject && Array.isArray(value);
   res.isEmpty = res.isArray
     ? !value.length
     : res.isObject
-    ? isObjectEmpty(value)
+    ? isObjectEmpty(value, ownPropertiesOnly)
     : true;
 
   return res;

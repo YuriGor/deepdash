@@ -28,6 +28,7 @@ function getFindDeep(_) {
     var eachDeepOptions = {
       pathFormat: options.pathFormat,
       checkCircular: options.checkCircular,
+      ownPropertiesOnly: options.ownPropertiesOnly,
       childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
       rootIsChildren: options.rootIsChildren,

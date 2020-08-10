@@ -14,12 +14,13 @@ export default function getCondenseDeep(_) {
     );
     var eachDeepOptions = {
       checkCircular: options.checkCircular,
+      ownPropertiesOnly: options.ownPropertiesOnly,
     };
     var arrays = [];
     //console.log('condenseDeep → eachDeep');
     eachDeep(
       obj,
-      function(value, key, parent, context) {
+      function (value, key, parent, context) {
         if (!context.isCircular && Array.isArray(value)) arrays.push(value);
       },
       eachDeepOptions

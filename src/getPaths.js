@@ -18,6 +18,7 @@ export default function getPaths(_) {
     var eachDeepOptions = {
       pathFormat: options.pathFormat,
       checkCircular: options.checkCircular,
+      ownPropertiesOnly: options.ownPropertiesOnly,
       includeRoot: options.includeRoot,
       childrenPath: options.childrenPath,
       rootIsChildren: options.rootIsChildren,
@@ -26,7 +27,7 @@ export default function getPaths(_) {
     var res = [];
     eachDeep(
       obj,
-      function(value, key, parent, context) {
+      function (value, key, parent, context) {
         if (!context.isCircular || options.includeCircularPath) {
           if (context.path !== undefined) {
             res.push(context.path);

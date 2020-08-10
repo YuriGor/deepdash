@@ -7,7 +7,7 @@ export default function getReduceDeep(_) {
     var accumulatorInited = accumulator !== undefined;
     eachDeep(
       obj,
-      function(value, key, parent, context) {
+      function (value, key, parent, context) {
         if (!accumulatorInited) {
           accumulator = value;
           accumulatorInited = true;

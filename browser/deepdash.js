@@ -103,6 +103,7 @@ var deepdash = (function () {
 
   var rxVarName$1 = /^[a-zA-Z_$]+([\w_$]*)$/;
   var rxQuot$1 = /"/g;
+  var has = Object.prototype.hasOwnProperty;
 
   function getIterate(_) {
     var pathToString = getPathToString(_);
@@ -126,7 +127,7 @@ var deepdash = (function () {
         if (broken) { break; }
         if (!item.inited) {
           item.inited = true;
-          item.info = describeValue(item.value);
+          item.info = describeValue(item.value, options.ownPropertiesOnly);
 
           if (options.checkCircular) {
             item.circularParentIndex = -1;
@@ -150,7 +151,7 @@ var deepdash = (function () {
           if (options.childrenPath) {
             options.childrenPath.forEach(function (cp, i) {
               var children = _.get(item.value, cp);
-              var info = describeValue(children);
+              var info = describeValue(children, options.ownPropertiesOnly);
               if (!info.isEmpty) {
                 item.children.push([
                   cp,
@@ -327,12 +328,11 @@ var deepdash = (function () {
         strChildPathPrefix += strChildrenPath || '';
       }
       var res = [];
-      //const has = Object.prototype.hasOwnProperty;
       var pathFormatString = !options.pathFormatArray;
       for (var childKey in children) {
-        // if (!has.call(children, childKey)) {
-        //   continue;
-        // }
+        if (options.ownPropertiesOnly && !has.call(children, childKey)) {
+          continue;
+        }
 
         var strChildPath = (void 0);
         if (pathFormatString) {
@@ -439,22 +439,22 @@ var deepdash = (function () {
 
   Object.defineProperties( ContextReader.prototype, prototypeAccessors );
 
-  function isObjectEmpty(value) {
+  function isObjectEmpty(value, ownPropertiesOnly) {
     for (var key in value) {
-      //if (Object.prototype.hasOwnProperty.call(value, key)) {
-      return false;
-      //}
+      if (!ownPropertiesOnly || has.call(value, key)) {
+        return false;
+      }
     }
     return true;
   }
 
-  function describeValue(value) {
+  function describeValue(value, ownPropertiesOnly) {
     var res = { isObject: isObject(value) };
     res.isArray = res.isObject && Array.isArray(value);
     res.isEmpty = res.isArray
       ? !value.length
       : res.isObject
-      ? isObjectEmpty(value)
+      ? isObjectEmpty(value, ownPropertiesOnly)
       : true;
 
     return res;
@@ -471,6 +471,7 @@ var deepdash = (function () {
           pathFormat: 'string',
           checkCircular: false,
           leavesOnly: false,
+          ownPropertiesOnly: true, //
         },
         options || {}
       );
@@ -518,12 +519,13 @@ var deepdash = (function () {
       );
       var eachDeepOptions = {
         checkCircular: options.checkCircular,
+        ownPropertiesOnly: options.ownPropertiesOnly,
       };
       var arrays = [];
       //console.log('condenseDeep → eachDeep');
       eachDeep(
         obj,
-        function(value, key, parent, context) {
+        function (value, key, parent, context) {
           if (!context.isCircular && Array.isArray(value)) { arrays.push(value); }
         },
         eachDeepOptions
@@ -642,6 +644,7 @@ var deepdash = (function () {
         childrenPath: options.childrenPath,
         includeRoot: options.includeRoot,
         rootIsChildren: options.rootIsChildren,
+        ownPropertiesOnly: options.ownPropertiesOnly,
         callbackAfterIterate: true,
         leavesOnly: false,
       };
@@ -856,6 +859,7 @@ var deepdash = (function () {
       var eachDeepOptions = {
         pathFormat: options.pathFormat,
         checkCircular: options.checkCircular,
+        ownPropertiesOnly: options.ownPropertiesOnly,
         childrenPath: options.childrenPath,
         includeRoot: options.includeRoot,
         rootIsChildren: options.rootIsChildren,
@@ -948,6 +952,7 @@ var deepdash = (function () {
       var eachDeepOptions = {
         pathFormat: 'string',
         checkCircular: options.checkCircular,
+        ownPropertiesOnly: options.ownPropertiesOnly,
         includeRoot: options.includeRoot,
         childrenPath: options.childrenPath,
         rootIsChildren: options.rootIsChildren,
@@ -956,7 +961,7 @@ var deepdash = (function () {
       var res = {};
       eachDeep(
         obj,
-        function(value, key, parent, context) {
+        function (value, key, parent, context) {
           if (!context.isCircular || options.includeCircularPath) {
             if (context.path !== undefined) {
               res[context.path] = value;
@@ -995,6 +1000,7 @@ var deepdash = (function () {
       var eachDeepOptions = {
         pathFormat: options.pathFormat,
         checkCircular: options.checkCircular,
+        ownPropertiesOnly: options.ownPropertiesOnly,
         includeRoot: options.includeRoot,
         childrenPath: options.childrenPath,
         rootIsChildren: options.rootIsChildren,
@@ -1003,7 +1009,7 @@ var deepdash = (function () {
       var res = [];
       eachDeep(
         obj,
-        function(value, key, parent, context) {
+        function (value, key, parent, context) {
           if (!context.isCircular || options.includeCircularPath) {
             if (context.path !== undefined) {
               res.push(context.path);
@@ -1035,7 +1041,7 @@ var deepdash = (function () {
       var accumulatorInited = accumulator !== undefined;
       eachDeep(
         obj,
-        function(value, key, parent, context) {
+        function (value, key, parent, context) {
           if (!accumulatorInited) {
             accumulator = value;
             accumulatorInited = true;

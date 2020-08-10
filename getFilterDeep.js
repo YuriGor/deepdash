@@ -78,6 +78,7 @@ function getFilterDeep(_) {
       childrenPath: options.childrenPath,
       includeRoot: options.includeRoot,
       rootIsChildren: options.rootIsChildren,
+      ownPropertiesOnly: options.ownPropertiesOnly,
       callbackAfterIterate: true,
       leavesOnly: false,
     };
