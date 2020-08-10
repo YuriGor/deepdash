@@ -65,7 +65,7 @@
   },
   "homepage": "https://deepdash.io",
   "devDependencies": {
-    "@commitlint/cli": "^9.1.1",
+    "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^8.3.4",
     "all-contributors-cli": "^6.14.2",
     "chai": "*",
