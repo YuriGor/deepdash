@@ -13,11 +13,11 @@ function getMapValuesDeep(_) {
     eachDeep(
       obj,
       function (value, key, parent, context) {
-        if (!context.skipChildren) {
-          context.skipChildren = function (skip) {
-            skipChildren = skip;
-          };
-        }
+        // if (!context.skipChildren) {
+        context.skipChildren = function (skip) {
+          skipChildren = skip;
+        };
+        // }
         skipChildren = undefined;
         var r = iteratee(value, key, parent, context);
         if (!context.isLeaf && skipChildren === undefined) {

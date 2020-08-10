@@ -121,8 +121,6 @@ var deepdash = (function () {
         return false;
       };
 
-      var contextReader = new ContextReader(obj, options, breakIt);
-
       while (item) {
         if (broken) { break; }
         if (!item.inited) {
@@ -173,6 +171,7 @@ var deepdash = (function () {
             (!options.leavesOnly || item.isLeaf);
 
           if (item.needCallback) {
+            var contextReader = new ContextReader(obj, options, breakIt);
             contextReader.setItem(item, false);
             try {
               item.res = callback(
@@ -236,14 +235,15 @@ var deepdash = (function () {
         }
 
         if (item.needCallback && options.callbackAfterIterate) {
-          contextReader.setItem(item, true);
+          var contextReader$1 = new ContextReader(obj, options, breakIt);
+          contextReader$1.setItem(item, true);
 
           try {
             callback(
               item.value,
               item.key,
               item.parent && item.parent.value,
-              contextReader
+              contextReader$1
             );
           } catch (err) {
             if (err.message) {
@@ -1183,11 +1183,11 @@ var deepdash = (function () {
       eachDeep(
         obj,
         function (value, key, parent, context) {
-          if (!context.skipChildren) {
-            context.skipChildren = function (skip) {
-              skipChildren = skip;
-            };
-          }
+          // if (!context.skipChildren) {
+          context.skipChildren = function (skip) {
+            skipChildren = skip;
+          };
+          // }
           skipChildren = undefined;
           var r = iteratee(value, key, parent, context);
           if (!context.isLeaf && skipChildren === undefined) {

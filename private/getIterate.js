@@ -23,8 +23,6 @@ function getIterate(_) {
       return false;
     };
 
-    var contextReader = new ContextReader(obj, options, breakIt);
-
     while (item) {
       if (broken) { break; }
       if (!item.inited) {
@@ -75,6 +73,7 @@ function getIterate(_) {
           (!options.leavesOnly || item.isLeaf);
 
         if (item.needCallback) {
+          var contextReader = new ContextReader(obj, options, breakIt);
           contextReader.setItem(item, false);
           try {
             item.res = callback(
@@ -138,14 +137,15 @@ function getIterate(_) {
       }
 
       if (item.needCallback && options.callbackAfterIterate) {
-        contextReader.setItem(item, true);
+        var contextReader$1 = new ContextReader(obj, options, breakIt);
+        contextReader$1.setItem(item, true);
 
         try {
           callback(
             item.value,
             item.key,
             item.parent && item.parent.value,
-            contextReader
+            contextReader$1
           );
         } catch (err) {
           if (err.message) {

@@ -18,8 +18,6 @@ export default function getIterate(_) {
       return false;
     };
 
-    const contextReader = new ContextReader(obj, options, breakIt);
-
     while (item) {
       if (broken) break;
       if (!item.inited) {
@@ -71,6 +69,7 @@ export default function getIterate(_) {
           (!options.leavesOnly || item.isLeaf);
 
         if (item.needCallback) {
+          const contextReader = new ContextReader(obj, options, breakIt);
           contextReader.setItem(item, false);
           try {
             item.res = callback(
@@ -132,6 +131,7 @@ export default function getIterate(_) {
       }
 
       if (item.needCallback && options.callbackAfterIterate) {
+        const contextReader = new ContextReader(obj, options, breakIt);
         contextReader.setItem(item, true);
 
         try {
