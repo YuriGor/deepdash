@@ -6,7 +6,6 @@ coverage
 examples
 prof
 node_modules
-es
 test
 txt
 .coverals.yml
