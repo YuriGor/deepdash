@@ -201,6 +201,16 @@
         "financial",
         "userTesting"
       ]
+    },
+    {
+      "login": "barrct",
+      "name": "barrct",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/13442267?v=4",
+      "profile": "https://github.com/barrct",
+      "contributions": [
+        "bug",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
