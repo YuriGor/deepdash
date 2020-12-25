@@ -231,6 +231,15 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "jcamden",
+      "name": "John Camden",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/5461045?v=4",
+      "profile": "https://cloverxuesongzhou.com/",
+      "contributions": [
+        "bug"
+      ]
     }
   ],
   "contributorsPerLine": 7
