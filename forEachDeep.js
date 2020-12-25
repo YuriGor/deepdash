@@ -1,9 +1,9 @@
 'use strict';
 
 var getForEachDeep = require('./getForEachDeep.js');
-var eachDeep$1 = require('./deps/eachDeep.js');
+var eachDeep = require('./deps/eachDeep.js');
 
 /* build/tpl */
-var forEachDeep = getForEachDeep(eachDeep$1);
+var forEachDeep = getForEachDeep(eachDeep);
 
 module.exports = forEachDeep;

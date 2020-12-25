@@ -1,8 +1,8 @@
 'use strict';
 
 var _merge = require('lodash/merge');
-var eachDeep$1 = require('./eachDeep.js');
+var eachDeep = require('./eachDeep.js');
 
-var deps = _merge({ merge: _merge }, eachDeep$1);
+var deps = _merge({ merge: _merge }, eachDeep);
 
 module.exports = deps;

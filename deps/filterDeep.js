@@ -3,8 +3,8 @@
 var _merge = require('lodash/merge');
 var _isObject = require('lodash/isObject');
 var _get = require('lodash/get');
-var eachDeep$1 = require('./eachDeep.js');
-var condenseDeep$1 = require('./condenseDeep.js');
+var eachDeep = require('./eachDeep.js');
+var condenseDeep = require('./condenseDeep.js');
 var _clone = require('lodash/clone');
 var _cloneDeep = require('lodash/cloneDeep');
 var _each = require('lodash/each');
@@ -30,8 +30,8 @@ var deps = _merge(
     iteratee: _iteratee,
     get: _get,
   },
-  eachDeep$1,
-  condenseDeep$1
+  eachDeep,
+  condenseDeep
 );
 
 module.exports = deps;

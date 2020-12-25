@@ -1,7 +1,7 @@
 'use strict';
 
-var findDeep$1 = require('./findDeep.js');
+var findDeep = require('./findDeep.js');
 
 
 
-module.exports = findDeep$1;
+module.exports = findDeep;
