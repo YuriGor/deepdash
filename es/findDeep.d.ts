@@ -18,5 +18,4 @@ export default function findDeep(
     leavesOnly?: boolean; // = false;
     rootIsChildren?: boolean;
   }
-): IDeepEntry;
-
+): IDeepEntry | undefined;

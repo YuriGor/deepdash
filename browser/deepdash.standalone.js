@@ -1718,7 +1718,7 @@ var deepdash = (function (exports) {
    * _.keysIn(new Foo);
    * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
    */
-  function keysIn$1(object) {
+  function keysIn(object) {
     return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
   }
 
@@ -1747,7 +1747,7 @@ var deepdash = (function (exports) {
    * // => { 'a': 1, 'b': 2, 'c': 3 }
    */
   function toPlainObject(value) {
-    return copyObject(value, keysIn$1(value));
+    return copyObject(value, keysIn(value));
   }
 
   /**
@@ -1857,7 +1857,7 @@ var deepdash = (function (exports) {
         }
         assignMergeValue(object, key, newValue);
       }
-    }, keysIn$1);
+    }, keysIn);
   }
 
   /**
@@ -2886,10 +2886,11 @@ var deepdash = (function (exports) {
     if (arrLength != othLength && !(isPartial && othLength > arrLength)) {
       return false;
     }
-    // Assume cyclic values are equal.
-    var stacked = stack.get(array);
-    if (stacked && stack.get(other)) {
-      return stacked == other;
+    // Check that cyclic values are equal.
+    var arrStacked = stack.get(array);
+    var othStacked = stack.get(other);
+    if (arrStacked && othStacked) {
+      return arrStacked == other && othStacked == array;
     }
     var index = -1,
         result = true,
@@ -3234,10 +3235,11 @@ var deepdash = (function (exports) {
         return false;
       }
     }
-    // Assume cyclic values are equal.
-    var stacked = stack.get(object);
-    if (stacked && stack.get(other)) {
-      return stacked == other;
+    // Check that cyclic values are equal.
+    var objStacked = stack.get(object);
+    var othStacked = stack.get(other);
+    if (objStacked && othStacked) {
+      return objStacked == other && othStacked == object;
     }
     var result = true;
     stack.set(object, other);
@@ -4322,7 +4324,7 @@ var deepdash = (function (exports) {
    * @returns {Object} Returns `object`.
    */
   function baseAssignIn(object, source) {
-    return object && copyObject(source, keysIn$1(source), object);
+    return object && copyObject(source, keysIn(source), object);
   }
 
   /**
@@ -4377,7 +4379,7 @@ var deepdash = (function (exports) {
    * @returns {Array} Returns the array of property names and symbols.
    */
   function getAllKeysIn(object) {
-    return baseGetAllKeys(object, keysIn$1, getSymbolsIn);
+    return baseGetAllKeys(object, keysIn, getSymbolsIn);
   }
 
   /** Used for built-in method references. */
@@ -5011,6 +5013,10 @@ var deepdash = (function (exports) {
     while (nested != null && ++index < length) {
       var key = toKey(path[index]),
           newValue = value;
+
+      if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+        return object;
+      }
 
       if (index != lastIndex) {
         var objValue = nested[key];
