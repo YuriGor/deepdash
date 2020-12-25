@@ -1280,6 +1280,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/barrct"><img src="https://avatars1.githubusercontent.com/u/13442267?v=4?s=100" width="100px;" alt=""/><br /><sub><b>barrct</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Abarrct" title="Bug reports">🐛</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=barrct" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/casamia918"><img src="https://avatars0.githubusercontent.com/u/8295005?v=4?s=100" width="100px;" alt=""/><br /><sub><b>casamia918</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Acasamia918" title="Bug reports">🐛</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=casamia918" title="Code">💻</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=casamia918" title="Documentation">📖</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/ferreirix"><img src="https://avatars3.githubusercontent.com/u/10561360?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ferreirix</b></sub></a><br /><a href="#ideas-ferreirix" title="Ideas, Planning, & Feedback">🤔</a></td>
+  </tr>
 </table>
 
 <!-- markdownlint-restore -->
