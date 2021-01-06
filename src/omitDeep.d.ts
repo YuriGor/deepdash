@@ -12,7 +12,7 @@ export default function omitDeep(
       cloneDeep?: boolean;
       keepIfEmpty?: boolean;
     };
-    onFonNotMatchalse?: {
+    onNotMatch?: {
       skipChildren?: boolean;
       cloneDeep?: boolean;
       keepIfEmpty?: boolean;
