@@ -1283,6 +1283,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/ferreirix"><img src="https://avatars3.githubusercontent.com/u/10561360?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ferreirix</b></sub></a><br /><a href="#ideas-ferreirix" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://cloverxuesongzhou.com/"><img src="https://avatars1.githubusercontent.com/u/5461045?v=4?s=100" width="100px;" alt=""/><br /><sub><b>John Camden</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/issues?q=author%3Ajcamden" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/JoshuaM1995"><img src="https://avatars2.githubusercontent.com/u/26679919?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Joshua</b></sub></a><br /><a href="https://github.com/YuriGor/Deepdash/commits?author=JoshuaM1995" title="Code">💻</a> <a href="https://github.com/YuriGor/Deepdash/commits?author=JoshuaM1995" title="Documentation">📖</a></td>
   </tr>
 </table>
 

@@ -240,6 +240,16 @@
       "contributions": [
         "bug"
       ]
+    },
+    {
+      "login": "JoshuaM1995",
+      "name": "Joshua",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/26679919?v=4",
+      "profile": "https://github.com/JoshuaM1995",
+      "contributions": [
+        "code",
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 7
