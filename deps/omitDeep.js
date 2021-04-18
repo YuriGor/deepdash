@@ -1,6 +1,6 @@
 'use strict';
 
-var _merge = require('lodash/merge');
+var _merge = require('lodash/merge.js');
 var filterDeep = require('./filterDeep.js');
 var pathMatches = require('./pathMatches.js');
 

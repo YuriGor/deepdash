@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getPickDeep from './getPickDeep';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getPickDeep from './getPickDeep.js';
 
 export default function addPickDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

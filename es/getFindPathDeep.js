@@ -1,4 +1,4 @@
-import getFindDeep from './getFindDeep';
+import getFindDeep from './getFindDeep.js';
 
 export default function getFindPathDeep(_) {
   const findDeep = getFindDeep(_);

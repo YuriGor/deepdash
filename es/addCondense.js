@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getCondense from './getCondense';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getCondense from './getCondense.js';
 
 export default function addCondense(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

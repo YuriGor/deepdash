@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/index';
-import getIndex from './getIndex';
+import deps from './deps/index.js';
+import getIndex from './getIndex.js';
 export default getIndex(deps);

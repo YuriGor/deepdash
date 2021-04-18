@@ -1,9 +1,9 @@
 'use strict';
 
-var _merge = require('lodash/merge');
-var _cloneDeep = require('lodash/cloneDeep');
-var _has = require('lodash/has');
-var _unset = require('lodash/unset');
+var _merge = require('lodash/merge.js');
+var _cloneDeep = require('lodash/cloneDeep.js');
+var _has = require('lodash/has.js');
+var _unset = require('lodash/unset.js');
 var mapValuesDeep = require('./mapValuesDeep.js');
 
 var deps = _merge(

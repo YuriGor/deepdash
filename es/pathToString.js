@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/pathToString';
-import getPathToString from './getPathToString';
+import deps from './deps/pathToString.js';
+import getPathToString from './getPathToString.js';
 export default getPathToString(deps);

@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/mapDeep';
-import getMapDeep from './getMapDeep';
+import deps from './deps/mapDeep.js';
+import getMapDeep from './getMapDeep.js';
 export default getMapDeep(deps);

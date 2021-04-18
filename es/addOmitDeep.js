@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getOmitDeep from './getOmitDeep';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getOmitDeep from './getOmitDeep.js';
 
 export default function addOmitDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

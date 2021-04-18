@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getMapKeysDeep from './getMapKeysDeep';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getMapKeysDeep from './getMapKeysDeep.js';
 
 export default function addMapKeysDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

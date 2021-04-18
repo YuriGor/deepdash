@@ -1,4 +1,4 @@
-import getOmitDeep from './getOmitDeep';
+import getOmitDeep from './getOmitDeep.js';
 
 export default function getPickDeep(_) {
   var omitDeep = getOmitDeep(_);

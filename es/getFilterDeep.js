@@ -1,6 +1,6 @@
-import isObject from './private/isObject';
-import getEachDeep from './getEachDeep';
-import getCondense from './getCondense';
+import isObject from './private/isObject.js';
+import getEachDeep from './getEachDeep.js';
+import getCondense from './getCondense.js';
 
 export default function getFilterDeep(_) {
   const eachDeep = getEachDeep(_);

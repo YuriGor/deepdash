@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/omitDeep';
-import getOmitDeep from './getOmitDeep';
+import deps from './deps/omitDeep.js';
+import getOmitDeep from './getOmitDeep.js';
 export default getOmitDeep(deps);

@@ -1,5 +1,5 @@
-import getPathMatches from './getPathMatches';
-import getFilterDeep from './getFilterDeep';
+import getPathMatches from './getPathMatches.js';
+import getFilterDeep from './getFilterDeep.js';
 
 export default function getOmitDeep(_) {
   var pathMatches = getPathMatches(_);
@@ -35,7 +35,7 @@ export default function getOmitDeep(_) {
     options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
     options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
 
-    var test = function(value, key, parent, context) {
+    var test = function (value, key, parent, context) {
       if (pathMatches(context.path, paths) !== false) {
         return options.invert;
       } else {

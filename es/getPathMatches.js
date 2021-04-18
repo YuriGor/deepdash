@@ -1,4 +1,4 @@
-import getPathToString from './getPathToString';
+import getPathToString from './getPathToString.js';
 
 export default function getPathMatches(_) {
   var pathToString = getPathToString(_);

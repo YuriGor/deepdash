@@ -1,25 +1,25 @@
 /* build/tpl */
-import addCondense from './addCondense';
-import addCondenseDeep from './addCondenseDeep';
-import addEachDeep from './addEachDeep';
-import addExists from './addExists';
-import addFilterDeep from './addFilterDeep';
-import addFindDeep from './addFindDeep';
-import addFindPathDeep from './addFindPathDeep';
-import addFindValueDeep from './addFindValueDeep';
-import addForEachDeep from './addForEachDeep';
-import addIndex from './addIndex';
-import addKeysDeep from './addKeysDeep';
-import addMapDeep from './addMapDeep';
-import addMapKeysDeep from './addMapKeysDeep';
-import addMapValuesDeep from './addMapValuesDeep';
-import addOmitDeep from './addOmitDeep';
-import addPathMatches from './addPathMatches';
-import addPathToString from './addPathToString';
-import addPaths from './addPaths';
-import addPickDeep from './addPickDeep';
-import addReduceDeep from './addReduceDeep';
-import addSomeDeep from './addSomeDeep';
+import addCondense from './addCondense.js';
+import addCondenseDeep from './addCondenseDeep.js';
+import addEachDeep from './addEachDeep.js';
+import addExists from './addExists.js';
+import addFilterDeep from './addFilterDeep.js';
+import addFindDeep from './addFindDeep.js';
+import addFindPathDeep from './addFindPathDeep.js';
+import addFindValueDeep from './addFindValueDeep.js';
+import addForEachDeep from './addForEachDeep.js';
+import addIndex from './addIndex.js';
+import addKeysDeep from './addKeysDeep.js';
+import addMapDeep from './addMapDeep.js';
+import addMapKeysDeep from './addMapKeysDeep.js';
+import addMapValuesDeep from './addMapValuesDeep.js';
+import addOmitDeep from './addOmitDeep.js';
+import addPathMatches from './addPathMatches.js';
+import addPathToString from './addPathToString.js';
+import addPaths from './addPaths.js';
+import addPickDeep from './addPickDeep.js';
+import addReduceDeep from './addReduceDeep.js';
+import addSomeDeep from './addSomeDeep.js';
 
 export default function apply(_) {
   addCondense(_);

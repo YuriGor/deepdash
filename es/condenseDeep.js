@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/condenseDeep';
-import getCondenseDeep from './getCondenseDeep';
+import deps from './deps/condenseDeep.js';
+import getCondenseDeep from './getCondenseDeep.js';
 export default getCondenseDeep(deps);

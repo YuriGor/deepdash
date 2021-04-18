@@ -1,5 +1,5 @@
-import getPathToString from './../getPathToString';
-import isObject from './isObject';
+import getPathToString from './../getPathToString.js';
+import isObject from './isObject.js';
 var rxVarName = /^[a-zA-Z_$]+([\w_$]*)$/;
 var rxQuot = /"/g;
 const has = Object.prototype.hasOwnProperty;

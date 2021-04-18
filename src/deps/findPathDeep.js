@@ -1,2 +1,2 @@
-import findDeep from './findDeep';
+import findDeep from './findDeep.js';
 export default findDeep;

@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/findPathDeep';
-import getFindPathDeep from './getFindPathDeep';
+import deps from './deps/findPathDeep.js';
+import getFindPathDeep from './getFindPathDeep.js';
 export default getFindPathDeep(deps);

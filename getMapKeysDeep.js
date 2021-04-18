@@ -16,7 +16,7 @@ function getMapKeysDeep(_) {
 
     eachDeep(
       obj,
-      function(value, key, parent, context) {
+      function (value, key, parent, context) {
         if (key === undefined) {
           return;
         }

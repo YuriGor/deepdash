@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/eachDeep';
-import getEachDeep from './getEachDeep';
+import deps from './deps/eachDeep.js';
+import getEachDeep from './getEachDeep.js';
 export default getEachDeep(deps);

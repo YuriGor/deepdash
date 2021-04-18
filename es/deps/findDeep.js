@@ -1,7 +1,7 @@
-import _merge from 'lodash-es/merge';
-import _cloneDeep from 'lodash-es/cloneDeep';
-import _iteratee from 'lodash-es/iteratee';
-import eachDeepDeps from './eachDeep';
+import _merge from 'lodash-es/merge.js';
+import _cloneDeep from 'lodash-es/cloneDeep.js';
+import _iteratee from 'lodash-es/iteratee.js';
+import eachDeepDeps from './eachDeep.js';
 
 var deps = _merge(
   {

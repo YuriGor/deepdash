@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/paths';
-import getPaths from './getPaths';
+import deps from './deps/paths.js';
+import getPaths from './getPaths.js';
 export default getPaths(deps);

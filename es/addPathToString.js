@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getPathToString from './getPathToString';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getPathToString from './getPathToString.js';
 
 export default function addPathToString(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

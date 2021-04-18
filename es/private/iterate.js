@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from '../deps/iterate';
-import getIterate from './getIterate';
+import deps from '../deps/iterate.js';
+import getIterate from './getIterate.js';
 export default getIterate(deps);

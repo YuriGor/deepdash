@@ -1,4 +1,4 @@
-import getEachDeep from './getEachDeep';
+import getEachDeep from './getEachDeep.js';
 
 export default function getIndex(_) {
   var eachDeep = getEachDeep(_);

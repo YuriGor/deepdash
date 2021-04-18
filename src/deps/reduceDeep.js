@@ -1,3 +1,3 @@
-import eachDeepDeps from './eachDeep';
+import eachDeepDeps from './eachDeep.js';
 
 export default eachDeepDeps;

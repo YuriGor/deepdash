@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/reduceDeep';
-import getReduceDeep from './getReduceDeep';
+import deps from './deps/reduceDeep.js';
+import getReduceDeep from './getReduceDeep.js';
 export default getReduceDeep(deps);

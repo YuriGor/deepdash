@@ -1,11 +1,11 @@
-import _merge from 'lodash-es/merge';
-import _isString from 'lodash-es/isString';
-import _toPath from 'lodash-es/toPath';
-import _isEqual from 'lodash-es/isEqual';
-import _takeRight from 'lodash-es/takeRight';
-import _cloneDeep from 'lodash-es/cloneDeep';
+import _merge from 'lodash-es/merge.js';
+import _isString from 'lodash-es/isString.js';
+import _toPath from 'lodash-es/toPath.js';
+import _isEqual from 'lodash-es/isEqual.js';
+import _takeRight from 'lodash-es/takeRight.js';
+import _cloneDeep from 'lodash-es/cloneDeep.js';
 
-import pathToStringDeps from './pathToString';
+import pathToStringDeps from './pathToString.js';
 
 var deps = _merge(
   {

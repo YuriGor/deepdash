@@ -37,7 +37,7 @@ function getOmitDeep(_) {
     options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
     options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
 
-    var test = function(value, key, parent, context) {
+    var test = function (value, key, parent, context) {
       if (pathMatches(context.path, paths) !== false) {
         return options.invert;
       } else {

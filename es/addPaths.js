@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getPaths from './getPaths';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getPaths from './getPaths.js';
 
 export default function addPaths(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

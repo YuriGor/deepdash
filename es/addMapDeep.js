@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getMapDeep from './getMapDeep';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getMapDeep from './getMapDeep.js';
 
 export default function addMapDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

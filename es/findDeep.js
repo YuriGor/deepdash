@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/findDeep';
-import getFindDeep from './getFindDeep';
+import deps from './deps/findDeep.js';
+import getFindDeep from './getFindDeep.js';
 export default getFindDeep(deps);

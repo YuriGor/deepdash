@@ -1,7 +1,7 @@
 'use strict';
 
-var _isString = require('lodash/isString');
-var _reduce = require('lodash/reduce');
+var _isString = require('lodash/isString.js');
+var _reduce = require('lodash/reduce.js');
 
 var deps = {
   isString: _isString,

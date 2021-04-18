@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getFilterDeep from './getFilterDeep';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getFilterDeep from './getFilterDeep.js';
 
 export default function addFilterDeep(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

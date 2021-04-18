@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getExists from './getExists';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getExists from './getExists.js';
 
 export default function addExists(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

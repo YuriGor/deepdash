@@ -5775,7 +5775,7 @@ var deepdash = (function (exports) {
 
       eachDeep(
         obj,
-        function(value, key, parent, context) {
+        function (value, key, parent, context) {
           if (key === undefined) {
             return;
           }
@@ -6222,7 +6222,7 @@ var deepdash = (function (exports) {
       options.onTrue = options.invert ? options.onMatch : options.onNotMatch;
       options.onFalse = options.invert ? options.onNotMatch : options.onMatch;
 
-      var test = function(value, key, parent, context) {
+      var test = function (value, key, parent, context) {
         if (pathMatches(context.path, paths) !== false) {
           return options.invert;
         } else {

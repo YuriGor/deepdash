@@ -1,6 +1,6 @@
-import _clone from 'lodash-es/clone';
-import _toPath from 'lodash-es/toPath';
-import _get from 'lodash-es/get';
+import _clone from 'lodash-es/clone.js';
+import _toPath from 'lodash-es/toPath.js';
+import _get from 'lodash-es/get.js';
 
 var deps = {
   clone: _clone,

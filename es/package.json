@@ -35,7 +35,6 @@
   },
   "homepage": "https://deepdash.io/",
   "dependencies": {
-    "lodash-es": "^4.17.15"
-  },
-  "devDependencies": {}
+    "lodash-es": "^4.17.21"
+  }
 }

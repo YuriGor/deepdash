@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/keysDeep';
-import getKeysDeep from './getKeysDeep';
+import deps from './deps/keysDeep.js';
+import getKeysDeep from './getKeysDeep.js';
 export default getKeysDeep(deps);

@@ -1,19 +1,19 @@
 'use strict';
 
-var _merge = require('lodash/merge');
-var _isObject = require('lodash/isObject');
-var _get = require('lodash/get');
+var _merge = require('lodash/merge.js');
+var _isObject = require('lodash/isObject.js');
+var _get = require('lodash/get.js');
 var eachDeep = require('./eachDeep.js');
 var condenseDeep = require('./condenseDeep.js');
-var _clone = require('lodash/clone');
-var _cloneDeep = require('lodash/cloneDeep');
-var _each = require('lodash/each');
-var _eachRight = require('lodash/eachRight');
-var _has = require('lodash/has');
-var _set = require('lodash/set');
-var _unset = require('lodash/unset');
-var _isPlainObject = require('lodash/isPlainObject');
-var _iteratee = require('lodash/iteratee');
+var _clone = require('lodash/clone.js');
+var _cloneDeep = require('lodash/cloneDeep.js');
+var _each = require('lodash/each.js');
+var _eachRight = require('lodash/eachRight.js');
+var _has = require('lodash/has.js');
+var _set = require('lodash/set.js');
+var _unset = require('lodash/unset.js');
+var _isPlainObject = require('lodash/isPlainObject.js');
+var _iteratee = require('lodash/iteratee.js');
 
 var deps = _merge(
   {

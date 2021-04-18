@@ -1,4 +1,4 @@
-import getIterate from './private/getIterate';
+import getIterate from './private/getIterate.js';
 
 export default function getEachDeep(_) {
   var iterate = getIterate(_);

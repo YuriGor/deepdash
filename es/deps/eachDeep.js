@@ -1,9 +1,9 @@
-import _identity from 'lodash-es/identity';
-import _merge from 'lodash-es/merge';
-import _isString from 'lodash-es/isString';
-import _toPath from 'lodash-es/toPath';
+import _identity from 'lodash-es/identity.js';
+import _merge from 'lodash-es/merge.js';
+import _isString from 'lodash-es/isString.js';
+import _toPath from 'lodash-es/toPath.js';
 
-import iterateDeps from './iterate';
+import iterateDeps from './iterate.js';
 
 var deps = _merge(
   {

@@ -1,5 +1,5 @@
-import getEachDeep from './getEachDeep';
-import getCondense from './getCondense';
+import getEachDeep from './getEachDeep.js';
+import getCondense from './getCondense.js';
 
 export default function getCondenseDeep(_) {
   var eachDeep = getEachDeep(_);

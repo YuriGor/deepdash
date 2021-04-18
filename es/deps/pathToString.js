@@ -1,5 +1,5 @@
-import _isString from 'lodash-es/isString';
-import _reduce from 'lodash-es/reduce';
+import _isString from 'lodash-es/isString.js';
+import _reduce from 'lodash-es/reduce.js';
 
 var deps = {
   isString: _isString,

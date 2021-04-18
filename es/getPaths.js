@@ -1,4 +1,4 @@
-import getEachDeep from './getEachDeep';
+import getEachDeep from './getEachDeep.js';
 
 export default function getPaths(_) {
   var eachDeep = getEachDeep(_);

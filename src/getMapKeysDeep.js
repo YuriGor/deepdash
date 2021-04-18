@@ -1,5 +1,5 @@
-import getEachDeep from './getEachDeep';
-import getPathToString from './getPathToString';
+import getEachDeep from './getEachDeep.js';
+import getPathToString from './getPathToString.js';
 
 export default function getMapKeysDeep(_) {
   const eachDeep = getEachDeep(_);
@@ -12,7 +12,7 @@ export default function getMapKeysDeep(_) {
 
     eachDeep(
       obj,
-      function(value, key, parent, context) {
+      function (value, key, parent, context) {
         if (key === undefined) {
           return;
         }

@@ -1,8 +1,8 @@
-import _merge from 'lodash-es/merge';
-import _forArray from './own/forArray';
+import _merge from 'lodash-es/merge.js';
+import _forArray from './own/forArray.js';
 
-import condenseDeps from './condense';
-import eachDeepDeps from './eachDeep';
+import condenseDeps from './condense.js';
+import eachDeepDeps from './eachDeep.js';
 
 var deps = _merge(
   {

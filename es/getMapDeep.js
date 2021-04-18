@@ -1,4 +1,4 @@
-import getReduceDeep from './getReduceDeep';
+import getReduceDeep from './getReduceDeep.js';
 
 export default function getMapDeep(_) {
   var reduceDeep = getReduceDeep(_);

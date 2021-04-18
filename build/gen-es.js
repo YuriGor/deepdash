@@ -18,10 +18,13 @@ const tplStandalone = require('./tpl/standalone');
 const tplStandaloneD = require('./tpl/standalone.d');
 const tplDeepdash = require('./tpl/deepdash');
 const tplDeepdashD = require('./tpl/deepdash.d');
+const tplPackageExports = require('./tpl/packageExports');
+const pkg = require('../package.json');
 
 const dir = path.join(__dirname, '../src/');
 const targetDir = path.join(__dirname, '../es/');
 const typesDir = path.join(__dirname, '../es/');
+const rootDir = path.join(__dirname, '../');
 
 const privateDir = path.join(dir, 'private');
 const privateTarget = path.join(targetDir, 'private');
@@ -66,11 +69,15 @@ async function main() {
   );
 
   const methods = [];
+  const fullMethods = [];
 
   for (const getter of getters) {
     let upMethodName = getter.substr(3, getter.length - 6);
     let methodName = arstr.lowFirst(upMethodName);
     methods.push(methodName);
+    fullMethods.push(`get${upMethodName}`);
+    fullMethods.push(`add${upMethodName}`);
+    fullMethods.push(methodName);
 
     await copyFile(path.join(dir, getter), path.join(targetDir, getter));
     // log.done(`${getter}`);
@@ -142,6 +149,15 @@ async function main() {
     tplStandaloneD(methods)
   );
   log.done('standalone.js');
+
+  pkg.exports = tplPackageExports(fullMethods);
+  await writeFile(
+    path.join(rootDir, 'package.json'),
+    JSON.stringify(pkg, null, 2)
+  );
+
+  log.done('package.json');
+
   log.done('copy/gen done');
 }
 

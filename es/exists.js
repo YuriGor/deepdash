@@ -1,4 +1,4 @@
 /* build/tpl */
-import deps from './deps/exists';
-import getExists from './getExists';
+import deps from './deps/exists.js';
+import getExists from './getExists.js';
 export default getExists(deps);

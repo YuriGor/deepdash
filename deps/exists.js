@@ -1,8 +1,8 @@
 'use strict';
 
-var _toPath = require('lodash/toPath');
-var _get = require('lodash/get');
-var _clone = require('lodash/clone');
+var _toPath = require('lodash/toPath.js');
+var _get = require('lodash/get.js');
+var _clone = require('lodash/clone.js');
 
 var deps = {
   clone: _clone,

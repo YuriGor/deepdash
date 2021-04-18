@@ -1,4 +1,4 @@
-module.exports = function(methodsList) {
+module.exports = function (methodsList) {
   return (
     `/* build/tpl */
 ` +

@@ -1,6 +1,6 @@
 /* build/tpl */
-import getMixOrPatchIn from './private/getMixOrPatchIn';
-import getIndex from './getIndex';
+import getMixOrPatchIn from './private/getMixOrPatchIn.js';
+import getIndex from './getIndex.js';
 
 export default function addIndex(_) {
   var mixOrPatchIn = getMixOrPatchIn(_);

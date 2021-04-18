@@ -10,6 +10,333 @@
   "directories": {
     "test": "test"
   },
+  "exports": {
+    ".": {
+      "import": "./es/deepdash.js",
+      "require": "./deepdash.js",
+      "types": "./es/deepdash.d.ts"
+    },
+    "./standalone": {
+      "import": "./es/standalone.js",
+      "require": "./standalone.js",
+      "types": "./es/standalone.d.ts"
+    },
+    "./getCondense": {
+      "import": "./es/getCondense.js",
+      "require": "./getCondense.js",
+      "types": "./es/getCondense.d.ts"
+    },
+    "./addCondense": {
+      "import": "./es/addCondense.js",
+      "require": "./addCondense.js",
+      "types": "./es/addCondense.d.ts"
+    },
+    "./condense": {
+      "import": "./es/condense.js",
+      "require": "./condense.js",
+      "types": "./es/condense.d.ts"
+    },
+    "./getCondenseDeep": {
+      "import": "./es/getCondenseDeep.js",
+      "require": "./getCondenseDeep.js",
+      "types": "./es/getCondenseDeep.d.ts"
+    },
+    "./addCondenseDeep": {
+      "import": "./es/addCondenseDeep.js",
+      "require": "./addCondenseDeep.js",
+      "types": "./es/addCondenseDeep.d.ts"
+    },
+    "./condenseDeep": {
+      "import": "./es/condenseDeep.js",
+      "require": "./condenseDeep.js",
+      "types": "./es/condenseDeep.d.ts"
+    },
+    "./getEachDeep": {
+      "import": "./es/getEachDeep.js",
+      "require": "./getEachDeep.js",
+      "types": "./es/getEachDeep.d.ts"
+    },
+    "./addEachDeep": {
+      "import": "./es/addEachDeep.js",
+      "require": "./addEachDeep.js",
+      "types": "./es/addEachDeep.d.ts"
+    },
+    "./eachDeep": {
+      "import": "./es/eachDeep.js",
+      "require": "./eachDeep.js",
+      "types": "./es/eachDeep.d.ts"
+    },
+    "./getExists": {
+      "import": "./es/getExists.js",
+      "require": "./getExists.js",
+      "types": "./es/getExists.d.ts"
+    },
+    "./addExists": {
+      "import": "./es/addExists.js",
+      "require": "./addExists.js",
+      "types": "./es/addExists.d.ts"
+    },
+    "./exists": {
+      "import": "./es/exists.js",
+      "require": "./exists.js",
+      "types": "./es/exists.d.ts"
+    },
+    "./getFilterDeep": {
+      "import": "./es/getFilterDeep.js",
+      "require": "./getFilterDeep.js",
+      "types": "./es/getFilterDeep.d.ts"
+    },
+    "./addFilterDeep": {
+      "import": "./es/addFilterDeep.js",
+      "require": "./addFilterDeep.js",
+      "types": "./es/addFilterDeep.d.ts"
+    },
+    "./filterDeep": {
+      "import": "./es/filterDeep.js",
+      "require": "./filterDeep.js",
+      "types": "./es/filterDeep.d.ts"
+    },
+    "./getFindDeep": {
+      "import": "./es/getFindDeep.js",
+      "require": "./getFindDeep.js",
+      "types": "./es/getFindDeep.d.ts"
+    },
+    "./addFindDeep": {
+      "import": "./es/addFindDeep.js",
+      "require": "./addFindDeep.js",
+      "types": "./es/addFindDeep.d.ts"
+    },
+    "./findDeep": {
+      "import": "./es/findDeep.js",
+      "require": "./findDeep.js",
+      "types": "./es/findDeep.d.ts"
+    },
+    "./getFindPathDeep": {
+      "import": "./es/getFindPathDeep.js",
+      "require": "./getFindPathDeep.js",
+      "types": "./es/getFindPathDeep.d.ts"
+    },
+    "./addFindPathDeep": {
+      "import": "./es/addFindPathDeep.js",
+      "require": "./addFindPathDeep.js",
+      "types": "./es/addFindPathDeep.d.ts"
+    },
+    "./findPathDeep": {
+      "import": "./es/findPathDeep.js",
+      "require": "./findPathDeep.js",
+      "types": "./es/findPathDeep.d.ts"
+    },
+    "./getFindValueDeep": {
+      "import": "./es/getFindValueDeep.js",
+      "require": "./getFindValueDeep.js",
+      "types": "./es/getFindValueDeep.d.ts"
+    },
+    "./addFindValueDeep": {
+      "import": "./es/addFindValueDeep.js",
+      "require": "./addFindValueDeep.js",
+      "types": "./es/addFindValueDeep.d.ts"
+    },
+    "./findValueDeep": {
+      "import": "./es/findValueDeep.js",
+      "require": "./findValueDeep.js",
+      "types": "./es/findValueDeep.d.ts"
+    },
+    "./getForEachDeep": {
+      "import": "./es/getForEachDeep.js",
+      "require": "./getForEachDeep.js",
+      "types": "./es/getForEachDeep.d.ts"
+    },
+    "./addForEachDeep": {
+      "import": "./es/addForEachDeep.js",
+      "require": "./addForEachDeep.js",
+      "types": "./es/addForEachDeep.d.ts"
+    },
+    "./forEachDeep": {
+      "import": "./es/forEachDeep.js",
+      "require": "./forEachDeep.js",
+      "types": "./es/forEachDeep.d.ts"
+    },
+    "./getIndex": {
+      "import": "./es/getIndex.js",
+      "require": "./getIndex.js",
+      "types": "./es/getIndex.d.ts"
+    },
+    "./addIndex": {
+      "import": "./es/addIndex.js",
+      "require": "./addIndex.js",
+      "types": "./es/addIndex.d.ts"
+    },
+    "./index": {
+      "import": "./es/index.js",
+      "require": "./index.js",
+      "types": "./es/index.d.ts"
+    },
+    "./getKeysDeep": {
+      "import": "./es/getKeysDeep.js",
+      "require": "./getKeysDeep.js",
+      "types": "./es/getKeysDeep.d.ts"
+    },
+    "./addKeysDeep": {
+      "import": "./es/addKeysDeep.js",
+      "require": "./addKeysDeep.js",
+      "types": "./es/addKeysDeep.d.ts"
+    },
+    "./keysDeep": {
+      "import": "./es/keysDeep.js",
+      "require": "./keysDeep.js",
+      "types": "./es/keysDeep.d.ts"
+    },
+    "./getMapDeep": {
+      "import": "./es/getMapDeep.js",
+      "require": "./getMapDeep.js",
+      "types": "./es/getMapDeep.d.ts"
+    },
+    "./addMapDeep": {
+      "import": "./es/addMapDeep.js",
+      "require": "./addMapDeep.js",
+      "types": "./es/addMapDeep.d.ts"
+    },
+    "./mapDeep": {
+      "import": "./es/mapDeep.js",
+      "require": "./mapDeep.js",
+      "types": "./es/mapDeep.d.ts"
+    },
+    "./getMapKeysDeep": {
+      "import": "./es/getMapKeysDeep.js",
+      "require": "./getMapKeysDeep.js",
+      "types": "./es/getMapKeysDeep.d.ts"
+    },
+    "./addMapKeysDeep": {
+      "import": "./es/addMapKeysDeep.js",
+      "require": "./addMapKeysDeep.js",
+      "types": "./es/addMapKeysDeep.d.ts"
+    },
+    "./mapKeysDeep": {
+      "import": "./es/mapKeysDeep.js",
+      "require": "./mapKeysDeep.js",
+      "types": "./es/mapKeysDeep.d.ts"
+    },
+    "./getMapValuesDeep": {
+      "import": "./es/getMapValuesDeep.js",
+      "require": "./getMapValuesDeep.js",
+      "types": "./es/getMapValuesDeep.d.ts"
+    },
+    "./addMapValuesDeep": {
+      "import": "./es/addMapValuesDeep.js",
+      "require": "./addMapValuesDeep.js",
+      "types": "./es/addMapValuesDeep.d.ts"
+    },
+    "./mapValuesDeep": {
+      "import": "./es/mapValuesDeep.js",
+      "require": "./mapValuesDeep.js",
+      "types": "./es/mapValuesDeep.d.ts"
+    },
+    "./getOmitDeep": {
+      "import": "./es/getOmitDeep.js",
+      "require": "./getOmitDeep.js",
+      "types": "./es/getOmitDeep.d.ts"
+    },
+    "./addOmitDeep": {
+      "import": "./es/addOmitDeep.js",
+      "require": "./addOmitDeep.js",
+      "types": "./es/addOmitDeep.d.ts"
+    },
+    "./omitDeep": {
+      "import": "./es/omitDeep.js",
+      "require": "./omitDeep.js",
+      "types": "./es/omitDeep.d.ts"
+    },
+    "./getPathMatches": {
+      "import": "./es/getPathMatches.js",
+      "require": "./getPathMatches.js",
+      "types": "./es/getPathMatches.d.ts"
+    },
+    "./addPathMatches": {
+      "import": "./es/addPathMatches.js",
+      "require": "./addPathMatches.js",
+      "types": "./es/addPathMatches.d.ts"
+    },
+    "./pathMatches": {
+      "import": "./es/pathMatches.js",
+      "require": "./pathMatches.js",
+      "types": "./es/pathMatches.d.ts"
+    },
+    "./getPathToString": {
+      "import": "./es/getPathToString.js",
+      "require": "./getPathToString.js",
+      "types": "./es/getPathToString.d.ts"
+    },
+    "./addPathToString": {
+      "import": "./es/addPathToString.js",
+      "require": "./addPathToString.js",
+      "types": "./es/addPathToString.d.ts"
+    },
+    "./pathToString": {
+      "import": "./es/pathToString.js",
+      "require": "./pathToString.js",
+      "types": "./es/pathToString.d.ts"
+    },
+    "./getPaths": {
+      "import": "./es/getPaths.js",
+      "require": "./getPaths.js",
+      "types": "./es/getPaths.d.ts"
+    },
+    "./addPaths": {
+      "import": "./es/addPaths.js",
+      "require": "./addPaths.js",
+      "types": "./es/addPaths.d.ts"
+    },
+    "./paths": {
+      "import": "./es/paths.js",
+      "require": "./paths.js",
+      "types": "./es/paths.d.ts"
+    },
+    "./getPickDeep": {
+      "import": "./es/getPickDeep.js",
+      "require": "./getPickDeep.js",
+      "types": "./es/getPickDeep.d.ts"
+    },
+    "./addPickDeep": {
+      "import": "./es/addPickDeep.js",
+      "require": "./addPickDeep.js",
+      "types": "./es/addPickDeep.d.ts"
+    },
+    "./pickDeep": {
+      "import": "./es/pickDeep.js",
+      "require": "./pickDeep.js",
+      "types": "./es/pickDeep.d.ts"
+    },
+    "./getReduceDeep": {
+      "import": "./es/getReduceDeep.js",
+      "require": "./getReduceDeep.js",
+      "types": "./es/getReduceDeep.d.ts"
+    },
+    "./addReduceDeep": {
+      "import": "./es/addReduceDeep.js",
+      "require": "./addReduceDeep.js",
+      "types": "./es/addReduceDeep.d.ts"
+    },
+    "./reduceDeep": {
+      "import": "./es/reduceDeep.js",
+      "require": "./reduceDeep.js",
+      "types": "./es/reduceDeep.d.ts"
+    },
+    "./getSomeDeep": {
+      "import": "./es/getSomeDeep.js",
+      "require": "./getSomeDeep.js",
+      "types": "./es/getSomeDeep.d.ts"
+    },
+    "./addSomeDeep": {
+      "import": "./es/addSomeDeep.js",
+      "require": "./addSomeDeep.js",
+      "types": "./es/addSomeDeep.d.ts"
+    },
+    "./someDeep": {
+      "import": "./es/someDeep.js",
+      "require": "./someDeep.js",
+      "types": "./es/someDeep.d.ts"
+    }
+  },
   "scripts": {
     "generate": "node build/gen-es.js",
     "build": "npm run generate && rollup -c",
