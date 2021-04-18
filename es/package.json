@@ -1,9 +1,20 @@
 {
   "name": "deepdash-es",
+  "type": "module",
   "version": "5.3.6",
   "description": "➔ 𝐃eep extension for 𝐋odash-es: ✓ eachDeep ✓ filterDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ index ✓ condenseDeep ⋮ Parent nodes tracking ⋮ Circular references check ⋮ Leaves only mode ⋮ Path as a valid js string or an array ⋮",
   "main": "deepdash.js",
   "module": "deepdash.js",
+  "exports": {
+    ".": {
+      "import": "./deepdash.js",
+      "types": "./deepdash.d.ts"
+    },
+    "./standalone": {
+      "import": "./standalone.js",
+      "types": "./standalone.d.ts"
+    }
+  },
   "scripts": {
     "test": "echo echo tests currently available for cjs deepdash module only"
   },
@@ -27,7 +38,6 @@
     "keysDeep esm",
     "paths esm"
   ],
-  "type": "module",
   "author": "Yuri Gor",
   "license": "MIT",
   "bugs": {
