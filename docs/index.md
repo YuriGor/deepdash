@@ -6,6 +6,9 @@ eachDeep, filterDeep, findDeep, someDeep, omitDeep, pickDeep, keysDeep etc..
 Tree traversal library written in Underscore/Lodash fashion.
 Standalone or as a Lodash mixin extension
 
+> Deepdash lib is used in [PlanZed.org](https://planzed.org/) - awesome cloud mind map app created by the author of deepdash.
+Plz check it, it's free and I need [feedback](https://github.com/YuriGor/PlanZed.org) 😉
+
 ## List of Methods
 
 - [condense](#condense) - condense sparse array
