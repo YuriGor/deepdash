@@ -14,7 +14,7 @@ export default function reduceDeep(
   options?: {
     pathFormat?: "string" | "array";
     checkCircular?: boolean;
-    childrenPath?: Path[];
+    childrenPath?: Path;
     includeRoot?: boolean;
     leavesOnly?: boolean;
     rootIsChildren?: boolean;

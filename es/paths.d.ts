@@ -6,9 +6,9 @@ export default function paths(
     pathFormat?: "string" | "array"; // = "string";
     checkCircular?: boolean; // = false;
     includeCircularPath?: boolean,
-    childrenPath?: Path[];
+    childrenPath?: Path;
     includeRoot?: boolean;
     leavesOnly?: boolean; // = false;
     rootIsChildren?: boolean;
   }
-): Path[];
+): Path;
