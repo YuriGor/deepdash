@@ -12,7 +12,7 @@ export default function findDeep(
   options?: {
     pathFormat?: "string" | "array"; // = "string";
     checkCircular?: boolean; // = false;
-    childrenPath?: Path[];
+    childrenPath?: Path;
     includeRoot?: boolean;
     leavesOnly?: boolean; // = false;
     rootIsChildren?: boolean;

@@ -5,7 +5,7 @@ export default function index(
   options?: {
     checkCircular?: boolean;
     includeRoot?: boolean;
-    childrenPath?: Path[];
+    childrenPath?: Path;
     rootIsChildren?: boolean;
     leavesOnly?: boolean;
   }

@@ -12,7 +12,7 @@ export default function mapKeysDeep(
   options?: {
     pathFormat?: "string" | "array";
     checkCircular?: boolean;
-    childrenPath?: Path[];
+    childrenPath?: Path;
     includeRoot?: boolean;
     leavesOnly?: boolean;
     rootIsChildren?: boolean;

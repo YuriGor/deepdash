@@ -20,7 +20,7 @@ export default function filterDeep(
     pathFormat?: "string" | "array"; // = "string";
     checkCircular?: boolean; // = false;
     keepCircular?: boolean; // = false;
-    childrenPath?: Path[];
+    childrenPath?: Path;
     includeRoot?: boolean;
     leavesOnly?: boolean; // = false;
     rootIsChildren?: boolean;
