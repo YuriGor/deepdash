@@ -8,10 +8,12 @@
   "exports": {
     ".": {
       "import": "./deepdash.js",
+      "require": "./deepdash.js",
       "types": "./deepdash.d.ts"
     },
     "./standalone": {
       "import": "./standalone.js",
+      "require": "./standalone.js",
       "types": "./standalone.d.ts"
     }
   },
