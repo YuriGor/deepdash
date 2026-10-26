@@ -1,2 +1,2 @@
-import forEachDeep from "./eachDeep";
+import forEachDeep from "./eachDeep.js";
 export default forEachDeep;

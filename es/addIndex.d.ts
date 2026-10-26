@@ -1,5 +1,5 @@
 /* build/tpl */
-import index from "./index";
+import index from "./index.js";
 interface IIndexAdded {
   index: typeof index;
 }

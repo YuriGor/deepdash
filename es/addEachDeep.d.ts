@@ -1,5 +1,5 @@
 /* build/tpl */
-import eachDeep from "./eachDeep";
+import eachDeep from "./eachDeep.js";
 interface IEachDeepAdded {
   eachDeep: typeof eachDeep;
 }

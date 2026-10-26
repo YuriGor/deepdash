@@ -1,5 +1,5 @@
 /* build/tpl */
-import findPathDeep from "./findPathDeep";
+import findPathDeep from "./findPathDeep.js";
 interface IFindPathDeepAdded {
   findPathDeep: typeof findPathDeep;
 }

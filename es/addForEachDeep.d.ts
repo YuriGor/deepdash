@@ -1,5 +1,5 @@
 /* build/tpl */
-import forEachDeep from "./forEachDeep";
+import forEachDeep from "./forEachDeep.js";
 interface IForEachDeepAdded {
   forEachDeep: typeof forEachDeep;
 }

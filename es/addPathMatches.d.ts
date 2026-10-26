@@ -1,5 +1,5 @@
 /* build/tpl */
-import pathMatches from "./pathMatches";
+import pathMatches from "./pathMatches.js";
 interface IPathMatchesAdded {
   pathMatches: typeof pathMatches;
 }

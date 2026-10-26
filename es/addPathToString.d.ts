@@ -1,5 +1,5 @@
 /* build/tpl */
-import pathToString from "./pathToString";
+import pathToString from "./pathToString.js";
 interface IPathToStringAdded {
   pathToString: typeof pathToString;
 }

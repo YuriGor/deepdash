@@ -1,5 +1,5 @@
 /* build/tpl */
-import reduceDeep from "./reduceDeep";
+import reduceDeep from "./reduceDeep.js";
 interface IReduceDeepAdded {
   reduceDeep: typeof reduceDeep;
 }

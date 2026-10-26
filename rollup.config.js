@@ -73,7 +73,7 @@ export default [
   {
     input,
     external: (id, parentId, isResolved) => _.startsWith(id, 'lodash/'),
-    output: [{ dir: './', format: 'cjs', interop: false }],
+    output: [{ dir: './', format: 'cjs', interop: false, exports: 'auto' }],
     preserveModules: true,
     plugins: [
       replace({

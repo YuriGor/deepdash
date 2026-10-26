@@ -1,5 +1,5 @@
 /* build/tpl */
-import filterDeep from "./filterDeep";
+import filterDeep from "./filterDeep.js";
 interface IFilterDeepAdded {
   filterDeep: typeof filterDeep;
 }

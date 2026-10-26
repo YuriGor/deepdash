@@ -1,2 +1,2 @@
-import keysDeep from "./paths";
+import keysDeep from "./paths.js";
 export default keysDeep;

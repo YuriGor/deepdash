@@ -1,5 +1,5 @@
 /* build/tpl */
-import keysDeep from "./keysDeep";
+import keysDeep from "./keysDeep.js";
 interface IKeysDeepAdded {
   keysDeep: typeof keysDeep;
 }

@@ -1,5 +1,5 @@
 /* build/tpl */
-import someDeep from "./someDeep";
+import someDeep from "./someDeep.js";
 interface ISomeDeepAdded {
   someDeep: typeof someDeep;
 }

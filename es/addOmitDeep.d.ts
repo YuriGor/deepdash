@@ -1,5 +1,5 @@
 /* build/tpl */
-import omitDeep from "./omitDeep";
+import omitDeep from "./omitDeep.js";
 interface IOmitDeepAdded {
   omitDeep: typeof omitDeep;
 }

@@ -1,5 +1,5 @@
 /* build/tpl */
-import mapDeep from "./mapDeep";
+import mapDeep from "./mapDeep.js";
 interface IMapDeepAdded {
   mapDeep: typeof mapDeep;
 }

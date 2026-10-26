@@ -35,6 +35,29 @@ const depsTarget = path.join(targetDir, 'deps');
 const depsOwnDir = path.join(depsDir, 'own');
 const depsOwnTarget = path.join(depsTarget, 'own');
 
+
+async function fixDeclarationExtensions(dir) {
+  const files = (await readdir(dir)).filter((fn) => fn.endsWith('.d.ts'));
+
+  for (const file of files) {
+    const filePath = path.join(dir, file);
+    const content = await require('fs').promises.readFile(filePath, 'utf8');
+
+    const fixed = content.replace(
+      /((?:from\s*|import\s*)["'])(\.{1,2}\/[^"']+?)(["'])/g,
+      (match, prefix, specifier, quote) =>
+        /\.(?:js|json|node)$/.test(specifier)
+          ? match
+          : `${prefix}${specifier}.js${quote}`
+    );
+
+    if (fixed !== content) {
+      await writeFile(filePath, fixed);
+    }
+  }
+} 
+
+
 async function main() {
   log('copy/gen from /src/..');
   try {
@@ -151,6 +174,9 @@ async function main() {
   log.done('standalone.js');
 
   pkg.exports = tplPackageExports(fullMethods);
+
+  await fixDeclarationExtensions(typesDir);
+  
   await writeFile(
     path.join(rootDir, 'package.json'),
     JSON.stringify(pkg, null, 2)

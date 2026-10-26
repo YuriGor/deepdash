@@ -1,6 +1,6 @@
-import { Path } from "./Path";
-import { IIterateeContext } from "./IIterateeContext";
-import { IDeepEntry } from "./IDeepEntry";
+import { Path } from "./Path.js";
+import { IIterateeContext } from "./IIterateeContext.js";
+import { IDeepEntry } from "./IDeepEntry.js";
 
 export default function findDeep(
   obj: any,

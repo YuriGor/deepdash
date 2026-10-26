@@ -1,5 +1,5 @@
-import { Path } from "./Path";
-import { IIterateeContext } from "./IIterateeContext";
+import { Path } from "./Path.js";
+import { IIterateeContext } from "./IIterateeContext.js";
 
 export default function reduceDeep(
   obj: any,

@@ -1,25 +1,25 @@
 /* build/tpl */
-import condense from "./condense";
-import condenseDeep from "./condenseDeep";
-import eachDeep from "./eachDeep";
-import exists from "./exists";
-import filterDeep from "./filterDeep";
-import findDeep from "./findDeep";
-import findPathDeep from "./findPathDeep";
-import findValueDeep from "./findValueDeep";
-import forEachDeep from "./forEachDeep";
-import index from "./index";
-import keysDeep from "./keysDeep";
-import mapDeep from "./mapDeep";
-import mapKeysDeep from "./mapKeysDeep";
-import mapValuesDeep from "./mapValuesDeep";
-import omitDeep from "./omitDeep";
-import pathMatches from "./pathMatches";
-import pathToString from "./pathToString";
-import paths from "./paths";
-import pickDeep from "./pickDeep";
-import reduceDeep from "./reduceDeep";
-import someDeep from "./someDeep";
+import condense from "./condense.js";
+import condenseDeep from "./condenseDeep.js";
+import eachDeep from "./eachDeep.js";
+import exists from "./exists.js";
+import filterDeep from "./filterDeep.js";
+import findDeep from "./findDeep.js";
+import findPathDeep from "./findPathDeep.js";
+import findValueDeep from "./findValueDeep.js";
+import forEachDeep from "./forEachDeep.js";
+import index from "./index.js";
+import keysDeep from "./keysDeep.js";
+import mapDeep from "./mapDeep.js";
+import mapKeysDeep from "./mapKeysDeep.js";
+import mapValuesDeep from "./mapValuesDeep.js";
+import omitDeep from "./omitDeep.js";
+import pathMatches from "./pathMatches.js";
+import pathToString from "./pathToString.js";
+import paths from "./paths.js";
+import pickDeep from "./pickDeep.js";
+import reduceDeep from "./reduceDeep.js";
+import someDeep from "./someDeep.js";
 
 export default function addDeepdash<Src>(_: Src): Src & {
   condense: typeof condense;

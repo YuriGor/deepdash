@@ -1,5 +1,5 @@
-import { Path } from "./Path";
-import { IDeepEntry } from "./IDeepEntry";
+import { Path } from "./Path.js";
+import { IDeepEntry } from "./IDeepEntry.js";
 export interface IIterateeContext {
   path?: Path;
   childrenPath?: Path;

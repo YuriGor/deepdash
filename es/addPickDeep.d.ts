@@ -1,5 +1,5 @@
 /* build/tpl */
-import pickDeep from "./pickDeep";
+import pickDeep from "./pickDeep.js";
 interface IPickDeepAdded {
   pickDeep: typeof pickDeep;
 }

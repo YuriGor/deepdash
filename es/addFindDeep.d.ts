@@ -1,5 +1,5 @@
 /* build/tpl */
-import findDeep from "./findDeep";
+import findDeep from "./findDeep.js";
 interface IFindDeepAdded {
   findDeep: typeof findDeep;
 }

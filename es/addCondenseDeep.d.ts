@@ -1,5 +1,5 @@
 /* build/tpl */
-import condenseDeep from "./condenseDeep";
+import condenseDeep from "./condenseDeep.js";
 interface ICondenseDeepAdded {
   condenseDeep: typeof condenseDeep;
 }

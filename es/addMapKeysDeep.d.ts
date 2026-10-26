@@ -1,5 +1,5 @@
 /* build/tpl */
-import mapKeysDeep from "./mapKeysDeep";
+import mapKeysDeep from "./mapKeysDeep.js";
 interface IMapKeysDeepAdded {
   mapKeysDeep: typeof mapKeysDeep;
 }

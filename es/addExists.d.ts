@@ -1,5 +1,5 @@
 /* build/tpl */
-import exists from "./exists";
+import exists from "./exists.js";
 interface IExistsAdded {
   exists: typeof exists;
 }
