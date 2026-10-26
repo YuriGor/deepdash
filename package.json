@@ -1,6 +1,6 @@
 {
   "name": "deepdash",
-  "version": "5.3.9",
+  "version": "5.3.10",
   "description": "➔ 𝐃eep standalone lib / 𝐋odash extension: ✓ eachDeep ✓ filterDeep ✓ mapDeep ✓ reduceDeep ✓ pickDeep ✓ omitDeep ✓ keysDeep ✓ index ✓ condenseDeep ⋮ Parents stack ⋮ Circular check ⋮ Leaves only mode ⋮ Children mode ⋮ cherry-pick ⋮ esm",
   "main": "deepdash.js",
   "module": "es/deepdash.js",
